@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../viewmodels/login_viewmodel.dart';
+import 'register_select_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool rememberMe = false;
   bool _initialized = false;
-
+  bool _obscurePassword = true;
   @override
   void initState() {
     super.initState();
@@ -62,75 +63,93 @@ class _LoginScreenState extends State<LoginScreen> {
       );
     }
 
-    return ChangeNotifierProvider(
-      create: (_) => LoginViewModel(),
-      child: Consumer<LoginViewModel>(
-        builder: (context, vm, _) {
-          return Scaffold(
-            backgroundColor: Color(0xFF162244),
-            body: Center(
-              child: SingleChildScrollView(
-                padding: EdgeInsets.symmetric(horizontal: 32, vertical: 24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.asset("assets/logo.png", width: 80),
-                    SizedBox(height: 32),
-                    Text('Sign in', style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold)),
-                    SizedBox(height: 12),
-                    Container(
-                      padding: EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.withOpacity(0.15),
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Text(
-                        "You are browsing Massive Dynamic...",
-                        style: TextStyle(color: Colors.white70),
-                        textAlign: TextAlign.center,
+   return ChangeNotifierProvider(
+    create: (_) => LoginViewModel(),
+    child: Consumer<LoginViewModel>(
+      builder: (context, vm, _) {
+        return Scaffold(
+          backgroundColor: Color(0xFF162244),
+          body: Center(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(horizontal: 32, vertical: 24),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset("assets/logo.png", width: 80),
+                  SizedBox(height: 32),
+                  Text('Sign in', style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold)),
+                  SizedBox(height: 12),
+                  // ----- INFO BOX -----
+                  Container(
+                    padding: EdgeInsets.all(14),
+                    decoration: BoxDecoration(
+                      color: Color(0xFF6CA0FF).withOpacity(0.22),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: Color(0xFF6CA0FF), width: 1),
+                    ),
+                    child: Text(
+                      "You are browsing Massive Dynamic.\nClick on \"Sign in\" to access the features or \"Sign up\" if you don't have an account.",
+                      style: TextStyle(color: Color(0xFFB4C9F9), fontSize: 15.5, height: 1.4),
+                      textAlign: TextAlign.justify,
+                    ),
+                  ),
+                  SizedBox(height: 20),
+
+                  // Organisation Number
+                  TextField(
+                    controller: orgController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white10,
+                      labelText: "Organisation Number *",
+                      hintText: "EX: 1234",
+                      labelStyle: TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(),
+                    ),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(height: 12),
+
+                  // Email Address
+                  TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white10,
+                      labelText: "Email Address *",
+                      hintText: "EX: WilliamGoldsmith@DGS.ac.uk",
+                      labelStyle: TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(),
+                    ),
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(height: 12),
+
+                  // PASSWORD with SHOW/HIDE
+                  TextField(
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.white10,
+                      labelText: "Password *",
+                      labelStyle: TextStyle(color: Colors.white),
+                      border: OutlineInputBorder(),
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          color: Colors.white54,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _obscurePassword = !_obscurePassword;
+                          });
+                        },
                       ),
                     ),
-                    SizedBox(height: 20),
-                    TextField(
-                      controller: orgController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white10,
-                        labelText: "Organisation Number *",
-                        hintText: "EX: 1234",
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(),
-                      ),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: 12),
-                    TextField(
-                      controller: emailController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white10,
-                        labelText: "Email Address *",
-                        hintText: "EX: WilliamGoldsmith@DGS.ac.uk",
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(),
-                      ),
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    SizedBox(height: 12),
-                    TextField(
-                      controller: passwordController,
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: Colors.white10,
-                        labelText: "Password *",
-                        labelStyle: TextStyle(color: Colors.white),
-                        border: OutlineInputBorder(),
-                        suffixIcon: Icon(Icons.visibility_off, color: Colors.white54),
-                      ),
-                      style: TextStyle(color: Colors.white),
-                      obscureText: true,
-                    ),
-                    SizedBox(height: 8),
+                    style: TextStyle(color: Colors.white),
+                    obscureText: _obscurePassword,
+                  ),
+                  SizedBox(height: 8),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -171,13 +190,22 @@ class _LoginScreenState extends State<LoginScreen> {
           orgController.text,
         );
         if (success && vm.user != null && vm.user!.accessToken.isNotEmpty) {
-          Navigator.pushReplacementNamed(
-            context,
-            '/attendance',
-            arguments: vm.user!.accessToken, // Pass token as an argument
+          // Navigator.pushReplacementNamed(
+          //   context,
+          //   '/attendance',
+          //   arguments: vm.user!.accessToken, // Pass token as an argument
+          // );
+          Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) => RegisterSelectScreen(
+              token: vm.user!.accessToken,
+              tuitionCentreName: vm.user!.educationCentreName,
+            ),
+            ),
           );
-        }
-      },
+          }
+        },
                         style: ElevatedButton.styleFrom(
                           padding: EdgeInsets.symmetric(vertical: 14),
                           backgroundColor: Colors.blueAccent,

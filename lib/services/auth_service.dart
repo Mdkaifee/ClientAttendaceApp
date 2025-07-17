@@ -37,4 +37,31 @@ class AuthService {
     }
     return null;
   }
+  
+  Future<List<dynamic>?> fetchYearGroups({required String token}) async {
+    final response = await http.post(
+      Uri.parse('$_baseUrl/api/GetClassYearGroupList'),  // Use _baseUrl here
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode({
+        "SearchTerm": "",
+        "startIndex": "0",
+        "endIndex": "5",
+      }),
+    );
+
+    print('YearGroups Status: ${response.statusCode}');
+    print('YearGroups Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+
+      if (json is Map && json.containsKey('classYearGroupList')) {
+        return json['classYearGroupList'] as List<dynamic>;
+      }
+    }
+    return null;
+  }
 }
