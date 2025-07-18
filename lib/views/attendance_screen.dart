@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/attendance_viewmodel.dart';
 import 'register_select_screen.dart';  // Adjust path if needed
+import 'student_attendance_summary.dart';
 
 class AttendanceScreen extends StatelessWidget {
   final String token;
@@ -88,15 +89,19 @@ class AttendanceScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 12),
-                          child: TextField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.search, color: Colors.white54),
-                              hintText: 'Search',
-                              hintStyle: TextStyle(color: Colors.white54),
-                              border: InputBorder.none,
-                            ),
-                          ),
+                         child: TextField(
+  style: TextStyle(color: Colors.white),
+  decoration: InputDecoration(
+    icon: Icon(Icons.search, color: Colors.white54),
+    hintText: 'Search',
+    hintStyle: TextStyle(color: Colors.white54),
+    border: InputBorder.none,
+  ),
+  onChanged: (val) {
+    vm.searchQuery = val;  // Update the search query in the ViewModel
+  },
+),
+
                         ),
                       ),
                       SizedBox(width: 12),
@@ -227,11 +232,18 @@ class AttendanceScreen extends StatelessWidget {
                   SizedBox(height: 8),
 
                   // Dynamic list of students
-                  Expanded(
-                    child: ListView.builder(
-                      itemCount: vm.students.length,
-                      itemBuilder: (context, index) {
-                        final student = vm.students[index];
+                Expanded(
+  child: vm.filteredStudents.isEmpty
+      ? Center(
+          child: Text(
+            "No students found related to this search.",
+            style: TextStyle(color: Colors.white70, fontSize: 16),
+          ),
+        )
+      : ListView.builder(
+          itemCount: vm.filteredStudents.length,
+          itemBuilder: (context, index) {
+            final student = vm.filteredStudents[index];
                         return Container(
                           margin: EdgeInsets.symmetric(vertical: 4),
                           padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
@@ -241,40 +253,54 @@ class AttendanceScreen extends StatelessWidget {
                           ),
                           child: Row(
                             children: [
-                              // Avatar + Name
                               Expanded(
                                 flex: 4,
-                                child: Row(
-                                  children: [
-                                    CircleAvatar(
-                                      radius: 20,
-                                      backgroundColor: Colors.grey.shade800,
-                                      backgroundImage: student.avatarUrl.isNotEmpty
-                                          ? NetworkImage(student.avatarUrl)
-                                          : null,
-                                      child: student.avatarUrl.isEmpty
-                                          ? Icon(Icons.person, color: Colors.white54, size: 24)
-                                          : null,
-                                    ),
-                                    SizedBox(width: 12),
-                                  Flexible(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        student.studentName,
-                                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
-                                        overflow: TextOverflow.ellipsis,
+                                child: InkWell(
+                                  onTap: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => StudentAttendanceSummaryScreen(
+                                          token: token,
+                                          studentId: student.studentId,
+                                          attendanceTakenDate: attendanceTakenDate,
+                                         
+                                        ),
                                       ),
-                                      Text(
-                                        student.studentId.toString(),
-                                        style: TextStyle(color: Colors.white70, fontWeight: FontWeight.normal, fontSize: 11),
-                                        overflow: TextOverflow.ellipsis,
+                                    );
+                                  },
+                                  child: Row(
+                                    children: [
+                                      CircleAvatar(
+                                        radius: 20,
+                                        backgroundColor: Colors.grey.shade800,
+                                        backgroundImage: student.avatarUrl.isNotEmpty
+                                            ? NetworkImage(student.avatarUrl)
+                                            : null,
+                                        child: student.avatarUrl.isEmpty
+                                            ? Icon(Icons.person, color: Colors.white54, size: 24)
+                                            : null,
+                                      ),
+                                      SizedBox(width: 12),
+                                      Flexible(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              student.studentName,
+                                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                            // Text(
+                                            //   student.studentId.toString(),
+                                            //   style: TextStyle(color: Colors.white70, fontWeight: FontWeight.normal, fontSize: 11),
+                                            //   overflow: TextOverflow.ellipsis,
+                                            // ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ),
-                                  ],
                                 ),
                               ),
 
