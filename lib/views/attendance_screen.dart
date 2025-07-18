@@ -132,42 +132,44 @@ class AttendanceScreen extends StatelessWidget {
                   SizedBox(height: 12),
 
                   // Row with Back button and dynamic Year Group & Period buttons
-                Row(
-  children: [
-    // Back button with icon
-     TextButton.icon(
-      onPressed: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (_) => RegisterSelectScreen(
-              token: token,
-              tuitionCentreName: tuitionCentreName,
+                SingleChildScrollView(
+  scrollDirection: Axis.horizontal,
+  child: Row(
+    children: [
+      // Back button
+      TextButton.icon(
+        onPressed: () {
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (_) => RegisterSelectScreen(
+                token: token,
+                tuitionCentreName: tuitionCentreName,
+              ),
             ),
-          ),
-        );
-      },
-      style: TextButton.styleFrom(
-        backgroundColor: Color(0xFF5D99F6), // Ellipse blue background
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+          );
+        },
+        style: TextButton.styleFrom(
+          backgroundColor: Color(0xFF5D99F6),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+        ),
+        icon: Icon(Icons.arrow_back, color: Colors.black, size: 20),
+        label: Text(
+          'Back',
+          style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
+        ),
       ),
-      icon: Icon(Icons.arrow_back, color: Colors.black, size: 20),
-      label: Text('Back', style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600)),
-    ),
+      SizedBox(width: 24), // Space after back button (adjust as needed)
 
-    // Push the year and period buttons to the right
-    Spacer(),
-
-    // Selected Year Group button (wider and further right)
-    Container(
-      width: 100, // You can adjust this width as needed
-      child: TextButton(
+      // Year pill
+      TextButton(
         onPressed: () {},
         style: TextButton.styleFrom(
-          backgroundColor: Color(0xFF5D99F6), // Lighter blue for a fresher look
+          backgroundColor: Color(0xFF5D99F6),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+          minimumSize: Size(0, 0),
         ),
         child: Text(
           selectedYearGroupName,
@@ -175,19 +177,16 @@ class AttendanceScreen extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
       ),
-    ),
+      SizedBox(width: 8),
 
-    SizedBox(width: 8),
-
-    // Selected Period button (wider and further right)
-    Container(
-      width: 130, // You can adjust this width as needed
-      child: TextButton(
+      // Period pill
+      TextButton(
         onPressed: () {},
         style: TextButton.styleFrom(
           backgroundColor: Color(0xFF5D99F6),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+          minimumSize: Size(0, 0),
         ),
         child: Text(
           selectedPeriod,
@@ -195,9 +194,10 @@ class AttendanceScreen extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
         ),
       ),
-    ),
-  ],
+    ],
+  ),
 ),
+
 
                   SizedBox(height: 16),
 
@@ -264,7 +264,8 @@ class AttendanceScreen extends StatelessWidget {
                                           token: token,
                                           studentId: student.studentId,
                                           attendanceTakenDate: attendanceTakenDate,
-                                         
+                                          selectedYearGroupName: selectedYearGroupName,   // <-- add
+                                          selectedPeriod: selectedPeriod, 
                                         ),
                                       ),
                                     );
