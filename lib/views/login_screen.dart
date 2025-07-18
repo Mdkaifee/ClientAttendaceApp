@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../viewmodels/login_viewmodel.dart';
 import 'register_select_screen.dart';
-
+import 'forgot_password_screen.dart';
 class LoginScreen extends StatefulWidget {
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -76,7 +76,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Image.asset("assets/logo.png", width: 80),
-                  SizedBox(height: 32),
+                  SizedBox(height: 80),
                   Text('Sign in', style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold)),
                   SizedBox(height: 12),
                   // ----- INFO BOX -----
@@ -167,10 +167,24 @@ class _LoginScreenState extends State<LoginScreen> {
                             Text("Remember me", style: TextStyle(color: Colors.white70)),
                           ],
                         ),
+                        // TextButton(
+                        //   onPressed: () {},
+                        //   child: Text("Forgot Password?", style: TextStyle(color: Colors.blue)),
+                        // ),
                         TextButton(
-                          onPressed: () {},
-                          child: Text("Forgot Password?", style: TextStyle(color: Colors.blue)),
-                        ),
+  onPressed: () {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => ForgotPasswordScreen(
+          organizationId: int.tryParse(orgController.text) ?? 0,
+        ),
+      ),
+    );
+  },
+  child: Text("Forgot Password?", style: TextStyle(color: Colors.blue)),
+),
+
                       ],
                     ),
                     SizedBox(height: 18),
