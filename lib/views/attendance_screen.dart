@@ -257,13 +257,23 @@ class AttendanceScreen extends StatelessWidget {
                                           : null,
                                     ),
                                     SizedBox(width: 12),
-                                    Flexible(
-                                      child: Text(
+                                  Flexible(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
                                         student.studentName,
                                         style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
                                         overflow: TextOverflow.ellipsis,
                                       ),
-                                    ),
+                                      Text(
+                                        student.studentId.toString(),
+                                        style: TextStyle(color: Colors.white70, fontWeight: FontWeight.normal, fontSize: 11),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ],
+                                  ),
+                                ),
                                   ],
                                 ),
                               ),

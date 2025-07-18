@@ -33,6 +33,7 @@ class AttendanceViewModel extends ChangeNotifier {
             AttendanceModel(
     studentName: '${item['firstName'] ?? ''} ${item['lastName'] ?? ''}',
     avatarUrl: item['photoURL'] ?? '',
+    studentId: item['studentId'] ?? '',
               // Add other fields and logic as needed
             )
         ).toList();
