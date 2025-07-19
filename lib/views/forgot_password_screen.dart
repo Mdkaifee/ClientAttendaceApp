@@ -3,12 +3,17 @@ import 'package:provider/provider.dart';
 import '../viewmodels/forgot_password_viewmodel.dart';
 import 'otp_verification_screen.dart';
 
-class ForgotPasswordScreen extends StatelessWidget {
+class ForgotPasswordScreen extends StatefulWidget  {
   final int organizationId;
+  const ForgotPasswordScreen({Key? key, required this.organizationId}) : super(key: key);
 
-  ForgotPasswordScreen({required this.organizationId});
+  @override
+  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+}
 
+class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController emailController = TextEditingController();
+  String? localError;
 
   @override
   Widget build(BuildContext context) {
@@ -79,7 +84,16 @@ class ForgotPasswordScreen extends StatelessWidget {
                         ),
                       ),
                       style: TextStyle(color: Colors.white),
+                      onChanged: (_) {
+                        if (localError != null) setState(() => localError = null);
+                      },
                     ),
+
+                    if (localError != null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 6.0),
+                        child: Text(localError!, style: TextStyle(color: Colors.redAccent)),
+                      ),
 
                     SizedBox(height: 24),
 
@@ -91,7 +105,16 @@ class ForgotPasswordScreen extends StatelessWidget {
                         onPressed: vm.isLoading
                             ? null
                             : () {
-                                vm.sendResetCode(organizationId, emailController.text);
+                                if (emailController.text.trim().isEmpty) {
+                                  setState(() {
+                                    localError = "Please enter your email";
+                                  });
+                                  return;
+                                }
+                                setState(() {
+                                  localError = null;
+                                });
+                                vm.sendResetCode(widget.organizationId, emailController.text);
                               },
                         child: vm.isLoading
                             ? CircularProgressIndicator(color: Colors.white)
@@ -119,7 +142,7 @@ class ForgotPasswordScreen extends StatelessWidget {
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => OtpVerificationScreen(
-                                    organizationId: organizationId,
+                                    organizationId: widget.organizationId,
                                     email: emailController.text,
                                   ),
                                 ),
@@ -137,7 +160,16 @@ class ForgotPasswordScreen extends StatelessWidget {
                       onPressed: vm.isLoading
                           ? null
                           : () {
-                              vm.sendResetCode(organizationId, emailController.text, isResend: true);
+                              if (emailController.text.trim().isEmpty) {
+                                setState(() {
+                                  localError = "Please enter your email";
+                                });
+                                return;
+                              }
+                              setState(() {
+                                localError = null;
+                              });
+                              vm.sendResetCode(widget.organizationId, emailController.text, isResend: true);
                             },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,

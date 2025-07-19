@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 
 class AuthService {
-  static const String _baseUrl = 'https://adminapiuat.massivedanamik.com';
+  static const String baseUrl  = 'https://adminapiuat.massivedanamik.com';
 
   Future<UserModel?> login({
     required String email,
@@ -12,7 +12,7 @@ class AuthService {
   }) async {
     print('login() called');
     final response = await http.post(
-      Uri.parse('$_baseUrl/api/GetUserLoginDetails'),
+      Uri.parse('$baseUrl/api/GetUserLoginDetails'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         "email": email,
@@ -21,7 +21,7 @@ class AuthService {
       }),
     );
 
-    print('Request: POST $_baseUrl/api/GetUserLoginDetails');
+    print('Request: POST $baseUrl/api/GetUserLoginDetails');
     print('Request Body: ${jsonEncode({
           "email": email,
           "password": password,
@@ -39,7 +39,7 @@ class AuthService {
 
   Future<List<dynamic>?> fetchYearGroups({required String token}) async {
     final response = await http.post(
-      Uri.parse('$_baseUrl/api/GetClassYearGroupList'),
+      Uri.parse('$baseUrl/api/GetClassYearGroupList'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
@@ -71,7 +71,7 @@ Future<bool> generateResetPasswordCode({
   required String email,
 }) async {
   final response = await http.post(
-    Uri.parse('$_baseUrl/api/GenerateResetPasswordCode'),
+    Uri.parse('$baseUrl/api/GenerateResetPasswordCode'),
     headers: {
       'Content-Type': 'application/json', // Required Header ✅
     },
@@ -81,7 +81,7 @@ Future<bool> generateResetPasswordCode({
     }),
   );
 
-  print('Generate Reset Password Request: POST $_baseUrl/api/GenerateResetPasswordCode');
+  print('Generate Reset Password Request: POST $baseUrl/api/GenerateResetPasswordCode');
   print('Request Body: ${jsonEncode({
     "OrganizationId": organizationId,
     "Email": email,
@@ -100,7 +100,7 @@ Future<bool> validateResetPasswordCode({
   required String code,
 }) async {
   final response = await http.post(
-    Uri.parse('$_baseUrl/api/ValidateResetPasswordCode'),
+    Uri.parse('$baseUrl/api/ValidateResetPasswordCode'),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({
       "OrganizationId": organizationId,
@@ -108,7 +108,7 @@ Future<bool> validateResetPasswordCode({
     }),
   );
 
-  print('Validate OTP Request: POST $_baseUrl/api/ValidateResetPasswordCode');
+  print('Validate OTP Request: POST $baseUrl/api/ValidateResetPasswordCode');
   print('Request Body: ${jsonEncode({"OrganizationId": organizationId, "Code": code})}');
   print('Status Code: ${response.statusCode}');
   print('Response Body: ${response.body}');
@@ -125,7 +125,7 @@ Future<bool> resetPasswordWithCode({
   required String newPassword,
 }) async {
   final response = await http.post(
-    Uri.parse('$_baseUrl/api/ResetPasswordWithCode'),
+    Uri.parse('$baseUrl/api/ResetPasswordWithCode'),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode({
       "OrganizationId": organizationId,
@@ -134,7 +134,7 @@ Future<bool> resetPasswordWithCode({
     }),
   );
 
-  print('Reset Password Request: POST $_baseUrl/api/ResetPasswordWithCode');
+  print('Reset Password Request: POST $baseUrl/api/ResetPasswordWithCode');
   print('Request Body: ${response.body}');
   print('Status Code: ${response.statusCode}');
 

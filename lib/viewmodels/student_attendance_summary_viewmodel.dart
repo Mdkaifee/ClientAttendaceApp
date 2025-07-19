@@ -9,7 +9,15 @@ class StudentAttendanceSummaryViewModel extends ChangeNotifier {
   String? error;
   StudentAttendanceSummaryModel? summary;
 
-  Future<void> fetchSummary(String token,int studentId, String attendanceTakenDate) async {
+  List<dynamic> _calendarMonthAttendanceDetail = [];
+  List<dynamic> _student1MonthSummary = [];
+  List<dynamic> _student3MonthSummary = [];
+
+  List<dynamic> get calendarMonthAttendanceDetail => _calendarMonthAttendanceDetail;
+  List<dynamic> get student1MonthSummary => _student1MonthSummary;
+  List<dynamic> get student3MonthSummary => _student3MonthSummary;
+
+  Future<void> fetchSummary(String token, int studentId, String attendanceTakenDate) async {
     isLoading = true;
     error = null;
     notifyListeners();
@@ -22,6 +30,9 @@ class StudentAttendanceSummaryViewModel extends ChangeNotifier {
       );
       if (json != null && json['studentAttendanceDetailsInfoDetail'] != null) {
         summary = StudentAttendanceSummaryModel.fromJson(json['studentAttendanceDetailsInfoDetail']);
+        _calendarMonthAttendanceDetail = json['calendarMonthAttendanceDetail'] ?? [];
+        _student1MonthSummary = json['student1MonthSummary'] ?? [];
+        _student3MonthSummary = json['student3MonthSummary'] ?? [];
       } else {
         error = "No data found";
       }

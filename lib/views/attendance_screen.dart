@@ -130,9 +130,10 @@ class AttendanceScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 12),
-
+Padding(
+  padding: const EdgeInsets.only(right: 40),
                   // Row with Back button and dynamic Year Group & Period buttons
-                SingleChildScrollView(
+        child:SingleChildScrollView(
   scrollDirection: Axis.horizontal,
   child: Row(
     children: [
@@ -160,7 +161,7 @@ class AttendanceScreen extends StatelessWidget {
           style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
         ),
       ),
-      SizedBox(width: 24), // Space after back button (adjust as needed)
+      SizedBox(width: 44), // Space after back button (adjust as needed)
 
       // Year pill
       TextButton(
@@ -197,7 +198,7 @@ class AttendanceScreen extends StatelessWidget {
     ],
   ),
 ),
-
+),
 
                   SizedBox(height: 16),
 

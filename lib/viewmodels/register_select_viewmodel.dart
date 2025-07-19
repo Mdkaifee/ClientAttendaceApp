@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../services/auth_service.dart';
 
 class YearGroup {
   final int id;
@@ -16,23 +17,16 @@ class YearGroup {
   }
 }
 class RegisterSelectViewModel extends ChangeNotifier {
-  static const String _baseUrl = 'https://adminapiuat.massivedanamik.com';
-
   List<YearGroup> yearGroups = [];
   bool isLoading = false;
   String? error;
 
   int? selectedYearGroupId;
   String? selectedPeriod;
-
-  
-  Future<void> fetchYearGroups(String token) async {
-    isLoading = true;
-    error = null;
-    notifyListeners();
-
+   Future<void> fetchYearGroups(String token) async {
+    final url = Uri.parse('${AuthService.baseUrl}/adminapi/getclassyeargroups');  // Use getter here
     final response = await http.post(
-      Uri.parse('https://adminapiuat.massivedanamik.com/adminapi/getclassyeargroups'),
+      url,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
