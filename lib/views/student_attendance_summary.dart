@@ -240,22 +240,30 @@ class StudentAttendanceSummaryScreen extends StatelessWidget {
 
 // --- Calendar Widget ---
 class _CustomCalendar extends StatelessWidget {
-  final List<dynamic>? calendarData; // Pass in your "calendarMonthAttendanceDetail" from VM
-
+  final List<dynamic>? calendarData;
   const _CustomCalendar({Key? key, required this.calendarData}) : super(key: key);
+
+  // Map Dart weekday to our 6-column calendar (skip Thursday)
+  int weekdayToColIndex(int weekday) {
+    // Dart: 1=Mon, ..., 7=Sun. Ours: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Fri, 5=Sat
+    switch (weekday) {
+      case DateTime.sunday: return 0;
+      case DateTime.monday: return 1;
+      case DateTime.tuesday: return 2;
+      case DateTime.wednesday: return 3;
+      case DateTime.friday: return 4;
+      case DateTime.saturday: return 5;
+      default: return -1; // Thursday
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Default to today if no data
     final now = DateTime.now();
-    final year = (calendarData?.isNotEmpty == true)
-        ? now.year
-        : now.year;
-    final month = (calendarData?.isNotEmpty == true)
-        ? now.month
-        : now.month;
+    final year = now.year;
+    final month = now.month;
+    final daysInMonth = DateUtils.getDaysInMonth(year, month);
 
-    // Prepare attendance map (day -> code or marker)
     final Map<int, String?> attendance = {};
     if (calendarData != null) {
       for (var entry in calendarData!) {
@@ -265,55 +273,44 @@ class _CustomCalendar extends StatelessWidget {
       }
     }
 
-    // Get first weekday of the month
-    final firstDay = DateTime(year, month, 1);
-    final daysInMonth = DateUtils.getDaysInMonth(year, month);
-    final weekDayOffset = firstDay.weekday % 7; // Sunday = 0
-
-    // Generate calendar cells
-    List<TableRow> rows = [];
-
-    // Weekday header
-    rows.add(TableRow(
-      children: List.generate(7, (i) {
-        final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        return Center(
+    final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Fri', 'Sat'];
+    List<TableRow> rows = [
+      TableRow(
+        children: List.generate(6, (i) => Center(
           child: Text(days[i], style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        );
-      }),
-    ));
+        )),
+      ),
+    ];
 
-    int day = 1 - weekDayOffset;
+    // Build the grid rows
+    int day = 1;
+    List<Widget> week = List.filled(6, _calendarBox(null), growable: false);
+    int weekIndex = 0;
+
+    // Find out the column to start on
+    int startCol = weekdayToColIndex(DateTime(year, month, 1).weekday);
+
+    // Fill initial blanks
+    for (int i = 0; i < startCol; i++) {
+      week[i] = _calendarBox(null);
+    }
+
+    // Fill the days
     while (day <= daysInMonth) {
-      List<Widget> week = [];
-      for (int i = 0; i < 7; i++) {
-        if (day > 0 && day <= daysInMonth) {
-          final isMarked = attendance[day] != null && attendance[day]!.isNotEmpty;
-          week.add(
-            Container(
-              margin: EdgeInsets.symmetric(vertical: 2, horizontal: 2),
-              decoration: BoxDecoration(
-                color: isMarked ? Color(0xFF5D99F6) : Colors.transparent,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              height: 30,
-              child: Center(
-                child: Text(
-                  '$day',
-                  style: TextStyle(
-                    color: isMarked ? Colors.black : Colors.white,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
-            ),
-          );
-        } else {
-          week.add(Container());
-        }
-        day++;
+      int col = weekdayToColIndex(DateTime(year, month, day).weekday);
+      if (col == -1) { day++; continue; } // Skip Thursday
+
+      week[col] = _calendarBox(
+        day,
+        isMarked: attendance[day] != null && attendance[day]!.isNotEmpty,
+      );
+
+      if (col == 5 || day == daysInMonth) { // End of week or last day
+        rows.add(TableRow(children: List.from(week))); // clone for safety
+        week = List.filled(6, _calendarBox(null), growable: false);
       }
-      rows.add(TableRow(children: week));
+
+      day++;
     }
 
     return Table(
@@ -321,7 +318,34 @@ class _CustomCalendar extends StatelessWidget {
       children: rows,
     );
   }
+
+  // Widget for a calendar cell (box)
+  Widget _calendarBox(int? day, {bool isMarked = false}) {
+    return Container(
+      margin: EdgeInsets.all(2),
+      height: 52,
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white24),
+        color: day == null
+            ? Colors.transparent
+            : (isMarked ? Color(0xFF5D99F6) : Colors.white.withOpacity(0.07)),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Center(
+        child: day == null
+            ? SizedBox.shrink()
+            : Text(
+                '$day',
+                style: TextStyle(
+                  color: isMarked ? Colors.black : Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+      ),
+    );
+  }
 }
+
 
 // --- Attendance Summary Table Widget ---
 class _SummaryTable extends StatelessWidget {
