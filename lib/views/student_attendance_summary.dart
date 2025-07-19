@@ -243,9 +243,7 @@ class _CustomCalendar extends StatelessWidget {
   final List<dynamic>? calendarData;
   const _CustomCalendar({Key? key, required this.calendarData}) : super(key: key);
 
-  // Map Dart weekday to our 6-column calendar (skip Thursday)
   int weekdayToColIndex(int weekday) {
-    // Dart: 1=Mon, ..., 7=Sun. Ours: 0=Sun, 1=Mon, 2=Tue, 3=Wed, 4=Fri, 5=Sat
     switch (weekday) {
       case DateTime.sunday: return 0;
       case DateTime.monday: return 1;
@@ -276,40 +274,29 @@ class _CustomCalendar extends StatelessWidget {
     final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Fri', 'Sat'];
     List<TableRow> rows = [
       TableRow(
-        children: List.generate(6, (i) => Center(
-          child: Text(days[i], style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-        )),
+        children: List.generate(6, (i) => _calendarBox(null, label: days[i], isHeader: true, height: 32)),
       ),
     ];
 
-    // Build the grid rows
     int day = 1;
     List<Widget> week = List.filled(6, _calendarBox(null), growable: false);
-    int weekIndex = 0;
-
-    // Find out the column to start on
     int startCol = weekdayToColIndex(DateTime(year, month, 1).weekday);
-
-    // Fill initial blanks
     for (int i = 0; i < startCol; i++) {
       week[i] = _calendarBox(null);
     }
 
-    // Fill the days
     while (day <= daysInMonth) {
       int col = weekdayToColIndex(DateTime(year, month, day).weekday);
-      if (col == -1) { day++; continue; } // Skip Thursday
-
+      if (col == -1) { day++; continue; }
       week[col] = _calendarBox(
         day,
         isMarked: attendance[day] != null && attendance[day]!.isNotEmpty,
+        height: 42,
       );
-
-      if (col == 5 || day == daysInMonth) { // End of week or last day
-        rows.add(TableRow(children: List.from(week))); // clone for safety
+      if (col == 5 || day == daysInMonth) {
+        rows.add(TableRow(children: List.from(week)));
         week = List.filled(6, _calendarBox(null), growable: false);
       }
-
       day++;
     }
 
@@ -319,34 +306,44 @@ class _CustomCalendar extends StatelessWidget {
     );
   }
 
-  // Widget for a calendar cell (box)
-  Widget _calendarBox(int? day, {bool isMarked = false}) {
+  // Add `height` parameter (default 42 for dates, set 32 for header)
+  Widget _calendarBox(int? day, {bool isMarked = false, String? label, bool isHeader = false, double height = 42}) {
     return Container(
       margin: EdgeInsets.all(2),
-      height: 52,
+      height: height,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white24),
-        color: day == null
-            ? Colors.transparent
-            : (isMarked ? Color(0xFF5D99F6) : Colors.white.withOpacity(0.07)),
+        color: isHeader
+            ? Colors.white.withOpacity(0.13)
+            : day == null
+                ? Colors.transparent
+                : (isMarked ? Color(0xFF5D99F6) : Colors.white.withOpacity(0.07)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(
-        child: day == null
-            ? SizedBox.shrink()
-            : Text(
-                '$day',
+        child: isHeader
+            ? Text(
+                label ?? "",
                 style: TextStyle(
-                  color: isMarked ? Colors.black : Colors.white,
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
+                  fontSize: 14,
+                  letterSpacing: 1,
                 ),
-              ),
+              )
+            : day == null
+                ? SizedBox.shrink()
+                : Text(
+                    '$day',
+                    style: TextStyle(
+                      color: isMarked ? Colors.black : Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
       ),
     );
   }
 }
-
-
 // --- Attendance Summary Table Widget ---
 class _SummaryTable extends StatelessWidget {
   final String title;
