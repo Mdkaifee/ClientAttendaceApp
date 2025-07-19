@@ -6,8 +6,11 @@ import 'attendance_screen.dart';
 class RegisterSelectScreen extends StatelessWidget {
   final String token;
   final String tuitionCentreName;
+  final int organizationId;
+  final int tuitionCentreId;
+  final int educationCentreId;
 
-  RegisterSelectScreen({required this.token, required this.tuitionCentreName});
+  RegisterSelectScreen({required this.token, required this.tuitionCentreName,required this.organizationId, required this.tuitionCentreId, required this.educationCentreId });
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +86,11 @@ class RegisterSelectScreen extends StatelessWidget {
                         children: [
                            SizedBox(height: 16), 
                           // Tuition Centre Name
-                          Text(
-                            tuitionCentreName,
-                            style: TextStyle(color: Colors.white, fontSize: 22),
-                          ),
+                       Text(
+                      '$tuitionCentreName ($organizationId - $educationCentreId)',
+                      style: TextStyle(color: Colors.white, fontSize: 22),
+                    ),
                           SizedBox(height: 24),
-
                           // Year Group/Class Dropdown
                           Text('Year Group/Class *', style: TextStyle(color: Colors.white70)),
                           SizedBox(height: 8),
@@ -181,6 +183,9 @@ class RegisterSelectScreen extends StatelessWidget {
                                           .firstWhere((e) => e.id == vm.selectedYearGroupId!)
                                           .name,
                                       selectedPeriod: vm.selectedPeriod!,
+                                      organizationId: organizationId, // <-- pass from parent
+                                      tuitionCentreId: tuitionCentreId, // <-- pass from parent
+                                      educationCentreId: educationCentreId, // <-- pass from parent
                                     ),
                                   ),
                                 );

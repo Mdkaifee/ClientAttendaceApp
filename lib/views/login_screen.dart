@@ -215,6 +215,9 @@ class _LoginScreenState extends State<LoginScreen> {
             builder: (_) => RegisterSelectScreen(
               token: vm.user!.accessToken,
               tuitionCentreName: vm.user!.educationCentreName,
+              organizationId: vm.user!.organizationId,
+              tuitionCentreId: vm.user!.tuitionCentreId, 
+              educationCentreId: vm.user!.educationCentreId,
             ),
             ),
           );

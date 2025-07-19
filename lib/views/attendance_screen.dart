@@ -12,6 +12,11 @@ class AttendanceScreen extends StatelessWidget {
   final String tuitionCentreName;
   final String selectedYearGroupName;  // Added
   final String selectedPeriod;         // Added
+  final int organizationId;
+  final int tuitionCentreId;
+  final int educationCentreId;
+
+
 
   AttendanceScreen({
     required this.token,
@@ -21,6 +26,9 @@ class AttendanceScreen extends StatelessWidget {
     required this.tuitionCentreName,
     required this.selectedYearGroupName,
     required this.selectedPeriod,
+    required this.organizationId,
+    required this.tuitionCentreId,  
+    required this.educationCentreId,
   });
 
   @override
@@ -146,6 +154,9 @@ Padding(
               builder: (_) => RegisterSelectScreen(
                 token: token,
                 tuitionCentreName: tuitionCentreName,
+                organizationId: organizationId,  // Pass organizationId
+                tuitionCentreId:tuitionCentreId,  // Pass tuitionCentreId 
+                educationCentreId: educationCentreId,  // Pass educationCentreId
               ),
             ),
           );
@@ -255,57 +266,55 @@ Padding(
                           child: Row(
                             children: [
                               Expanded(
-                                flex: 4,
-                                child: InkWell(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (_) => StudentAttendanceSummaryScreen(
-                                          token: token,
-                                          studentId: student.studentId,
-                                          attendanceTakenDate: attendanceTakenDate,
-                                          selectedYearGroupName: selectedYearGroupName,   // <-- add
-                                          selectedPeriod: selectedPeriod, 
+                              flex: 4,
+                              child: Row(
+                                children: [
+                                  // Make only the profile icon clickable
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (_) => StudentAttendanceSummaryScreen(
+                                            token: token,
+                                            studentId: student.studentId,
+                                            attendanceTakenDate: attendanceTakenDate,
+                                            selectedYearGroupName: selectedYearGroupName,
+                                            selectedPeriod: selectedPeriod,
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                  child: Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 20,
-                                        backgroundColor: Colors.grey.shade800,
-                                        backgroundImage: student.avatarUrl.isNotEmpty
-                                            ? NetworkImage(student.avatarUrl)
-                                            : null,
-                                        child: student.avatarUrl.isEmpty
-                                            ? Icon(Icons.person, color: Colors.white54, size: 24)
-                                            : null,
-                                      ),
-                                      SizedBox(width: 12),
-                                      Flexible(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              student.studentName,
-                                              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                            // Text(
-                                            //   student.studentId.toString(),
-                                            //   style: TextStyle(color: Colors.white70, fontWeight: FontWeight.normal, fontSize: 11),
-                                            //   overflow: TextOverflow.ellipsis,
-                                            // ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                      );
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 20,
+                                      backgroundColor: Colors.grey.shade800,
+                                      backgroundImage: student.avatarUrl.isNotEmpty
+                                          ? NetworkImage(student.avatarUrl)
+                                          : null,
+                                      child: student.avatarUrl.isEmpty
+                                          ? Icon(Icons.person, color: Colors.white54, size: 24)
+                                          : null,
+                                    ),
                                   ),
-                                ),
+                                  SizedBox(width: 12),
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          student.studentName,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
                               ),
-
+                            ),
                               // Mark button
                               Expanded(
                                 flex: 2,

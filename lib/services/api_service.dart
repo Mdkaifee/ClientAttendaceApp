@@ -11,20 +11,28 @@ class ApiService {
     required int calendarModelId,
     String sortBy = "Default",
   }) async {
-    final response = await http.post(
-      Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDataGet'),
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({
-        "ClassId": classId,
-        "AttendanceTakenDate": attendanceTakenDate,
-        "CalendarModelId": calendarModelId,
-        "SortBy": sortBy,
-      }),
-    );
+    final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDataGet');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final body = jsonEncode({
+      "ClassId": classId,
+      "AttendanceTakenDate": attendanceTakenDate,
+      "CalendarModelId": calendarModelId,
+      "SortBy": sortBy,
+    });
 
+    // Log the request details
+    print('--- fetchAttendance Request ---');
+    print('POST $url');
+    print('Headers: $headers');
+    print('Body: $body');
+
+    final response = await http.post(url, headers: headers, body: body);
+
+    // Log the response details
+    print('--- fetchAttendance Response ---');
     print('Status: ${response.statusCode}');
     print('Body: ${response.body}');
 
@@ -34,40 +42,45 @@ class ApiService {
       if (json is Map && json.containsKey('studentsAttendanceList')) {
         return json['studentsAttendanceList'] as List<dynamic>;
       }
-      // fallback for other structures
       if (json is List) {
         return json;
       }
     }
     return null;
   }
-  // Add the method to fetch student attendance summary
-Future<Map<String, dynamic>?> fetchStudentAttendanceSummary({
-  required String token,
-  required int studentId,
-  required String attendanceTakenDate,
-}) async {
-  final response = await http.post(
-  Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDetailsInfo'),
-  headers: {
-    'Content-Type': 'application/json',
-    'Authorization': 'Bearer $token', // <-- Make sure you pass the token!
-  },
-  body: jsonEncode({
-    "StudentId": studentId,
-    "AttendanceTakenDate": attendanceTakenDate,
-  }),
-);
 
+  Future<Map<String, dynamic>?> fetchStudentAttendanceSummary({
+    required String token,
+    required int studentId,
+    required String attendanceTakenDate,
+  }) async {
+    final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDetailsInfo');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+    final body = jsonEncode({
+      "StudentId": studentId,
+      "AttendanceTakenDate": attendanceTakenDate,
+    });
 
-  print('Student Attendance Detail Status: ${response.statusCode}');
-  print('Body: ${response.body}');
+    // Log the request details
+    print('--- fetchStudentAttendanceSummary Request ---');
+    print('POST $url');
+    print('Headers: $headers');
+    print('Body: $body');
 
-  if (response.statusCode == 200) {
-    final json = jsonDecode(response.body);
-    return json;
+    final response = await http.post(url, headers: headers, body: body);
+
+    // Log the response details
+    print('--- fetchStudentAttendanceSummary Response ---');
+    print('Status: ${response.statusCode}');
+    print('Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+      return json;
+    }
+    return null;
   }
-  return null;
-}
-
 }

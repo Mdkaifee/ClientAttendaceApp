@@ -36,6 +36,9 @@ class MyApp extends StatelessWidget {
                tuitionCentreName: args['tuitionCentreName'] as String,
                selectedYearGroupName: args['selectedYearGroupName'] as String,   // Add this
         selectedPeriod: args['selectedPeriod'] as String,    
+        organizationId: args['organizationId'] as int,       // Add these
+    tuitionCentreId: args['tuitionCentreId'] as int,
+    educationCentreId: args['educationCentreId'] as int,
             ),
           );
         }

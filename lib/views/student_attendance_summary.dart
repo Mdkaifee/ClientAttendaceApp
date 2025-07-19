@@ -77,7 +77,7 @@ class StudentAttendanceSummaryScreen extends StatelessWidget {
                       // Logo + Back
                       Row(
                         children: [
-                          Image.asset('assets/logo.png', width: 56, height: 56),
+                          Image.asset('assets/logo.png', width: 80, height: 80),
                           Spacer(),
                           TextButton.icon(
                             onPressed: () => Navigator.pop(context),
