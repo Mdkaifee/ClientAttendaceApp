@@ -73,7 +73,7 @@ Future<bool> generateResetPasswordCode({
   final response = await http.post(
     Uri.parse('$baseUrl/api/GenerateResetPasswordCode'),
     headers: {
-      'Content-Type': 'application/json', // Required Header ✅
+      'Content-Type': 'application/json',
     },
     body: jsonEncode({
       "OrganizationId": organizationId,
@@ -90,7 +90,9 @@ Future<bool> generateResetPasswordCode({
   print('Response Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body) as bool;
+    final jsonResponse = jsonDecode(response.body);
+    // Return the value of the 'result' field as bool
+    return jsonResponse['result'] == true;
   } else {
     throw Exception('Failed to generate reset password code');
   }
@@ -114,11 +116,13 @@ Future<bool> validateResetPasswordCode({
   print('Response Body: ${response.body}');
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body) as bool;
+    final jsonResponse = jsonDecode(response.body);
+    return jsonResponse['result'] == true;
   } else {
     throw Exception('Failed to validate reset password code');
   }
 }
+
 Future<bool> resetPasswordWithCode({
   required int organizationId,
   required String code,
@@ -139,10 +143,10 @@ Future<bool> resetPasswordWithCode({
   print('Status Code: ${response.statusCode}');
 
   if (response.statusCode == 200) {
-    return jsonDecode(response.body) as bool;
+    final jsonResponse = jsonDecode(response.body);
+    return jsonResponse['result'] == true;
   } else {
     throw Exception('Failed to reset password');
   }
 }
-
 }

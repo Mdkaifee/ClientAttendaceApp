@@ -11,24 +11,24 @@ class OtpVerificationViewModel extends ChangeNotifier {
   String? resendMessage;
 
 // For direct navigation to ChangePasswordScreen
-//  Future<void> validateOtp(int organizationId, String otp) async {
-//   isLoading = true;
-//   errorMessage = null;
-//   success = false;
-//   notifyListeners();
+ // Future<void> validateOtp(int organizationId, String code) async {
+  //   isLoading = true;
+  //   errorMessage = null;
+  //   notifyListeners();
 
-//   // TEMPORARY MOCK for UI testing
-//   await Future.delayed(Duration(seconds: 1));
-//   if (otp == '123456') {
-//     success = true;
-//   } else {
-//     errorMessage = 'Invalid OTP';
-//   }
-
-//   isLoading = false;
-//   notifyListeners();
-// }
-
+  //   try {
+  //     success = await _authService.validateResetPasswordCode(
+  //       organizationId: organizationId,
+  //       code: code,
+  //     );
+  //     if (!success) errorMessage = 'Invalid OTP code';
+  //   } catch (e) {
+  //     errorMessage = e.toString();
+  //   } finally {
+  //     isLoading = false;
+  //     notifyListeners();
+  //   }
+  // }
 
   Future<void> validateOtp(int organizationId, String code) async {
     isLoading = true;

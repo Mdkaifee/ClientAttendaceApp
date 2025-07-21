@@ -18,6 +18,78 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
+  String? _strengthAdvice;
+  Color _strengthColor = Colors.red;
+  double _strengthPercent = 0.0;
+  bool _isPasswordStrongEnough = false;
+  String? _passwordError;
+
+  String? _successMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    passwordController.addListener(_checkPasswordStrength);
+    _checkPasswordStrength();
+  }
+
+  void _checkPasswordStrength() {
+    final password = passwordController.text;
+
+    // Criteria:
+    // 1) Alpha-numeric (contains letters and numbers)
+    // 2) At least one special character from (% @ _)
+    // 3) Minimum 8 characters
+
+    bool hasAlpha = password.contains(RegExp(r'[a-zA-Z]'));
+    bool hasNumber = password.contains(RegExp(r'[0-9]'));
+    bool hasSpecial = password.contains(RegExp(r'[%@_]'));
+    bool isLongEnough = password.length >= 8;
+
+    // Check unmet rules for error text
+    List<String> unmetRules = [];
+    if (!hasAlpha) unmetRules.add("at least one letter");
+    if (!hasNumber) unmetRules.add("at least one number");
+    if (!hasSpecial) unmetRules.add("at least one special character (%@_)");
+    if (!isLongEnough) unmetRules.add("minimum 8 characters");
+
+    if (unmetRules.isNotEmpty) {
+      _passwordError = "You must use " + unmetRules.join(", ");
+      _strengthColor = Colors.red;
+      _strengthPercent = 0.33;
+      _strengthAdvice = null;
+      _isPasswordStrongEnough = false;
+    } else {
+      _passwordError = null;
+
+      // Evaluate strength further - e.g. presence of uppercase letter
+      bool hasUpper = password.contains(RegExp(r'[A-Z]'));
+
+      if (hasUpper && password.length >= 12) {
+        // Strong password
+        _strengthColor = Colors.green;
+        _strengthPercent = 1.0;
+        _strengthAdvice = null;
+        _isPasswordStrongEnough = true;
+      } else {
+        // Medium strength - amber
+        _strengthColor = Colors.amber;
+        _strengthPercent = 0.66;
+        _strengthAdvice = "Password could be better: try adding uppercase letters or making it longer";
+        _isPasswordStrongEnough = true; // still acceptable to use
+      }
+    }
+
+    setState(() {});
+  }
+
+  @override
+  void dispose() {
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -31,6 +103,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  if (_successMessage != null)
+                    Container(
+                      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      margin: EdgeInsets.only(bottom: 16),
+                      decoration: BoxDecoration(
+                        color: Colors.green[600],
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        _successMessage!,
+                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                      ),
+                    ),
                   Image.asset("assets/logo.png", width: 80),
                   SizedBox(height: 20),
                   Text(
@@ -52,18 +137,18 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   ),
                   SizedBox(height: 24),
 
-                    // Step Indicators with connecting lines
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        StepIndicator(label: 'Submit email address', isActive: false, isLast: false),
-                        StepIndicator(label: 'Enter verification code', isActive: false, isLast: false),
-                        StepIndicator(label: 'Change password', isActive: true, isLast: false),
-                        StepIndicator(label: 'Login again', isActive: false, isLast: true),
-                      ],
-                    ),
+                  // Step Indicators with connecting lines
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      StepIndicator(label: 'Submit email address', isActive: false, isLast: false),
+                      StepIndicator(label: 'Enter verification code', isActive: false, isLast: false),
+                      StepIndicator(label: 'Change password', isActive: true, isLast: false),
+                      StepIndicator(label: 'Login again', isActive: false, isLast: true),
+                    ],
+                  ),
 
-                    SizedBox(height: 24),
+                  SizedBox(height: 24),
 
                   // Password TextField
                   TextField(
@@ -108,11 +193,43 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     style: TextStyle(color: Colors.white),
                   ),
 
-                  if (vm.errorMessage != null)
-                    Padding(
-                      padding: EdgeInsets.only(top: 12),
-                      child: Text(vm.errorMessage!, style: TextStyle(color: Colors.redAccent)),
+                  SizedBox(height: 16),
+                  // Password strength meter bar
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: Container(
+                      height: 18, // Increased height for thicker meter bar
+                      child: LinearProgressIndicator(
+                        value: _strengthPercent,
+                        backgroundColor: Colors.white10,
+                        valueColor: AlwaysStoppedAnimation<Color>(_strengthColor),
+                      ),
                     ),
+                  ),
+
+                  // Spacing below meter
+                  SizedBox(height: 6),
+
+                  // Password error or advice text
+                  if (_passwordError != null)
+                    Text(
+                      _passwordError!,
+                      style: TextStyle(color: Colors.redAccent, fontSize: 13),
+                    )
+                  else if (_strengthAdvice != null)
+                    Text(
+                      _strengthAdvice!,
+                      style: TextStyle(color: Colors.amberAccent, fontSize: 13),
+                    )
+                  else if (_strengthColor == Colors.green)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        'The password is strong and meets all the requirements',
+                        style: TextStyle(color: Colors.greenAccent, fontSize: 13),
+                      ),
+                    ),
+
 
                   SizedBox(height: 24),
 
@@ -120,7 +237,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     width: double.infinity,
                     height: 48,
                     child: ElevatedButton(
-                      onPressed: vm.isLoading
+                      onPressed: vm.isLoading || !_isPasswordStrongEnough
                           ? null
                           : () async {
                               // Passwords must match first
@@ -131,29 +248,24 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 return;
                               }
 
-                              // Validate password criteria here (optional, can be in VM)
-                              final password = passwordController.text;
-                              final pattern = RegExp(r'^(?=.*[a-zA-Z0-9])(?=.*[%@_])[a-zA-Z0-9%@_]{8,}$');
-                              if (!pattern.hasMatch(password)) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Password does not meet the criteria")),
-                                );
-                                return;
-                              }
-
                               // Call reset password API
                               await vm.resetPassword(
                                 organizationId: widget.organizationId,
                                 code: widget.code,
-                                newPassword: password,
+                                newPassword: passwordController.text,
                               );
 
                               // On success navigate back to login or wherever needed
                               if (vm.success) {
                                 if (mounted) {
+                                  setState(() {
+                                    _successMessage = "Password changed successfully!";
+                                  });
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text("Password changed successfully")),
                                   );
+                                  // Optional delay before navigating away to show success message
+                                  await Future.delayed(Duration(seconds: 1));
                                   Navigator.popUntil(context, (route) => route.isFirst);
                                 }
                               }
@@ -201,13 +313,13 @@ class StepIndicator extends StatelessWidget {
             if (!isLast)
               Container(
                 width: 2,
-                height: 28,            // Reduced height from 40 to 28
+                height: 28,
                 color: Colors.white38,
-                margin: EdgeInsets.only(top: 1),  // Reduced top margin from 2 to 1
+                margin: EdgeInsets.only(top: 1),
               ),
           ],
         ),
-        SizedBox(width: 4),           // Reduced width from 8 to 4
+        SizedBox(width: 4),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 2),
