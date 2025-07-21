@@ -75,7 +75,7 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
         // Medium strength - amber
         _strengthColor = Colors.amber;
         _strengthPercent = 0.66;
-        _strengthAdvice = "Password could be better: try adding uppercase letters or making it longer";
+        _strengthAdvice = "Password could be better but still be used";
         _isPasswordStrongEnough = true; // still acceptable to use
       }
     }
