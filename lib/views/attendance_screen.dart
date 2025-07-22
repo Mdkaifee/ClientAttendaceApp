@@ -16,8 +16,6 @@ class AttendanceScreen extends StatelessWidget {
   final int tuitionCentreId;
   final int educationCentreId;
 
-
-
   AttendanceScreen({
     required this.token,
     required this.classId,
@@ -97,19 +95,18 @@ class AttendanceScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           padding: EdgeInsets.symmetric(horizontal: 12),
-                         child: TextField(
-  style: TextStyle(color: Colors.white),
-  decoration: InputDecoration(
-    icon: Icon(Icons.search, color: Colors.white54),
-    hintText: 'Search',
-    hintStyle: TextStyle(color: Colors.white54),
-    border: InputBorder.none,
-  ),
-  onChanged: (val) {
-    vm.searchQuery = val;  // Update the search query in the ViewModel
-  },
-),
-
+                          child: TextField(
+                            style: TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              icon: Icon(Icons.search, color: Colors.white54),
+                              hintText: 'Search',
+                              hintStyle: TextStyle(color: Colors.white54),
+                              border: InputBorder.none,
+                            ),
+                            onChanged: (val) {
+                              vm.searchQuery = val;  // Update the search query in the ViewModel
+                            },
+                          ),
                         ),
                       ),
                       SizedBox(width: 12),
@@ -138,82 +135,83 @@ class AttendanceScreen extends StatelessWidget {
                     ],
                   ),
                   SizedBox(height: 12),
-Padding(
-  padding: const EdgeInsets.only(right: 40),
-                  // Row with Back button and dynamic Year Group & Period buttons
-        child:SingleChildScrollView(
-  scrollDirection: Axis.horizontal,
-  child: Row(
-    children: [
-      // Back button
-      TextButton.icon(
-        onPressed: () {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-              builder: (_) => RegisterSelectScreen(
-                token: token,
-                tuitionCentreName: tuitionCentreName,
-                organizationId: organizationId,  // Pass organizationId
-                tuitionCentreId:tuitionCentreId,  // Pass tuitionCentreId 
-                educationCentreId: educationCentreId,  // Pass educationCentreId
-              ),
-            ),
-          );
-        },
-        style: TextButton.styleFrom(
-          backgroundColor: Color(0xFF5D99F6),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-        ),
-        icon: Icon(Icons.arrow_back, color: Colors.black, size: 20),
-        label: Text(
-          'Back',
-          style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
-        ),
-      ),
-      SizedBox(width: 44), // Space after back button (adjust as needed)
 
-      // Year pill
-      TextButton(
-        onPressed: () {},
-        style: TextButton.styleFrom(
-          backgroundColor: Color(0xFF5D99F6),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-          minimumSize: Size(0, 0),
-        ),
-        child: Text(
-          selectedYearGroupName,
-          style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600),
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-      SizedBox(width: 8),
+                  Padding(
+                    padding: const EdgeInsets.only(right: 40),
+                    // Row with Back button and dynamic Year Group & Period buttons
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          // Back button
+                          TextButton.icon(
+                            onPressed: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (_) => RegisterSelectScreen(
+                                    token: token,
+                                    tuitionCentreName: tuitionCentreName,
+                                    organizationId: organizationId,
+                                    tuitionCentreId: tuitionCentreId,
+                                    educationCentreId: educationCentreId,
+                                  ),
+                                ),
+                              );
+                            },
+                            style: TextButton.styleFrom(
+                              backgroundColor: Color(0xFF5D99F6),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                            ),
+                            icon: Icon(Icons.arrow_back, color: Colors.black, size: 20),
+                            label: Text(
+                              'Back',
+                              style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                          SizedBox(width: 44),
 
-      // Period pill
-      TextButton(
-        onPressed: () {},
-        style: TextButton.styleFrom(
-          backgroundColor: Color(0xFF5D99F6),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-          minimumSize: Size(0, 0),
-        ),
-        child: Text(
-          selectedPeriod,
-          style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600),
-          overflow: TextOverflow.ellipsis,
-        ),
-      ),
-    ],
-  ),
-),
-),
+                          // Year pill
+                          TextButton(
+                            onPressed: () {},
+                            style: TextButton.styleFrom(
+                              backgroundColor: Color(0xFF5D99F6),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                              minimumSize: Size(0, 0),
+                            ),
+                            child: Text(
+                              selectedYearGroupName,
+                              style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          SizedBox(width: 8),
+
+                          // Period pill
+                          TextButton(
+                            onPressed: () {},
+                            style: TextButton.styleFrom(
+                              backgroundColor: Color(0xFF5D99F6),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                              padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                              minimumSize: Size(0, 0),
+                            ),
+                            child: Text(
+                              selectedPeriod,
+                              style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
 
                   SizedBox(height: 16),
 
-                  // Header row static
+                  // Header row static (with Late as text only)
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     decoration: BoxDecoration(
@@ -244,162 +242,227 @@ Padding(
                   SizedBox(height: 8),
 
                   // Dynamic list of students
-                Expanded(
-  child: vm.filteredStudents.isEmpty
-      ? Center(
-          child: Text(
-            "No students found related to this search.",
-            style: TextStyle(color: Colors.white70, fontSize: 16),
-          ),
-        )
-      : ListView.builder(
-          itemCount: vm.filteredStudents.length,
-          itemBuilder: (context, index) {
-            final student = vm.filteredStudents[index];
-                        return Container(
-                          margin: EdgeInsets.symmetric(vertical: 4),
-                          padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.white10,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                              flex: 4,
-                              child: Row(
-                                children: [
-                                  // Make only the profile icon clickable
-                                  InkWell(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) => StudentAttendanceSummaryScreen(
-                                            token: token,
-                                            studentId: student.studentId,
-                                            attendanceTakenDate: attendanceTakenDate,
-                                            selectedYearGroupName: selectedYearGroupName,
-                                            selectedPeriod: selectedPeriod,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: CircleAvatar(
-                                      radius: 20,
-                                      backgroundColor: Colors.grey.shade800,
-                                      backgroundImage: student.avatarUrl.isNotEmpty
-                                          ? NetworkImage(student.avatarUrl)
-                                          : null,
-                                      child: student.avatarUrl.isEmpty
-                                          ? Icon(Icons.person, color: Colors.white54, size: 24)
-                                          : null,
-                                    ),
-                                  ),
-                                  SizedBox(width: 12),
-                                  Flexible(
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          student.studentName,
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontWeight: FontWeight.w500,
-                                              fontSize: 12),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                  Expanded(
+                    child: vm.filteredStudents.isEmpty
+                        ? Center(
+                            child: Text(
+                              "No students found related to this search.",
+                              style: TextStyle(color: Colors.white70, fontSize: 16),
                             ),
-                              // Mark button
-                              Expanded(
-                                flex: 2,
-                                child: Center(
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFF1F4F91),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                                      elevation: 0,
-                                    ),
-                                    child: Text('Mark', style: TextStyle(color: Colors.white, fontSize: 12)),
-                                  ),
-                                ),
-                              ),
-
-                              // Sub-Mark button
-                              Expanded(
-                                flex: 2,
-                                child: Center(
-                                  child: ElevatedButton(
-                                    onPressed: () {},
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: Color(0xFF1F4F91),
-                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-                                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                                      elevation: 0,
-                                    ),
-                                    child: Text('Mark', style: TextStyle(color: Colors.white, fontSize: 12)),
-                                  ),
-                                ),
-                              ),
-
-                              // Late input box
-                              Expanded(
-                                flex: 2,
-                                child: Container(
-                                  height: 36,
-                                  padding: EdgeInsets.symmetric(horizontal: 8),
-                                  decoration: BoxDecoration(
-                                    color: Color(0xFF16345E),
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: TextField(
-                                    style: TextStyle(color: Colors.white),
-                                    textAlign: TextAlign.center,
-                                    decoration: InputDecoration(
-                                      hintText: 'Late',
-                                      hintStyle: TextStyle(color: Colors.white38),
-                                      border: InputBorder.none,
-                                      isDense: true,
-                                      contentPadding: EdgeInsets.zero,
-                                    ),
-                                    keyboardType: TextInputType.number,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                          )
+                        : ListView.builder(
+  itemCount: vm.filteredStudents.length,
+  itemBuilder: (context, index) {
+    final student = vm.filteredStudents[index];
+    return Container(
+      margin: EdgeInsets.symmetric(vertical: 4),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white10,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 4,
+            child: Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => StudentAttendanceSummaryScreen(
+                          token: token,
+                          studentId: student.studentId,
+                          attendanceTakenDate: attendanceTakenDate,
+                          selectedYearGroupName: selectedYearGroupName,
+                          selectedPeriod: selectedPeriod,
+                        ),
+                      ),
+                    );
+                  },
+                  child: CircleAvatar(
+                    radius: 20,
+                    backgroundColor: Colors.grey.shade800,
+                    backgroundImage: student.avatarUrl.isNotEmpty
+                        ? NetworkImage(student.avatarUrl)
+                        : null,
+                    child: student.avatarUrl.isEmpty
+                        ? Icon(Icons.person, color: Colors.white54, size: 24)
+                        : null,
+                  ),
+                ),
+                SizedBox(width: 12),
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        student.studentName,
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w500,
+                            fontSize: 12),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // MARK BUTTON
+          Expanded(
+            flex: 2,
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  final success = await vm.markStudent(
+                    token: token,
+                    classId: classId,
+                    calendarModelId: calendarModelId,
+                    educationCentreClassIdDesc: tuitionCentreName,
+                    student: student,
+                    markCodeId: "1040", // Main Mark code
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(success
+                          ? 'Marked present for ${student.studentName}!'
+                          : 'Failed to mark. Try again.'),
                     ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF1F4F91),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  elevation: 0,
+                ),
+                child: Text('Mark', style: TextStyle(color: Colors.white, fontSize: 12)),
+              ),
+            ),
+          ),
+          // SUB-MARK BUTTON
+          Expanded(
+            flex: 2,
+            child: Center(
+              child: ElevatedButton(
+                onPressed: () async {
+                  final success = await vm.markStudent(
+                    token: token,
+                    classId: classId,
+                    calendarModelId: calendarModelId,
+                    educationCentreClassIdDesc: tuitionCentreName,
+                    student: student,
+                    markCodeId: "1041", // Sub-mark code, example
+                  );
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(success
+                          ? 'Sub-marked for ${student.studentName}!'
+                          : 'Failed to sub-mark. Try again.'),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Color(0xFF1F4F91),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  elevation: 0,
+                ),
+                child: Text('Sub-Mark', style: TextStyle(color: Colors.white, fontSize: 12)),
+              ),
+            ),
+          ),
+          // LATE INPUT
+          Expanded(
+            flex: 2,
+            child: Container(
+              height: 36,
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                color: Color(0xFF16345E),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: TextField(
+                style: TextStyle(color: Colors.white),
+                textAlign: TextAlign.center,
+                decoration: InputDecoration(
+                  hintText: 'Late',
+                  hintStyle: TextStyle(color: Colors.white38),
+                  border: InputBorder.none,
+                  isDense: true,
+                  contentPadding: EdgeInsets.zero,
+                ),
+                keyboardType: TextInputType.number,
+                onChanged: (val) {
+                  vm.filteredStudents[index].lateMinutes = val;
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  },
+),
                   ),
 
                   SizedBox(height: 16),
 
                   // Submit button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Add your submit logic here
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFF1F4F91),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                      ),
-                      child: Text(
-                        'Submit',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ),
+                  // SizedBox(
+                  //   width: double.infinity,
+                  //   height: 48,
+                  //   child: ElevatedButton(
+                  //     onPressed: () async {
+                  //       final success = await vm.submitAttendance(
+                  //         token: token,
+                  //         classId: classId,
+                  //         calendarModelId: calendarModelId,
+                  //         educationCentreClassIdDesc: tuitionCentreName, // or some description
+                  //       );
+
+                  //       if (success) {
+                  //         ScaffoldMessenger.of(context).showSnackBar(
+                  //           SnackBar(content: Text('Attendance saved successfully!')),
+                  //         );
+                  //         // Optionally navigate back or reset UI
+                  //       } else {
+                  //         ScaffoldMessenger.of(context).showSnackBar(
+                  //           SnackBar(content: Text('Failed to save attendance. Please try again.')),
+                  //         );
+                  //       }
+                  //     },
+                  //     style: ElevatedButton.styleFrom(
+                  //       backgroundColor: Color(0xFF1F4F91),
+                  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                  //     ),
+                  //     child: Text(
+                  //       'Submit',
+                  //       style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  //     ),
+                  //   ),
+                  // ),
+SizedBox(
+  width: double.infinity,
+  height: 48,
+  child: ElevatedButton(
+    onPressed: () {
+      // Do nothing
+    },
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Color(0xFF1F4F91),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+    ),
+    child: Text(
+      'Submit',
+      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    ),
+  ),
+),
 
                   SizedBox(height: 20),
                 ],

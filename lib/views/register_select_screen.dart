@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/register_select_viewmodel.dart';
 import 'attendance_screen.dart';
+import '../models/calendar_model.dart';
 
 class RegisterSelectScreen extends StatelessWidget {
   final String token;
@@ -10,7 +11,13 @@ class RegisterSelectScreen extends StatelessWidget {
   final int tuitionCentreId;
   final int educationCentreId;
 
-  RegisterSelectScreen({required this.token, required this.tuitionCentreName,required this.organizationId, required this.tuitionCentreId, required this.educationCentreId });
+  RegisterSelectScreen({
+    required this.token,
+    required this.tuitionCentreName,
+    required this.organizationId,
+    required this.tuitionCentreId,
+    required this.educationCentreId,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +31,9 @@ class RegisterSelectScreen extends StatelessWidget {
               return Center(child: CircularProgressIndicator());
             }
             if (vm.error != null) {
-              return Center(child: Text(vm.error!, style: TextStyle(color: Colors.white)));
+              return Center(
+                child: Text(vm.error!, style: TextStyle(color: Colors.white)),
+              );
             }
 
             return SafeArea(
@@ -80,17 +89,19 @@ class RegisterSelectScreen extends StatelessWidget {
                         color: Colors.white12,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      height: 380, 
+                      height: 380,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                           SizedBox(height: 16), 
+                          SizedBox(height: 16),
+
                           // Tuition Centre Name
-                       Text(
-                      '$tuitionCentreName ($organizationId - $educationCentreId)',
-                      style: TextStyle(color: Colors.white, fontSize: 22),
-                    ),
+                          Text(
+                            '$tuitionCentreName ($organizationId - $educationCentreId)',
+                            style: TextStyle(color: Colors.white, fontSize: 22),
+                          ),
                           SizedBox(height: 24),
+
                           // Year Group/Class Dropdown
                           Text('Year Group/Class *', style: TextStyle(color: Colors.white70)),
                           SizedBox(height: 8),
@@ -106,29 +117,39 @@ class RegisterSelectScreen extends StatelessWidget {
                             ),
                             value: vm.selectedYearGroupId,
                             items: [
-                              DropdownMenuItem(
-                                value: null, // Represents 'Select' option
+                              DropdownMenuItem<int>(
+                                value: null,
                                 child: Text('Select Year Group', style: TextStyle(color: Colors.white)),
                               ),
                               ...vm.yearGroups.map(
-                                (e) => DropdownMenuItem(
+                                (e) => DropdownMenuItem<int>(
                                   value: e.id,
                                   child: Text(e.name, style: TextStyle(color: Colors.white)),
                                 ),
-                              ).toList(),
+                              ),
                             ],
                             onChanged: (val) {
-                              vm.selectedYearGroupId = val;
-                              vm.notifyListeners();
+                              vm.setSelectedYearGroup(val, token);
+
+                              print('Selected Year Group ID: $val');
+
+                              YearGroup? selectedName;
+                              try {
+                                selectedName = vm.yearGroups.firstWhere((e) => e.id == val);
+                              } catch (e) {
+                                selectedName = null;
+                              }
+                              if (selectedName != null) {
+                                print('Selected Year Group Name: ${selectedName.name}');
+                              }
                             },
                           ),
-
                           SizedBox(height: 24),
 
                           // Period Dropdown
                           Text('Period *', style: TextStyle(color: Colors.white70)),
                           SizedBox(height: 8),
-                          DropdownButtonFormField<String>(
+                          DropdownButtonFormField<int>(
                             dropdownColor: Color(0xFF0B1C49),
                             decoration: InputDecoration(
                               filled: true,
@@ -138,24 +159,21 @@ class RegisterSelectScreen extends StatelessWidget {
                                 borderSide: BorderSide(color: Colors.blueAccent),
                               ),
                             ),
-                            value: vm.selectedPeriod,
+                            value: vm.selectedPeriodId,
                             items: [
-                              DropdownMenuItem(
-                                value: null, // Represents 'Select' option
+                              DropdownMenuItem<int>(
+                                value: null,
                                 child: Text('Select Period', style: TextStyle(color: Colors.white)),
                               ),
-                              ...['SUN_PERIOD1', 'SUN_PERIOD2', 'MON_PERIOD1', 'MON_PERIOD2']
-                                  .map(
-                                    (e) => DropdownMenuItem(
-                                      value: e,
-                                      child: Text(e, style: TextStyle(color: Colors.white)),
-                                    ),
-                                  )
-                                  .toList(),
+                              ...vm.calendarModels.map(
+                                (model) => DropdownMenuItem<int>(
+                                  value: model.id,
+                                  child: Text(model.name, style: TextStyle(color: Colors.white)),
+                                ),
+                              ),
                             ],
                             onChanged: (val) {
-                              vm.selectedPeriod = val;
-                              vm.notifyListeners();
+                              vm.setSelectedPeriod(val);
                             },
                           ),
                         ],
@@ -168,7 +186,7 @@ class RegisterSelectScreen extends StatelessWidget {
                       width: double.infinity,
                       height: 52,
                       child: ElevatedButton(
-                        onPressed: (vm.selectedYearGroupId != null && vm.selectedPeriod != null)
+                        onPressed: (vm.selectedYearGroupId != null && vm.selectedPeriodId != null)
                             ? () {
                                 Navigator.pushReplacement(
                                   context,
@@ -177,21 +195,26 @@ class RegisterSelectScreen extends StatelessWidget {
                                       token: token,
                                       classId: vm.selectedYearGroupId!,
                                       attendanceTakenDate: DateTime.now().toIso8601String().split('T')[0],
-                                      calendarModelId: 1239,
+                                      calendarModelId: vm.selectedPeriodId!,
                                       tuitionCentreName: tuitionCentreName,
                                       selectedYearGroupName: vm.yearGroups
                                           .firstWhere((e) => e.id == vm.selectedYearGroupId!)
                                           .name,
-                                      selectedPeriod: vm.selectedPeriod!,
-                                      organizationId: organizationId, // <-- pass from parent
-                                      tuitionCentreId: tuitionCentreId, // <-- pass from parent
-                                      educationCentreId: educationCentreId, // <-- pass from parent
+                                      selectedPeriod: vm.calendarModels
+                                          .firstWhere((c) => c.id == vm.selectedPeriodId!)
+                                          .name,
+                                      organizationId: organizationId,
+                                      tuitionCentreId: tuitionCentreId,
+                                      educationCentreId: educationCentreId,
                                     ),
                                   ),
                                 );
                               }
                             : null,
-                        child: Text('Confirm', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                        child: Text(
+                          'Confirm',
+                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                        ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blueAccent,
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),

@@ -61,4 +61,68 @@ class AttendanceViewModel extends ChangeNotifier {
     isLoading = false;
     notifyListeners();
   }
+
+//   Future<bool> submitAttendance({
+//   required String token,
+//   required int classId,
+//   required int calendarModelId,
+//   required String educationCentreClassIdDesc,
+// }) async {
+//   bool allSuccess = true;
+
+//   for (var student in filteredStudents) {
+//     // Replace defaults or add validation as needed
+//     final lateMinutes = student.lateMinutes.isNotEmpty ? student.lateMinutes : "0";
+//     final markCodeId = student.markCodeId ?? "1040";   // replace with default or actual selected
+//     final markSubCodeId = student.markSubCodeId;       // nullable
+
+//     final response = await ApiService().saveStudentAttendance(
+//       token: token,
+//       classId: classId,
+//       lateInMinutes: lateMinutes,
+//       markCodeId: markCodeId,
+//       markSubCodeId: markSubCodeId,
+//       studentId: student.studentId,
+//       calendarId: null,
+//       calendarModelId: calendarModelId,
+//       studentFirstName: student.studentName.split(' ').first,
+//       studentLastName: student.studentName.split(' ').length > 1 ? student.studentName.split(' ').last : '',
+//       educationCentreClassIdDesc: educationCentreClassIdDesc,
+//     );
+
+//     if (response == null || response['result'] != true) {
+//       allSuccess = false;
+//     }
+//   }
+
+//   return allSuccess;
+// }
+Future<bool> markStudent({
+  required String token,
+  required int classId,
+  required int calendarModelId,
+  required String educationCentreClassIdDesc,
+  required AttendanceModel student,
+  required String markCodeId,
+  String? markSubCodeId,
+}) async {
+  final lateMinutes = student.lateMinutes.isNotEmpty ? student.lateMinutes : "0";
+
+  final response = await _apiService.saveStudentAttendance(
+    token: token,
+    classId: classId,
+    lateInMinutes: lateMinutes,
+    markCodeId: markCodeId,
+    markSubCodeId: markSubCodeId,
+    studentId: student.studentId,
+    calendarId: null,
+    calendarModelId: calendarModelId,
+    studentFirstName: student.studentName.split(' ').first,
+    studentLastName: student.studentName.split(' ').length > 1 ? student.studentName.split(' ').last : '',
+    educationCentreClassIdDesc: educationCentreClassIdDesc,
+  );
+  return (response != null && response['result'] == true);
+}
+
+
 }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../models/calendar_model.dart';
 
 class ApiService {
   static const String _attendanceBaseUrl = 'https://attendanceapiuat.massivedanamik.com';
@@ -83,4 +84,96 @@ class ApiService {
     }
     return null;
   }
+
+Future<List<CalendarModel>?> fetchCalendarModels({
+  required int educationCentreId,
+  required int yearGroupId,
+  required String token,
+}) async {
+  final url = Uri.parse('$_attendanceBaseUrl/api/GetCalendarModels');
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token',
+  };
+  final body = jsonEncode({
+    "educationCentreId": educationCentreId,
+    "yearGroupId": yearGroupId,
+  });
+
+  // Log the request details
+  print('--- fetchCalendarModels Request ---');
+  print('POST $url');
+  print('Headers: $headers');
+  print('Body: $body');
+
+  final response = await http.post(url, headers: headers, body: body);
+
+  // Log the response details
+  print('--- fetchCalendarModels Response ---');
+  print('Status: ${response.statusCode}');
+  print('Body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    final json = jsonDecode(response.body);
+    if (json['result'] == true && json['calendarModelsList'] != null) {
+      final List list = json['calendarModelsList'];
+      return list.map((e) => CalendarModel.fromJson(e)).toList();
+    }
+  }
+  return null;
+}
+
+Future<Map<String, dynamic>?> saveStudentAttendance({
+  required String token,
+  required int classId,
+  required String lateInMinutes,
+  required String markCodeId,
+  String? markSubCodeId,
+  required int studentId,
+  String? calendarId,
+  required int calendarModelId,
+  required String studentFirstName,
+  required String studentLastName,
+  required String educationCentreClassIdDesc,
+  
+}) async {
+  final url = Uri.parse('https://attendanceapiuat.massivedanamik.com/api/StudentAttendanceDataSave');
+
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token',
+  };
+
+  final body = jsonEncode({
+    "ClassId": classId,
+    "LateInMinutes": lateInMinutes,
+    "MarkCodeId": markCodeId,
+    "MarkSubCodeId": markSubCodeId,
+    "StudentId": studentId,
+    "CalendarId": calendarId,
+    "CalendarModelId": calendarModelId,
+    "StudentFirstName": studentFirstName,
+    "StudentLastName": studentLastName,
+    "EducationCentreClassIdDesc": educationCentreClassIdDesc,
+  });
+
+  print('--- saveStudentAttendance Request ---');
+  print('POST $url');
+  print('Headers: $headers');
+  print('Body: $body');
+
+  final response = await http.post(url, headers: headers, body: body);
+
+  print('--- saveStudentAttendance Response ---');
+  print('Status: ${response.statusCode}');
+  print('Body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    final json = jsonDecode(response.body);
+    return json;
+  }
+
+  return null;
+}
+
 }
