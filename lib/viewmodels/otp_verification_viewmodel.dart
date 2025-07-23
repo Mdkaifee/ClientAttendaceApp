@@ -11,7 +11,7 @@ class OtpVerificationViewModel extends ChangeNotifier {
   String? resendMessage;
 
 // For direct navigation to ChangePasswordScreen
-//  Future<void> validateOtp(int organizationId, String otp) async {
+//  Future<void> validateOtp(int organizationId, String otp,String email) async {
 //   isLoading = true;
 //   errorMessage = null;
 //   success = false;
@@ -30,7 +30,7 @@ class OtpVerificationViewModel extends ChangeNotifier {
 // }
 
 
-  Future<void> validateOtp(int organizationId, String code) async {
+  Future<void> validateOtp(int organizationId, String code,String email) async {
     isLoading = true;
     errorMessage = null;
     notifyListeners();
@@ -39,6 +39,7 @@ class OtpVerificationViewModel extends ChangeNotifier {
       success = await _authService.validateResetPasswordCode(
         organizationId: organizationId,
         code: code,
+        email: email,
       );
       if (!success) errorMessage = 'Invalid OTP code';
     } catch (e) {

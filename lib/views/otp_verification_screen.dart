@@ -162,7 +162,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         onPressed: (vm.isLoading || !isOtpComplete)
                             ? null
                             : () async {
-                                await vm.validateOtp(widget.organizationId, otpCode);
+                                await vm.validateOtp(widget.organizationId, otpCode, widget.email);
                                 if (vm.success) {
                                   Navigator.pushReplacement(
                                     context,
@@ -170,7 +170,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                       builder: (_) => ChangePasswordScreen(
                                         organizationId: widget.organizationId,
                                         code: otpCode,
-                                        // organizationId: 1234,
                                         // code: '123456',
                                       ),
                                     ),

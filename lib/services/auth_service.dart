@@ -100,6 +100,7 @@ Future<bool> generateResetPasswordCode({
 Future<bool> validateResetPasswordCode({
   required int organizationId,
   required String code,
+  required String email,
 }) async {
   final response = await http.post(
     Uri.parse('$baseUrl/api/ValidateResetPasswordCode'),
@@ -107,11 +108,13 @@ Future<bool> validateResetPasswordCode({
     body: jsonEncode({
       "OrganizationId": organizationId,
       "Code": code,
+      "Email": email,
     }),
   );
 
   print('Validate OTP Request: POST $baseUrl/api/ValidateResetPasswordCode');
-  print('Request Body: ${jsonEncode({"OrganizationId": organizationId, "Code": code})}');
+  print('Request Body: ${jsonEncode({"OrganizationId": organizationId, "Code": code, "Email": email})}');
+  print('Request Headers: ${response.headers}');
   print('Status Code: ${response.statusCode}');
   print('Response Body: ${response.body}');
 
@@ -140,6 +143,8 @@ Future<bool> resetPasswordWithCode({
 
   print('Reset Password Request: POST $baseUrl/api/ResetPasswordWithCode');
   print('Request Body: ${response.body}');
+  print('OrganizationId: $organizationId, Code: $code, NewPassword: $newPassword');
+  print('Request Headers: ${response.headers}');
   print('Status Code: ${response.statusCode}');
 
   if (response.statusCode == 200) {

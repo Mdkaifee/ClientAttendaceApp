@@ -137,7 +137,7 @@ Future<Map<String, dynamic>?> saveStudentAttendance({
   required String educationCentreClassIdDesc,
   
 }) async {
-  final url = Uri.parse('https://attendanceapiuat.massivedanamik.com/api/StudentAttendanceDataSave');
+  final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDataSave');
 
   final headers = {
     'Content-Type': 'application/json',
@@ -173,6 +173,38 @@ Future<Map<String, dynamic>?> saveStudentAttendance({
     return json;
   }
 
+  return null;
+}
+Future<Map<String, dynamic>?> submitAttendanceRegister({
+  required String token,
+  required int calendarModelId,
+  required int educationCentreClassId,
+}) async {
+  final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceRegisterSubmit');
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token',
+  };
+  final body = jsonEncode({
+    "CalendarModelId": calendarModelId,
+    "EducationCentreClassId": educationCentreClassId.toString(),
+  });
+
+  print('--- submitAttendanceRegister Request ---');
+  print('POST $url');
+  print('Headers: $headers');
+  print('Body: $body');
+
+  final response = await http.post(url, headers: headers, body: body);
+
+  print('--- submitAttendanceRegister Response ---');
+  print('Status: ${response.statusCode}');
+  print('Body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    final json = jsonDecode(response.body);
+    return json;
+  }
   return null;
 }
 

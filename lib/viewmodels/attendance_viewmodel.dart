@@ -17,6 +17,19 @@ class AttendanceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  // --- Add sort logic ---
+  String selectedSortOption = "default";
+
+  void sortStudents() {
+    if (selectedSortOption == "mark code asc") {
+      students.sort((a, b) => (a.markCodeId ?? "").compareTo(b.markCodeId ?? ""));
+    } else if (selectedSortOption == "mark code desc") {
+      students.sort((a, b) => (b.markCodeId ?? "").compareTo(a.markCodeId ?? ""));
+    }
+    notifyListeners();
+  }
+  // -----------------------
+
   List<AttendanceModel> get filteredStudents {
     if (_searchQuery.trim().isEmpty) return students;
     final query = _searchQuery.toLowerCase();
@@ -25,7 +38,6 @@ class AttendanceViewModel extends ChangeNotifier {
     ).toList();
   }
 
-  // Your loadAttendance remains unchanged
   Future<void> loadAttendance({
     required String token,
     required int classId,
@@ -50,6 +62,9 @@ class AttendanceViewModel extends ChangeNotifier {
               studentName: '${item['firstName'] ?? ''} ${item['lastName'] ?? ''}'.trim(),
               avatarUrl: item['photothumbnailURL'] ?? '',
               studentId: item['studentId'],
+              markCodeId: item['markCodeId']?.toString() ?? "",
+              markSubCodeId: item['markSubCodeId']?.toString() ?? "",
+              lateMinutes: item['lateMinutes']?.toString() ?? "",
             )
         ).toList();
       } else {
@@ -62,67 +77,55 @@ class AttendanceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-//   Future<bool> submitAttendance({
-//   required String token,
-//   required int classId,
-//   required int calendarModelId,
-//   required String educationCentreClassIdDesc,
-// }) async {
-//   bool allSuccess = true;
+  Future<bool> markStudent({
+    required String token,
+    required int classId,
+    required int calendarModelId,
+    required String educationCentreClassIdDesc,
+    required AttendanceModel student,
+    required String markCodeId,
+    String? markSubCodeId,
+  }) async {
+    final lateMinutes = student.lateMinutes.isNotEmpty ? student.lateMinutes : "0";
 
-//   for (var student in filteredStudents) {
-//     // Replace defaults or add validation as needed
-//     final lateMinutes = student.lateMinutes.isNotEmpty ? student.lateMinutes : "0";
-//     final markCodeId = student.markCodeId ?? "1040";   // replace with default or actual selected
-//     final markSubCodeId = student.markSubCodeId;       // nullable
-
-//     final response = await ApiService().saveStudentAttendance(
-//       token: token,
-//       classId: classId,
-//       lateInMinutes: lateMinutes,
-//       markCodeId: markCodeId,
-//       markSubCodeId: markSubCodeId,
-//       studentId: student.studentId,
-//       calendarId: null,
-//       calendarModelId: calendarModelId,
-//       studentFirstName: student.studentName.split(' ').first,
-//       studentLastName: student.studentName.split(' ').length > 1 ? student.studentName.split(' ').last : '',
-//       educationCentreClassIdDesc: educationCentreClassIdDesc,
-//     );
-
-//     if (response == null || response['result'] != true) {
-//       allSuccess = false;
-//     }
-//   }
-
-//   return allSuccess;
-// }
-Future<bool> markStudent({
+    final response = await _apiService.saveStudentAttendance(
+      token: token,
+      classId: classId,
+      lateInMinutes: lateMinutes,
+      markCodeId: markCodeId,
+      markSubCodeId: markSubCodeId,
+      studentId: student.studentId,
+      calendarId: null,
+      calendarModelId: calendarModelId,
+      studentFirstName: student.studentName.split(' ').first,
+      studentLastName: student.studentName.split(' ').length > 1 ? student.studentName.split(' ').last : '',
+      educationCentreClassIdDesc: educationCentreClassIdDesc,
+    );
+    // Update model after marking
+    if (response != null && response['result'] == true) {
+      if (markCodeId == "1040") {
+        student.markCodeId = markCodeId;
+      }
+      if (markCodeId == "1041") {
+        student.markSubCodeId = markCodeId;
+      }
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
+  //Submit attendance register
+  Future<bool> submitAttendanceRegister({
   required String token,
-  required int classId,
   required int calendarModelId,
-  required String educationCentreClassIdDesc,
-  required AttendanceModel student,
-  required String markCodeId,
-  String? markSubCodeId,
+  required int educationCentreClassId,
 }) async {
-  final lateMinutes = student.lateMinutes.isNotEmpty ? student.lateMinutes : "0";
-
-  final response = await _apiService.saveStudentAttendance(
+  final result = await _apiService.submitAttendanceRegister(
     token: token,
-    classId: classId,
-    lateInMinutes: lateMinutes,
-    markCodeId: markCodeId,
-    markSubCodeId: markSubCodeId,
-    studentId: student.studentId,
-    calendarId: null,
     calendarModelId: calendarModelId,
-    studentFirstName: student.studentName.split(' ').first,
-    studentLastName: student.studentName.split(' ').length > 1 ? student.studentName.split(' ').last : '',
-    educationCentreClassIdDesc: educationCentreClassIdDesc,
+    educationCentreClassId: educationCentreClassId,
   );
-  return (response != null && response['result'] == true);
+  return result != null && result['result'] == true;
 }
-
 
 }

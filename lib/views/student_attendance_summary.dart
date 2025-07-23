@@ -8,6 +8,7 @@ class StudentAttendanceSummaryScreen extends StatelessWidget {
   final String attendanceTakenDate;
   final String selectedYearGroupName;
   final String selectedPeriod;
+  final String tuitionCentreName;
 
   const StudentAttendanceSummaryScreen({
     required this.token,
@@ -15,6 +16,7 @@ class StudentAttendanceSummaryScreen extends StatelessWidget {
     required this.attendanceTakenDate,
     required this.selectedYearGroupName,
     required this.selectedPeriod,
+    required this.tuitionCentreName,
     Key? key,
   }) : super(key: key);
 
@@ -134,7 +136,7 @@ class StudentAttendanceSummaryScreen extends StatelessWidget {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            _pill('Dynamics school'),
+                            _pill(tuitionCentreName),
                             SizedBox(width: 10),
                             _pill(selectedYearGroupName),
                             SizedBox(width: 10),
