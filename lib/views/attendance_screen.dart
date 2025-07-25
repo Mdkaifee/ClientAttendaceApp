@@ -87,159 +87,159 @@
 //               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
 //               child: Column(
 //                 children: [
-//                   // Search & Sort row
-//                   Row(
-//                     children: [
-//                       Expanded(
-//                         child: Container(
-//                           height: 36,
-//                           decoration: BoxDecoration(
-//                             color: Color(0xFF16345E),
-//                             borderRadius: BorderRadius.circular(8),
-//                           ),
-//                           padding: EdgeInsets.symmetric(horizontal: 12),
-//                           child: TextField(
-//                             style: TextStyle(color: Colors.white),
-//                             decoration: InputDecoration(
-//                               icon: Icon(Icons.search, color: Colors.white54),
-//                               hintText: 'Search',
-//                               hintStyle: TextStyle(color: Colors.white54),
-//                               border: InputBorder.none,
-//                             ),
-//                             onChanged: (val) {
-//                               vm.searchQuery = val;
-//                             },
-//                           ),
-//                         ),
-//                       ),
-//                       SizedBox(width: 12),
-//                       Container(
-//                         height: 36,
-//                         padding: EdgeInsets.symmetric(horizontal: 8),
-//                         decoration: BoxDecoration(
-//                           color: Color(0xFF16345E),
-//                           borderRadius: BorderRadius.circular(8),
-//                         ),
-//                         child: DropdownButtonHideUnderline(
-//                           child: DropdownButton<String>(
-//                             value: vm.selectedSortOption,
-//                             dropdownColor: Color(0xFF16345E),
-//                             iconEnabledColor: Colors.white,
-//                             items: sortOptions
-//                                 .map((val) => DropdownMenuItem(
-//                                       value: val,
-//                                       child: Text(val, style: TextStyle(color: Colors.white)),
-//                                     ))
-//                                 .toList(),
-//                             onChanged: (val) {
-//                               if (val != null) {
-//                                 vm.selectedSortOption = val;
-//                                 vm.sortStudents();
-//                               }
-//                             },
-//                           ),
-//                         ),
-//                       ),
-//                     ],
-//                   ),
-//                   SizedBox(height: 12),
+                  // // Search & Sort row
+                  // Row(
+                  //   children: [
+                  //     Expanded(
+                  //       child: Container(
+                  //         height: 36,
+                  //         decoration: BoxDecoration(
+                  //           color: Color(0xFF16345E),
+                  //           borderRadius: BorderRadius.circular(8),
+                  //         ),
+                  //         padding: EdgeInsets.symmetric(horizontal: 12),
+                  //         child: TextField(
+                  //           style: TextStyle(color: Colors.white),
+                  //           decoration: InputDecoration(
+                  //             icon: Icon(Icons.search, color: Colors.white54),
+                  //             hintText: 'Search',
+                  //             hintStyle: TextStyle(color: Colors.white54),
+                  //             border: InputBorder.none,
+                  //           ),
+                  //           onChanged: (val) {
+                  //             vm.searchQuery = val;
+                  //           },
+                  //         ),
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 12),
+                  //     Container(
+                  //       height: 36,
+                  //       padding: EdgeInsets.symmetric(horizontal: 8),
+                  //       decoration: BoxDecoration(
+                  //         color: Color(0xFF16345E),
+                  //         borderRadius: BorderRadius.circular(8),
+                  //       ),
+                  //       child: DropdownButtonHideUnderline(
+                  //         child: DropdownButton<String>(
+                  //           value: vm.selectedSortOption,
+                  //           dropdownColor: Color(0xFF16345E),
+                  //           iconEnabledColor: Colors.white,
+                  //           items: sortOptions
+                  //               .map((val) => DropdownMenuItem(
+                  //                     value: val,
+                  //                     child: Text(val, style: TextStyle(color: Colors.white)),
+                  //                   ))
+                  //               .toList(),
+                  //           onChanged: (val) {
+                  //             if (val != null) {
+                  //               vm.selectedSortOption = val;
+                  //               vm.sortStudents();
+                  //             }
+                  //           },
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
+                  // SizedBox(height: 12),
 
-//                   Padding(
-//                     padding: const EdgeInsets.only(right: 40),
-//                     child: SingleChildScrollView(
-//                       scrollDirection: Axis.horizontal,
-//                       child: Row(
-//                         children: [
-//                           TextButton.icon(
-//                             onPressed: () {
-//                               Navigator.pushReplacement(
-//                                 context,
-//                                 MaterialPageRoute(
-//                                   builder: (_) => RegisterSelectScreen(
-//                                     token: token,
-//                                     tuitionCentreName: tuitionCentreName,
-//                                     organizationId: organizationId,
-//                                     tuitionCentreId: tuitionCentreId,
-//                                     educationCentreId: educationCentreId,
-//                                   ),
-//                                 ),
-//                               );
-//                             },
-//                             style: TextButton.styleFrom(
-//                               backgroundColor: Color(0xFF5D99F6),
-//                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-//                               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-//                             ),
-//                             icon: Icon(Icons.arrow_back, color: Colors.black, size: 20),
-//                             label: Text(
-//                               'Back',
-//                               style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
-//                             ),
-//                           ),
-//                           SizedBox(width: 44),
-//                           TextButton(
-//                             onPressed: () {},
-//                             style: TextButton.styleFrom(
-//                               backgroundColor: Color(0xFF5D99F6),
-//                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-//                               padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-//                               minimumSize: Size(0, 0),
-//                             ),
-//                             child: Text(
-//                               selectedYearGroupName,
-//                               style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600),
-//                               overflow: TextOverflow.ellipsis,
-//                             ),
-//                           ),
-//                           SizedBox(width: 8),
-//                           TextButton(
-//                             onPressed: () {},
-//                             style: TextButton.styleFrom(
-//                               backgroundColor: Color(0xFF5D99F6),
-//                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-//                               padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
-//                               minimumSize: Size(0, 0),
-//                             ),
-//                             child: Text(
-//                               selectedPeriod,
-//                               style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600),
-//                               overflow: TextOverflow.ellipsis,
-//                             ),
-//                           ),
-//                         ],
-//                       ),
-//                     ),
-//                   ),
-//                   SizedBox(height: 16),
+                  // Padding(
+                  //   padding: const EdgeInsets.only(right: 40),
+                  //   child: SingleChildScrollView(
+                  //     scrollDirection: Axis.horizontal,
+                  //     child: Row(
+                  //       children: [
+                  //         TextButton.icon(
+                  //           onPressed: () {
+                  //             Navigator.pushReplacement(
+                  //               context,
+                  //               MaterialPageRoute(
+                  //                 builder: (_) => RegisterSelectScreen(
+                  //                   token: token,
+                  //                   tuitionCentreName: tuitionCentreName,
+                  //                   organizationId: organizationId,
+                  //                   tuitionCentreId: tuitionCentreId,
+                  //                   educationCentreId: educationCentreId,
+                  //                 ),
+                  //               ),
+                  //             );
+                  //           },
+                  //           style: TextButton.styleFrom(
+                  //             backgroundColor: Color(0xFF5D99F6),
+                  //             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  //             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                  //           ),
+                  //           icon: Icon(Icons.arrow_back, color: Colors.black, size: 20),
+                  //           label: Text(
+                  //             'Back',
+                  //             style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: 44),
+                  //         TextButton(
+                  //           onPressed: () {},
+                  //           style: TextButton.styleFrom(
+                  //             backgroundColor: Color(0xFF5D99F6),
+                  //             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  //             padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                  //             minimumSize: Size(0, 0),
+                  //           ),
+                  //           child: Text(
+                  //             selectedYearGroupName,
+                  //             style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600),
+                  //             overflow: TextOverflow.ellipsis,
+                  //           ),
+                  //         ),
+                  //         SizedBox(width: 8),
+                  //         TextButton(
+                  //           onPressed: () {},
+                  //           style: TextButton.styleFrom(
+                  //             backgroundColor: Color(0xFF5D99F6),
+                  //             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                  //             padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                  //             minimumSize: Size(0, 0),
+                  //           ),
+                  //           child: Text(
+                  //             selectedPeriod,
+                  //             style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600),
+                  //             overflow: TextOverflow.ellipsis,
+                  //           ),
+                  //         ),
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
+                  // SizedBox(height: 16),
 
-//                   Container(
-//                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-//                     decoration: BoxDecoration(
-//                       color: Colors.white10,
-//                       borderRadius: BorderRadius.circular(10),
-//                     ),
-//                     child: Row(
-//                       children: [
-//                         Expanded(
-//                           flex: 4,
-//                           child: Text('Student', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
-//                         ),
-//                         Expanded(
-//                           flex: 2,
-//                           child: Center(child: Text('Mark', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold))),
-//                         ),
-//                         Expanded(
-//                           flex: 2,
-//                           child: Center(child: Text('Sub-Mark', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold))),
-//                         ),
-//                         Expanded(
-//                           flex: 2,
-//                           child: Center(child: Text('Late', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold))),
-//                         ),
-//                       ],
-//                     ),
-//                   ),
-//                   SizedBox(height: 8),
+                  // Container(
+                  //   padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white10,
+                  //     borderRadius: BorderRadius.circular(10),
+                  //   ),
+                  //   child: Row(
+                  //     children: [
+                  //       Expanded(
+                  //         flex: 4,
+                  //         child: Text('Student', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
+                  //       ),
+                  //       Expanded(
+                  //         flex: 2,
+                  //         child: Center(child: Text('Mark', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold))),
+                  //       ),
+                  //       Expanded(
+                  //         flex: 2,
+                  //         child: Center(child: Text('Sub-Mark', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold))),
+                  //       ),
+                  //       Expanded(
+                  //         flex: 2,
+                  //         child: Center(child: Text('Late', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold))),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  // SizedBox(height: 8),
 
 //                   // ... keep all the previous code above unchanged ...
 
@@ -620,13 +620,9 @@ class AttendanceScreen extends StatefulWidget {
   @override
   _AttendanceScreenState createState() => _AttendanceScreenState();
 }
-
 class _AttendanceScreenState extends State<AttendanceScreen> {
-  final Map<String, String> markCodeMap = {
-    '1040': 'Present',
-    '1041': 'Late',
-    '1042': 'Absent',
-  };
+  final Map<String, String> markCodeMap = {};
+
 Future<void> _showConfirmationDialog(BuildContext context, AttendanceViewModel vm) async {
   // Show the confirmation dialog and wait for response
   bool? confirm = await showDialog<bool>(
@@ -704,8 +700,6 @@ Future<void> _showConfirmationDialog(BuildContext context, AttendanceViewModel v
     }
   }
 }
-
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -716,216 +710,316 @@ Future<void> _showConfirmationDialog(BuildContext context, AttendanceViewModel v
           attendanceTakenDate: widget.attendanceTakenDate,
           calendarModelId: widget.calendarModelId,
         ),
-      child: Consumer<AttendanceViewModel>(
-        builder: (context, vm, _) {
-          if (vm.isLoading) {
-            return Scaffold(
-              backgroundColor: Color(0xFF0B1E3A),
-              body: Center(child: CircularProgressIndicator(color: Colors.blueAccent)),
-            );
-          }
-          if (vm.error != null) {
-            return Scaffold(
-              backgroundColor: Color(0xFF0B1E3A),
-              body: Center(child: Text(vm.error!, style: TextStyle(color: Colors.white))),
-            );
-          }
-
-          final sortOptions = ["default", "mark code asc", "mark code desc"];
-
+      child: Consumer<AttendanceViewModel>(builder: (context, vm, _) {
+        if (vm.isLoading) {
           return Scaffold(
             backgroundColor: Color(0xFF0B1E3A),
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              iconTheme: IconThemeData(color: Colors.white),
-              title: Row(
-                children: [
-                  Image.asset(
-                    'assets/logo.png',
-                    height: 120,
-                    width: 80,
-                    fit: BoxFit.contain,
-                  ),
-                  SizedBox(width: 12),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Attendance', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
-                      SizedBox(height: 4),
-                      Text('Input the attendance for your class below', style: TextStyle(fontSize: 12, color: Colors.white70)),
-                    ],
-                  ),
-                ],
-              ),
+            body: Center(child: CircularProgressIndicator(color: Colors.blueAccent)),
+          );
+        }
+
+        if (vm.error != null) {
+          return Scaffold(
+            backgroundColor: Color(0xFF0B1E3A),
+            body: Center(child: Text(vm.error!, style: TextStyle(color: Colors.white))),
+          );
+        }
+
+        return Scaffold(
+          backgroundColor: Color(0xFF0B1E3A),
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            iconTheme: IconThemeData(color: Colors.white),
+            title: Row(
+              children: [
+                Image.asset(
+                  'assets/logo.png',
+                  height: 120,
+                  width: 80,
+                  fit: BoxFit.contain,
+                ),
+                SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Attendance', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24)),
+                    SizedBox(height: 4),
+                    Text('Input the attendance for your class below', style: TextStyle(fontSize: 12, color: Colors.white70)),
+                  ],
+                ),
+              ],
             ),
-            body: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-              child: Column(
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Container(
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: Color(0xFF16345E),
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          padding: EdgeInsets.symmetric(horizontal: 12),
-                          child: TextField(
-                            style: TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              icon: Icon(Icons.search, color: Colors.white54),
-                              hintText: 'Search',
-                              hintStyle: TextStyle(color: Colors.white54),
-                              border: InputBorder.none,
-                            ),
-                            onChanged: (val) {
-                              vm.searchQuery = val;
-                            },
-                          ),
-                        ),
-                      ),
-                      SizedBox(width: 12),
-                      Container(
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            child: Column(
+              children: [
+                // Search and Sort Row
+                Row(
+                  children: [
+                    Expanded(
+                      child: Container(
                         height: 36,
-                        padding: EdgeInsets.symmetric(horizontal: 8),
                         decoration: BoxDecoration(
                           color: Color(0xFF16345E),
                           borderRadius: BorderRadius.circular(8),
                         ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            value: vm.selectedSortOption,
-                            dropdownColor: Color(0xFF16345E),
-                            iconEnabledColor: Colors.white,
-                            items: sortOptions
-                                .map((val) => DropdownMenuItem(
-                                      value: val,
-                                      child: Text(val, style: TextStyle(color: Colors.white)),
-                                    ))
-                                .toList(),
-                            onChanged: (val) {
-                              if (val != null) {
-                                vm.selectedSortOption = val;
-                                vm.sortStudents();
-                              }
-                            },
+                        padding: EdgeInsets.symmetric(horizontal: 12),
+                        child: TextField(
+                          style: TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            icon: Icon(Icons.search, color: Colors.white54),
+                            hintText: 'Search',
+                            hintStyle: TextStyle(color: Colors.white54),
+                            border: InputBorder.none,
+                          ),
+                          onChanged: (val) {
+                            vm.searchQuery = val;
+                          },
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: 12),
+                    Container(
+                      height: 36,
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      decoration: BoxDecoration(
+                        color: Color(0xFF16345E),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: DropdownButton<String>(
+                          value: vm.selectedSortOption,
+                          dropdownColor: Color(0xFF16345E),
+                          iconEnabledColor: Colors.white,
+                          items: ["default", "mark code asc", "mark code desc"]
+                              .map((val) => DropdownMenuItem(
+                                    value: val,
+                                    child: Text(val, style: TextStyle(color: Colors.white)),
+                                  ))
+                              .toList(),
+                          onChanged: (val) {
+                            if (val != null) {
+                              vm.selectedSortOption = val;
+                              vm.sortStudents();
+                            }
+                          },
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 12),
+
+                // Year Group and Period Buttons
+                Padding(
+                  padding: const EdgeInsets.only(right: 40),
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        TextButton.icon(
+                          onPressed: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => RegisterSelectScreen(
+                                  token: widget.token,
+                                  tuitionCentreName: widget.tuitionCentreName,
+                                  organizationId: widget.organizationId,
+                                  tuitionCentreId: widget.tuitionCentreId,
+                                  educationCentreId: widget.educationCentreId,
+                                ),
+                              ),
+                            );
+                          },
+                          style: TextButton.styleFrom(
+                            backgroundColor: Color(0xFF5D99F6),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+                          ),
+                          icon: Icon(Icons.arrow_back, color: Colors.black, size: 20),
+                          label: Text(
+                            'Back',
+                            style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w600),
                           ),
                         ),
+                        SizedBox(width: 44),
+                        TextButton(
+                          onPressed: () {},
+                          style: TextButton.styleFrom(
+                            backgroundColor: Color(0xFF5D99F6),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                            minimumSize: Size(0, 0),
+                          ),
+                          child: Text(
+                            widget.selectedYearGroupName,
+                            style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(width: 8),
+                        TextButton(
+                          onPressed: () {},
+                          style: TextButton.styleFrom(
+                            backgroundColor: Color(0xFF5D99F6),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                            padding: EdgeInsets.symmetric(horizontal: 18, vertical: 8),
+                            minimumSize: Size(0, 0),
+                          ),
+                          child: Text(
+                            widget.selectedPeriod,
+                            style: TextStyle(color: Colors.black, fontSize: 13, fontWeight: FontWeight.w600),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 16),
+
+                // Attendance Header Row
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: Colors.white10,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        flex: 4,
+                        child: Text('Student', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold)),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Center(child: Text('Mark', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold))),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Center(child: Text('Sub-Mark', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold))),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: Center(child: Text('Late', style: TextStyle(color: Colors.white70, fontWeight: FontWeight.bold))),
                       ),
                     ],
                   ),
-                  SizedBox(height: 12),
-
-                  Expanded(
-                    child: vm.filteredStudents.isEmpty
-                        ? Center(
-                            child: Text(
-                              "No students found related to this search.",
-                              style: TextStyle(color: Colors.white70, fontSize: 16),
-                            ),
-                          )
-                        : ListView.builder(
-                            itemCount: vm.filteredStudents.length,
-                            itemBuilder: (context, index) {
-                              final student = vm.filteredStudents[index];
-
-                              return Container(
-                                margin: EdgeInsets.symmetric(vertical: 4),
-                                padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: Colors.white10,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      flex: 4,
-                                      child: Row(
-                                        children: [
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (_) => StudentAttendanceSummaryScreen(
-                                                    token: widget.token,
-                                                    studentId: student.studentId,
-                                                    attendanceTakenDate: widget.attendanceTakenDate,
-                                                    selectedYearGroupName: widget.selectedYearGroupName,
-                                                    selectedPeriod: widget.selectedPeriod,
-                                                    tuitionCentreName: widget.tuitionCentreName,
-                                                  ),
+                ),
+                SizedBox(height: 8),
+                Expanded(
+                  child: vm.filteredStudents.isEmpty
+                      ? Center(child: Text("No students found related to this search.", style: TextStyle(color: Colors.white70, fontSize: 16)))
+                      : ListView.builder(
+                          itemCount: vm.filteredStudents.length,
+                          itemBuilder: (context, index) {
+                            final student = vm.filteredStudents[index];
+                            return Container(
+                              margin: EdgeInsets.symmetric(vertical: 4),
+                              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                              decoration: BoxDecoration(color: Colors.white10, borderRadius: BorderRadius.circular(10)),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 4,
+                                    child: Row(
+                                      children: [
+                                        InkWell(
+                                          onTap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (_) => StudentAttendanceSummaryScreen(
+                                                  token: widget.token,
+                                                  studentId: student.studentId,
+                                                  attendanceTakenDate: widget.attendanceTakenDate,
+                                                  selectedYearGroupName: widget.selectedYearGroupName,
+                                                  selectedPeriod: widget.selectedPeriod,
+                                                  tuitionCentreName: widget.tuitionCentreName,
                                                 ),
-                                              );
-                                            },
-                                            child: CircleAvatar(
-                                              radius: 20,
-                                              backgroundColor: Colors.grey.shade800,
-                                              backgroundImage: student.avatarUrl.isNotEmpty
-                                                  ? NetworkImage(student.avatarUrl)
-                                                  : null,
-                                              child: student.avatarUrl.isEmpty
-                                                  ? Icon(Icons.person, color: Colors.white54, size: 24)
-                                                  : null,
-                                            ),
+                                              ),
+                                            );
+                                          },
+                                          child: CircleAvatar(
+                                            radius: 20,
+                                            backgroundColor: Colors.grey.shade800,
+                                            backgroundImage: student.avatarUrl.isNotEmpty ? NetworkImage(student.avatarUrl) : null,
+                                            child: student.avatarUrl.isEmpty ? Icon(Icons.person, color: Colors.white54, size: 24) : null,
                                           ),
-                                          SizedBox(width: 12),
-                                          Flexible(
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  student.studentName,
-                                                  style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontWeight: FontWeight.w500,
-                                                      fontSize: 12),
-                                                  overflow: TextOverflow.ellipsis,
-                                                ),
-                                              ],
-                                            ),
+                                        ),
+                                        SizedBox(width: 12),
+                                        Flexible(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text(
+                                                student.studentName,
+                                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w500, fontSize: 12),
+                                                overflow: TextOverflow.ellipsis,
+                                              ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
+                                        ),
+                                      ],
                                     ),
-                       Expanded(
+                                  ),
+// Dynamic PopupMenu for Mark Code (Present, Absent, and Late)
+Expanded(
   flex: 2,
   child: ElevatedButton(
-    onPressed: student.isMarked || student.markCodeId == '1042' ? null : () {
-      // Disable the button once attendance is marked or if absent
-      vm.markStudent(student, student.markSubCodeId);
-    },
+    onPressed: student.isMarked || student.markCodeId == '1042' // Disable if already marked or absent
+        ? null
+        : () {
+            setState(() {
+              // Set markCodeId for "Present but Late" initially
+              student.markCodeId = '1043'; // "Present but Late"
+              student.lateMinutes = "0"; // Set late minutes to "0" when "Present" is selected
+            });
+            // Call the API immediately when "Present" is selected
+            vm.markStudent(student, student.markSubCodeId);
+          },
     style: ElevatedButton.styleFrom(
       backgroundColor: student.markCodeId == '1042' || student.isMarked
-          ? Colors.grey  // Disable button if already marked or Absent
+          ? Colors.grey
           : Color(0xFF1F4F91),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
       elevation: 0,
     ),
     child: PopupMenuButton<String>(
-      enabled: !student.isMarked,  // Disable the dropdown if attendance is marked
+      enabled: !student.isMarked,
       onSelected: (value) {
         if (!student.isMarked) {
           setState(() {
-            student.markCodeId = value ?? 'Unknown';
-            print("Selected Mark Code: $value, ID: ${student.markCodeId}");
-            vm.markStudent(student, student.markSubCodeId);
+            student.markCodeId = value ?? 'Unknown'; // Update markCodeId but don't trigger the API yet
+            // Call the API immediately when "Present" is selected
+            if (student.markCodeId == '1040') {
+              student.lateMinutes = "0"; // Set late minutes to "0" when "Present" is selected
+              // Call the API immediately when "Present" is selected
+              vm.markStudent(student, student.markSubCodeId);
+            }
           });
         }
       },
       itemBuilder: (context) {
-        return [
-          PopupMenuItem<String>(value: '1040', child: Text('Present')),
-          PopupMenuItem<String>(value: '1041', child: Text('Late')),
-          PopupMenuItem<String>(value: '1042', child: Text('Absent')),
-        ];
+        return vm.markCodes.map((code) {
+          return PopupMenuItem<String>(
+            value: code['id'].toString(),
+            child: Text(code['description']),
+          );
+        }).toList();
       },
       child: Text(
-        markCodeMap[student.markCodeId] ?? 'Mark',
+        student.markCodeId == '1043'
+            ? 'Present but Late'
+            : student.markCodeId == '1042'
+                ? 'Absent'
+                : student.markCodeId == '1040'
+                    ? 'Present'
+                    : 'Mark', // Display the selected mark code description
         style: TextStyle(color: Colors.white, fontSize: 12),
       ),
     ),
@@ -933,16 +1027,16 @@ Future<void> _showConfirmationDialog(BuildContext context, AttendanceViewModel v
 ),
 
 
-// Enable Sub-Mark only for 'Absent' and only if not already marked
+// Dynamic PopupMenu for Mark Sub Code (only for Absent)
 Expanded(
   flex: 2,
   child: ElevatedButton(
     onPressed: student.isMarked || student.markCodeId != '1042'
         ? null
-        : () {},  // Disable the button if attendance is already marked or if not absent
+        : () {},
     style: ElevatedButton.styleFrom(
       backgroundColor: student.markCodeId == '1042' && !student.isMarked
-          ? Color(0xFF1F4F91) // Enable if Absent and not marked
+          ? Color(0xFF1F4F91)
           : Colors.grey,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -952,34 +1046,43 @@ Expanded(
       onSelected: (value) {
         if (!student.isMarked) {
           setState(() {
-            student.markSubCodeId = value ?? 'Unknown';
-            print("Selected Sub-Mark Code: $value, ID: ${student.markSubCodeId}");
-            if (student.markCodeId == '1042' && student.markSubCodeId != null) {
-              vm.markStudent(student, student.markSubCodeId);
-            }
+            final selectedSubCode = vm.markSubCodes.firstWhere(
+              (subCode) => subCode['description'] == value, 
+              orElse: () => null
+            );
+            student.markSubCodeId = selectedSubCode != null ? selectedSubCode['id'].toString() : 'Unknown';
+            student.markSubCodeDescription = selectedSubCode != null ? selectedSubCode['description'] : 'Unknown';
+
+            // Log the selected subCode details
+            print('Selected SubCode ID: ${student.markSubCodeId}');
+            print('Selected SubCode Description: ${student.markSubCodeDescription}');
+
+            // Call the markStudent method to save attendance
+            vm.markStudent(student, student.markSubCodeId);
           });
         }
       },
       itemBuilder: (context) {
         if (student.markCodeId == '1042' && !student.isMarked) {
-          return [
-            PopupMenuItem<String>(value: 'Sick', child: Text('Sick')),
-            PopupMenuItem<String>(value: 'Covid', child: Text('Covid')),
-            PopupMenuItem<String>(value: 'Holiday', child: Text('Holiday')),
-          ];
+          return vm.markSubCodes.map((subCode) {
+            return PopupMenuItem<String>(
+              value: subCode['description'].toString(),
+              child: Text(subCode['description']),
+            );
+          }).toList();
         } else {
           return [];
         }
       },
       child: Text(
-        student.markSubCodeId?.isEmpty ?? true ? 'Sub-Mark' : student.markSubCodeId!,
+        student.markSubCodeDescription ?? 'Mark', // Show the description
         style: TextStyle(color: Colors.white, fontSize: 12),
       ),
     ),
   ),
 ),
 
-// Handle 'Late' minutes input only if the attendance is marked 'Late'
+// Dynamic TextField for Late (API call only after "Done")
 Expanded(
   flex: 2,
   child: Container(
@@ -990,8 +1093,8 @@ Expanded(
       borderRadius: BorderRadius.circular(8),
     ),
     child: TextField(
-      enabled: student.isMarked || student.markCodeId != '1041'
-          ? false // Disable if attendance is already marked or not 'Late'
+      enabled: student.isMarked || student.markCodeId != '1043' 
+          ? false // Only allow input if "Present but Late" is selected
           : true,
       style: TextStyle(color: Colors.white),
       textAlign: TextAlign.center,
@@ -1005,14 +1108,20 @@ Expanded(
       keyboardType: TextInputType.number,
       controller: TextEditingController(text: student.lateMinutes),
       onChanged: (val) {
-        if (!student.isMarked) {
-          student.lateMinutes = val; // Update lateMinutes with the input value
+        if (!student.isMarked && student.markCodeId == '1043') {
+          student.lateMinutes = val; // Update lateMinutes when input changes
         }
       },
       onSubmitted: (val) {
-        // Trigger API call only after the user presses 'Done'
+        // Ensure that the API call happens only when the user presses "Done"
         if (val.isNotEmpty && int.tryParse(val) != null) {
-          vm.markStudent(student, student.markSubCodeId); // Call the API
+          setState(() {
+            student.lateMinutes = val; // Store entered late minutes
+            student.markCodeId = '1043'; // Mark as "Present but Late"
+          });
+
+          // Call the API after pressing "Done"
+          vm.markStudent(student, student.markSubCodeId);
         }
       },
     ),
@@ -1020,41 +1129,36 @@ Expanded(
 ),
 
 
-
-
-                                  ],
-                                ),
-                              );
-                            },
-                          ),
-                  ),
-                
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        // Show confirmation dialog before submitting
-                        _showConfirmationDialog(context, vm);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-                      ),
-                      child: Text(
-                        'Submit Attendance',
-                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                ),
+                // Submit Button
+                SizedBox(
+                  width: double.infinity,
+                  height: 48,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      _showConfirmationDialog(context, vm);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                    ),
+                    child: Text(
+                      'Submit Attendance',
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                     ),
                   ),
-  SizedBox(height: 20),
-                ],
-              ),
+                ),
+                SizedBox(height: 20),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      }),
     );
   }
 }
-

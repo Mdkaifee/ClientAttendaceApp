@@ -207,5 +207,63 @@ Future<Map<String, dynamic>?> submitAttendanceRegister({
   }
   return null;
 }
+Future<List<dynamic>?> fetchMarkSubCodes({required String token}) async {
+    final url = Uri.parse('$_attendanceBaseUrl/api/GetMarkSubCodes');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
 
+    // Log the request details
+    print('--- fetchMarkSubCodes Request ---');
+    print('GET $url');
+    print('Headers: $headers');
+
+    final response = await http.get(url, headers: headers);
+
+    // Log the response details
+    print('--- fetchMarkSubCodes Response ---');
+    print('Status: ${response.statusCode}');
+    print('Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+
+      if (json['result'] == true && json['markSubCodesList'] != null) {
+        return json['markSubCodesList'] as List<dynamic>;
+      }
+    }
+    return null;
+  }
+
+  // Fetch Mark Codes API
+  Future<List<dynamic>?> fetchMarkCodes({required String token}) async {
+    final url = Uri.parse('$_attendanceBaseUrl/api/GetMarkCodes');
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    // Log the request details
+    print('--- fetchMarkCodes Request ---');
+    print('GET $url');
+    print('Headers: $headers');
+
+    final response = await http.get(url, headers: headers);
+
+    // Log the response details
+    print('--- fetchMarkCodes Response ---');
+    print('Status: ${response.statusCode}');
+    print('Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+
+      if (json['result'] == true && json['marksCodesList'] != null) {
+        return json['marksCodesList'] as List<dynamic>;
+      }
+    }
+    return null;
+  }
+  
 }
