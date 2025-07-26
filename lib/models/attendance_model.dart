@@ -11,6 +11,7 @@ class AttendanceModel {
   final int calendarModelId; // Add this for calendar model ID
   final String educationCentreClassIdDesc; // Add this for education class description
   bool isMarked;
+  String? markCodeName;
 
   AttendanceModel({
     required this.studentName,
@@ -25,6 +26,7 @@ class AttendanceModel {
     required this.calendarModelId, // Initialize the calendarModelId
     required this.educationCentreClassIdDesc, // Initialize the education class description
     this.isMarked = false, 
+    this.markCodeName,
   });
 
   // From JSON response to create an AttendanceModel object
