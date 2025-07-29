@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../services/api_service.dart';
 import '../models/attendance_model.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../services/network_service.dart';
+
 class AttendanceViewModel extends ChangeNotifier {
   final ApiService _apiService = ApiService();
 
@@ -105,29 +107,35 @@ class AttendanceViewModel extends ChangeNotifier {
     notifyListeners();
   }
   Future<bool> markStudent(AttendanceModel student, String? markSubCodeId) async {
+  // Check internet connection before proceeding
+  if (!await NetworkService().isConnected()) {
+    Fluttertoast.showToast(msg: "No Internet Connection");
+    return false;
+  }
+
   String lateMinutes = student.lateMinutes.isNotEmpty ? student.lateMinutes : "0";
 
   if (student.markCodeId == "1041") {
     final int? lateMinutesInt = int.tryParse(lateMinutes);
     if (lateMinutesInt == null || lateMinutesInt <= 0) {
-      return false; // Late minutes validation failed
+      return false;
     }
   }
 
   if (student.markCodeId == "1040" || student.markCodeId == "1041") {
-    markSubCodeId = null; // Late and Holiday do not need subcodes
+    markSubCodeId = null;
   }
 
   if (student.markCodeId == "1042" && markSubCodeId == null) {
-    return false; // Absence requires sub-mark (markSubCodeId)
+    return false;
   }
 
   final response = await _apiService.saveStudentAttendance(
     token: student.token,
     classId: student.classId,
     lateInMinutes: lateMinutes,
-    markCodeId: student.markCodeId ?? "", // Send the Mark Code ID
-    markSubCodeId: student.markCodeId == "1042" ? markSubCodeId : null, // Only send subcode for Absence
+    markCodeId: student.markCodeId ?? "",
+    markSubCodeId: student.markCodeId == "1042" ? markSubCodeId : null,
     studentId: student.studentId,
     calendarModelId: student.calendarModelId,
     studentFirstName: student.studentName.split(' ').first,
@@ -137,25 +145,27 @@ class AttendanceViewModel extends ChangeNotifier {
     educationCentreClassIdDesc: student.educationCentreClassIdDesc,
   );
 
-  if (response != null && response['result'] == true) {
-    return true;
-  } else {
-    return false;
-  }
+  return response != null && response['result'] == true;
 }
 
 
+
   // Submit attendance register
-  Future<bool> submitAttendanceRegister({
-    required String token,
-    required int calendarModelId,
-    required int educationCentreClassId,
-  }) async {
-    final result = await _apiService.submitAttendanceRegister(
-      token: token,
-      calendarModelId: calendarModelId,
-      educationCentreClassId: educationCentreClassId,
-    );
-    return result != null && result['result'] == true;
+ Future<bool> submitAttendanceRegister({
+  required String token,
+  required int calendarModelId,
+  required int educationCentreClassId,
+}) async {
+  if (!await NetworkService().isConnected()) {
+    Fluttertoast.showToast(msg: "No Internet Connection");
+    return false;
   }
+
+  final result = await _apiService.submitAttendanceRegister(
+    token: token,
+    calendarModelId: calendarModelId,
+    educationCentreClassId: educationCentreClassId,
+  );
+  return result != null && result['result'] == true;
+}
 }

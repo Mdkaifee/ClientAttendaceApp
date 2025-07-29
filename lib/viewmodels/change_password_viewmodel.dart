@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../services/auth_service.dart';
+import '../services/network_service.dart'; // ✅ For connection check
 
 class ChangePasswordViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
@@ -18,15 +19,26 @@ class ChangePasswordViewModel extends ChangeNotifier {
     success = false;
     notifyListeners();
 
+    // ✅ Internet check
+    if (!await NetworkService().isConnected()) {
+      errorMessage = "No Internet Connection. Please try again.";
+      isLoading = false;
+      notifyListeners();
+      return;
+    }
+
     try {
-      // Call your AuthService API method to reset password
       success = await _authService.resetPasswordWithCode(
         organizationId: organizationId,
         code: code,
         newPassword: newPassword,
       );
+
+      if (!success) {
+        errorMessage = "Failed to reset password. Please try again.";
+      }
     } catch (e) {
-      errorMessage = e.toString();
+      errorMessage = "Password reset failed: $e";
     } finally {
       isLoading = false;
       notifyListeners();

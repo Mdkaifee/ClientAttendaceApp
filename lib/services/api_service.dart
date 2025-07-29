@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/calendar_model.dart';
+import 'network_service.dart';
 
 class ApiService {
   static const String _attendanceBaseUrl = 'https://attendanceapiuat.massivedanamik.com';
@@ -12,6 +13,10 @@ class ApiService {
     required int calendarModelId,
     String sortBy = "Default",
   }) async {
+     if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return null;
+    }
     final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDataGet');
     final headers = {
       'Content-Type': 'application/json',
@@ -55,6 +60,10 @@ class ApiService {
     required int studentId,
     required String attendanceTakenDate,
   }) async {
+     if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return null;
+    }
     final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDetailsInfo');
     final headers = {
       'Content-Type': 'application/json',
@@ -90,6 +99,10 @@ Future<List<CalendarModel>?> fetchCalendarModels({
   required int yearGroupId,
   required String token,
 }) async {
+   if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return null;
+    }
   final url = Uri.parse('$_attendanceBaseUrl/api/GetCalendarModels');
   final headers = {
     'Content-Type': 'application/json',
@@ -137,6 +150,10 @@ Future<Map<String, dynamic>?> saveStudentAttendance({
   required String educationCentreClassIdDesc,
   
 }) async {
+   if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return null;
+    }
   final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDataSave');
 
   final headers = {
@@ -180,6 +197,10 @@ Future<Map<String, dynamic>?> submitAttendanceRegister({
   required int calendarModelId,
   required int educationCentreClassId,
 }) async {
+   if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return null;
+    }
   final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceRegisterSubmit');
   final headers = {
     'Content-Type': 'application/json',
@@ -208,6 +229,10 @@ Future<Map<String, dynamic>?> submitAttendanceRegister({
   return null;
 }
 Future<List<dynamic>?> fetchMarkSubCodes({required String token}) async {
+   if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return null;
+    }
     final url = Uri.parse('$_attendanceBaseUrl/api/GetMarkSubCodes');
     final headers = {
       'Content-Type': 'application/json',
@@ -238,6 +263,10 @@ Future<List<dynamic>?> fetchMarkSubCodes({required String token}) async {
 
   // Fetch Mark Codes API
   Future<List<dynamic>?> fetchMarkCodes({required String token}) async {
+     if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return null;
+    }
     final url = Uri.parse('$_attendanceBaseUrl/api/GetMarkCodes');
     final headers = {
       'Content-Type': 'application/json',

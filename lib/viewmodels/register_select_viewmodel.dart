@@ -2,7 +2,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../services/auth_service.dart';
-import '../models/calendar_model.dart';  // Import your CalendarModel here
+import '../services/network_service.dart'; // ✅ NEW
+import '../models/calendar_model.dart';
 
 class YearGroup {
   final int id;
@@ -29,7 +30,16 @@ class RegisterSelectViewModel extends ChangeNotifier {
 
   Future<void> fetchYearGroups(String token) async {
     isLoading = true;
+    error = null;
     notifyListeners();
+
+    // ✅ Internet check
+    if (!await NetworkService().isConnected()) {
+      error = "No Internet Connection. Please try again.";
+      isLoading = false;
+      notifyListeners();
+      return;
+    }
 
     final url = Uri.parse('${AuthService.baseUrl}/adminapi/getclassyeargroups');
     final response = await http.post(
@@ -66,71 +76,78 @@ class RegisterSelectViewModel extends ChangeNotifier {
 
     isLoading = false;
     notifyListeners();
-  }Future<void> fetchCalendarModels({
-  required int educationCentreClassId,  // Only this param needed now
-  required String token,
-}) async {
-  isLoading = true;
-  notifyListeners();
+  }
 
-  final payload = {
-    "EducationCentreClassId": educationCentreClassId.toString(),  // Convert to string if needed
-  };
+  Future<void> fetchCalendarModels({
+    required int educationCentreClassId,
+    required String token,
+  }) async {
+    isLoading = true;
+    error = null;
+    notifyListeners();
 
-  print('CalendarModels Request Payload: ${jsonEncode(payload)}');
+    // ✅ Internet check
+    if (!await NetworkService().isConnected()) {
+      error = "No Internet Connection. Please try again.";
+      isLoading = false;
+      notifyListeners();
+      return;
+    }
 
-  final url = Uri.parse('https://attendanceapiuat.massivedanamik.com/api/GetCalendarModels');
-  final response = await http.post(
-    url,
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    },
-    body: jsonEncode(payload),
-  );
+    final payload = {
+      "EducationCentreClassId": educationCentreClassId.toString(),
+    };
 
-  print('CalendarModels Status: ${response.statusCode}');
-  print('CalendarModels Body: ${response.body}');
+    print('CalendarModels Request Payload: ${jsonEncode(payload)}');
 
-  if (response.statusCode == 200) {
-    final json = jsonDecode(response.body);
+    final url = Uri.parse('https://attendanceapiuat.massivedanamik.com/api/GetCalendarModels');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(payload),
+    );
 
-    if (json['result'] == true && json['calendarModelsList'] != null) {
-      List<dynamic> list = json['calendarModelsList'];
-      calendarModels = list.map((item) => CalendarModel.fromJson(item)).toList();
-      error = null;
+    print('CalendarModels Status: ${response.statusCode}');
+    print('CalendarModels Body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final json = jsonDecode(response.body);
+
+      if (json['result'] == true && json['calendarModelsList'] != null) {
+        List<dynamic> list = json['calendarModelsList'];
+        calendarModels = list.map((item) => CalendarModel.fromJson(item)).toList();
+        error = null;
+      } else {
+        error = "No calendar models found";
+        calendarModels = [];
+      }
     } else {
-      error = "No calendar models found";
+      error = "Failed to fetch calendar models";
       calendarModels = [];
     }
-  } else {
-    error = "Failed to fetch calendar models";
-    calendarModels = [];
-  }
 
-  selectedPeriodId = null;
-
-  isLoading = false;
-  notifyListeners();
-}
-
-
-  // Add these methods:
-  void setSelectedYearGroup(int? id, String token) {
-  selectedYearGroupId = id;
-
-  if (id != null) {
-    fetchCalendarModels(
-      educationCentreClassId: id,
-      token: token,
-    );
-  } else {
-    calendarModels = [];
     selectedPeriodId = null;
+    isLoading = false;
     notifyListeners();
   }
-}
 
+  void setSelectedYearGroup(int? id, String token) {
+    selectedYearGroupId = id;
+
+    if (id != null) {
+      fetchCalendarModels(
+        educationCentreClassId: id,
+        token: token,
+      );
+    } else {
+      calendarModels = [];
+      selectedPeriodId = null;
+      notifyListeners();
+    }
+  }
 
   void setSelectedPeriod(int? id) {
     selectedPeriodId = id;

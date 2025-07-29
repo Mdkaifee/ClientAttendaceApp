@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
-
+import 'network_service.dart';
 class AuthService {
   static const String baseUrl  = 'https://adminapiuat.massivedanamik.com';
 
@@ -11,6 +11,10 @@ class AuthService {
     required String organizationId,
   }) async {
     print('login() called');
+     if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return null;
+    }
     final response = await http.post(
       Uri.parse('$baseUrl/api/GetUserLoginDetails'),
       headers: {'Content-Type': 'application/json'},
@@ -38,6 +42,10 @@ class AuthService {
   }
 
   Future<List<dynamic>?> fetchYearGroups({required String token}) async {
+     if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return null;
+    }
     final response = await http.post(
       Uri.parse('$baseUrl/api/GetClassYearGroupList'),
       headers: {
@@ -70,6 +78,10 @@ Future<bool> generateResetPasswordCode({
   required int organizationId,
   required String email,
 }) async {
+   if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return false;
+    }
   final response = await http.post(
     Uri.parse('$baseUrl/api/GenerateResetPasswordCode'),
     headers: {
@@ -102,6 +114,10 @@ Future<bool> validateResetPasswordCode({
   required String code,
   required String email,
 }) async {
+   if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return false;
+    }
   final response = await http.post(
     Uri.parse('$baseUrl/api/ValidateResetPasswordCode'),
     headers: {'Content-Type': 'application/json'},
@@ -131,6 +147,10 @@ Future<bool> resetPasswordWithCode({
   required String code,
   required String newPassword,
 }) async {
+   if (!await NetworkService().isConnected()) {
+      print('❌ No Internet Connection');
+      return false;
+    }
   final response = await http.post(
     Uri.parse('$baseUrl/api/ResetPasswordWithCode'),
     headers: {'Content-Type': 'application/json'},

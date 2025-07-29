@@ -232,6 +232,18 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
 
                   SizedBox(height: 24),
+                  if (vm.errorMessage != null)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: Text(
+                      vm.errorMessage!,
+                      style: TextStyle(
+                        color: Colors.redAccent,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
 
                   SizedBox(
                     width: double.infinity,

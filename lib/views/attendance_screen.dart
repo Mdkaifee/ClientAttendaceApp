@@ -5,7 +5,7 @@ import 'register_select_screen.dart'; // Adjust path if needed
 import 'student_attendance_summary.dart';
 import '../models/attendance_model.dart';
 import 'dart:convert';
-
+import '../services/network_service.dart';
 class AttendanceScreen extends StatefulWidget {
   final String token;
   final int classId;
@@ -342,22 +342,29 @@ Future<void> _showConfirmationDialog(BuildContext context, AttendanceViewModel v
                                     child: Row(
                                       children: [
                                         InkWell(
-                                          onTap: () {
-                                            Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                builder: (_) => StudentAttendanceSummaryScreen(
-                                                  token: widget.token,
-                                                  studentId: student.studentId,
-                                                  attendanceTakenDate: widget.attendanceTakenDate,
-                                                  selectedYearGroupName: widget.selectedYearGroupName,
-                                                  selectedPeriod: widget.selectedPeriod,
-                                                  tuitionCentreName: widget.tuitionCentreName,
-                                                  // markCodeName: student.markCodeName,
-                                                ),
-                                              ),
-                                            );
-                                          },
+                                          onTap: () async {
+  if (!await NetworkService().isConnected()) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text('No Internet Connection')),
+    );
+    return;
+  }
+
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => StudentAttendanceSummaryScreen(
+        token: widget.token,
+        studentId: student.studentId,
+        attendanceTakenDate: widget.attendanceTakenDate,
+        selectedYearGroupName: widget.selectedYearGroupName,
+        selectedPeriod: widget.selectedPeriod,
+        tuitionCentreName: widget.tuitionCentreName,
+      ),
+    ),
+  );
+},
+
                                           child: CircleAvatar(
                                             radius: 20,
                                             backgroundColor: Colors.grey.shade800,
