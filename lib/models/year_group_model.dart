@@ -1,11 +1,11 @@
-class YearGroupModel {
+class YearGroup {
   final int id;
   final String name;
 
-  YearGroupModel({required this.id, required this.name});
+  YearGroup({required this.id, required this.name});
 
-  factory YearGroupModel.fromJson(Map<String, dynamic> json) {
-    return YearGroupModel(
+  factory YearGroup.fromJson(Map<String, dynamic> json) {
+    return YearGroup(
       id: json['id'],
       name: json['name'],
     );

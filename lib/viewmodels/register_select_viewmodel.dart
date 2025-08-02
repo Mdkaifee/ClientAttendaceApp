@@ -4,20 +4,7 @@ import 'package:http/http.dart' as http;
 import '../services/auth_service.dart';
 import '../services/network_service.dart'; // ✅ NEW
 import '../models/calendar_model.dart';
-
-class YearGroup {
-  final int id;
-  final String name;
-
-  YearGroup({required this.id, required this.name});
-
-  factory YearGroup.fromJson(Map<String, dynamic> json) {
-    return YearGroup(
-      id: json['id'],
-      name: json['name'],
-    );
-  }
-}
+import '../models/year_group_model.dart';
 
 class RegisterSelectViewModel extends ChangeNotifier {
   List<YearGroup> yearGroups = [];
@@ -41,42 +28,21 @@ class RegisterSelectViewModel extends ChangeNotifier {
       return;
     }
 
-    final url = Uri.parse('${AuthService.baseUrl}/adminapi/getclassyeargroups');
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode({
-        "SearchTerm": "",
-        "startIndex": "0",
-        "endIndex": "5",
-      }),
-    );
+    final yearGroupResponse = await AuthService().fetchYearGroups(token);
 
-    print('YearGroups Status: ${response.statusCode}');
-    print('YearGroups Body: ${response.body}');
-
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-
-      if (json is Map && json.containsKey('classYearGroupList')) {
-        List<dynamic> list = json['classYearGroupList'];
-        yearGroups = list.map((item) => YearGroup.fromJson(item)).toList();
-        error = null;
-      } else {
-        error = "No year groups found";
-        yearGroups = [];
-      }
+    if (yearGroupResponse != null) {
+      yearGroups = yearGroupResponse.map((item) => YearGroup.fromJson(item)).toList();
+      error = null;
     } else {
-      error = "Failed to fetch year groups";
+      error = "Failed to fetch year groups or token expired,Please Login Again."; // Specific error message
       yearGroups = [];
     }
 
     isLoading = false;
     notifyListeners();
   }
+
+
 
   Future<void> fetchCalendarModels({
     required int educationCentreClassId,
@@ -94,38 +60,16 @@ class RegisterSelectViewModel extends ChangeNotifier {
       return;
     }
 
-    final payload = {
-      "EducationCentreClassId": educationCentreClassId.toString(),
-    };
-
-    print('CalendarModels Request Payload: ${jsonEncode(payload)}');
-
-    final url = Uri.parse('https://attendanceapiuat.massivedanamik.com/api/GetCalendarModels');
-    final response = await http.post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token',
-      },
-      body: jsonEncode(payload),
+    final calendarModelResponse = await AuthService().fetchCalendarModels(
+      educationCentreClassId: educationCentreClassId,
+      token: token,
     );
 
-    print('CalendarModels Status: ${response.statusCode}');
-    print('CalendarModels Body: ${response.body}');
-
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-
-      if (json['result'] == true && json['calendarModelsList'] != null) {
-        List<dynamic> list = json['calendarModelsList'];
-        calendarModels = list.map((item) => CalendarModel.fromJson(item)).toList();
-        error = null;
-      } else {
-        error = "No calendar models found";
-        calendarModels = [];
-      }
+    if (calendarModelResponse != null) {
+      calendarModels = calendarModelResponse.map((item) => CalendarModel.fromJson(item)).toList();
+      error = null;
     } else {
-      error = "Failed to fetch calendar models";
+      error = "No calendar models found";
       calendarModels = [];
     }
 

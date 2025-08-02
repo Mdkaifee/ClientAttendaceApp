@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:pinput/pinput.dart'; // Import the pinput package
 import 'package:provider/provider.dart';
 import '../viewmodels/otp_verification_viewmodel.dart';
 import 'change_password_screen.dart';
@@ -16,8 +16,7 @@ class OtpVerificationScreen extends StatefulWidget {
 }
 
 class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
-  List<TextEditingController> controllers = List.generate(6, (_) => TextEditingController());
-  List<FocusNode> focusNodes = List.generate(6, (_) => FocusNode());
+  late TextEditingController otpController;
   late Timer timer;
   int remainingSeconds = 120;
   bool resendAvailable = false;
@@ -25,7 +24,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   @override
   void initState() {
     super.initState();
+    otpController = TextEditingController();
     startTimer();
+    startListeningForOtp();
   }
 
   void startTimer() {
@@ -41,7 +42,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     });
   }
 
-  String get otpCode => controllers.map((e) => e.text).join();
+  // Start listening for OTP auto-fill (only for Android and iOS)
+  void startListeningForOtp() {
+    // Optionally, you can use SMS Retriever API to auto-fill OTP. This step requires platform-specific code.
+    // For simplicity, we're assuming the user manually enters the OTP for now.
+  }
+
+  String get otpCode => otpController.text;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +56,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       create: (_) => OtpVerificationViewModel(),
       child: Consumer<OtpVerificationViewModel>(
         builder: (context, vm, _) {
-          bool isOtpComplete = controllers.every((c) => c.text.isNotEmpty);
+          bool isOtpComplete = otpCode.length == 6;
 
           return Scaffold(
             backgroundColor: Color(0xFF162244),
@@ -95,53 +102,29 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
                     SizedBox(height: 24),
 
-                    // OTP Boxes
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: List.generate(6, (index) {
-                        return Container(
-                          width: 45,
-                          child: Focus(
-                            onKey: (FocusNode node, RawKeyEvent event) {
-                              if (event is RawKeyDownEvent &&
-                                  event.logicalKey == LogicalKeyboardKey.backspace &&
-                                  controllers[index].text.isEmpty) {
-                                if (index > 0) {
-                                  FocusScope.of(context).requestFocus(focusNodes[index - 1]);
-                                  controllers[index - 1].clear();
-                                }
-                                return KeyEventResult.handled;
-                              }
-                              return KeyEventResult.ignored;
-                            },
-                            child: TextField(
-                              controller: controllers[index],
-                              focusNode: focusNodes[index],
-                              maxLength: 1,
-                              textAlign: TextAlign.center,
-                              keyboardType: TextInputType.number,
-                              inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white10,
-                                counterText: '',
-                                border: OutlineInputBorder(),
-                              ),
-                              style: TextStyle(color: Colors.white, fontSize: 24),
-                              onChanged: (val) {
-                                setState(() {});
-                                if (val.isNotEmpty) {
-                                  if (index < 5) {
-                                    FocusScope.of(context).requestFocus(focusNodes[index + 1]);
-                                  } else {
-                                    FocusScope.of(context).unfocus();
-                                  }
-                                }
-                              },
-                            ),
-                          ),
-                        );
-                      }),
+                    // OTP Boxes using Pinput
+                    Pinput(
+                      controller: otpController,
+                      length: 6,
+                      onCompleted: (pin) {
+                        setState(() {
+                          otpController.text = pin; // Handle the completed OTP
+                        });
+                      },
+                      onChanged: (pin) {
+                        setState(() {
+                          otpController.text = pin; // Handle OTP change
+                        });
+                      },
+                      defaultPinTheme: PinTheme(
+                        width: 40,
+                        height: 60,
+                        textStyle: TextStyle(fontSize: 24, color: Colors.white),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.white70),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
                     ),
 
                     SizedBox(height: 12),
@@ -170,7 +153,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                       builder: (_) => ChangePasswordScreen(
                                         organizationId: widget.organizationId,
                                         code: otpCode,
-                                        // code: '123456',
                                       ),
                                     ),
                                   );
@@ -236,14 +218,18 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
   @override
   void dispose() {
-    controllers.forEach((c) => c.dispose());
-    focusNodes.forEach((f) => f.dispose());
+    otpController.dispose();
     timer.cancel();
     super.dispose();
   }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // No longer checking clipboard, handling OTP via Pinput widget
+  }
 }
 
-/// Custom Step Indicator widget with connecting vertical line
 class StepIndicator extends StatelessWidget {
   final String label;
   final bool isActive;

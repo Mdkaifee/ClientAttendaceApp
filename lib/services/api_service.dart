@@ -5,35 +5,32 @@ import 'network_service.dart';
 
 class ApiService {
   static const String _attendanceBaseUrl = 'https://attendanceapiuat.massivedanamik.com';
-
-  Future<List<dynamic>?> fetchAttendance({
+Future<List<dynamic>?> fetchAttendance({
     required String token,
     required int classId,
     required String attendanceTakenDate,
     required int calendarModelId,
     String sortBy = "Default",
   }) async {
-     if (!await NetworkService().isConnected()) {
+    if (!await NetworkService().isConnected()) {
       print('❌ No Internet Connection');
       return null;
     }
+
     final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDataGet');
+    // final token1 = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImY5ODFlOGIwLTM3MzYtNDFlNi1iNjJiLTE0NzZiYjYzMzljNCIsIk9yZ2FuaXphdGlvbklkIjoiMTAwMyIsIlRva2VuIjoiIiwic3ViIjoidXB3b3JrZGV2QHRlc3QuY29tIiwiZW1haWwiOiJ1cHdvcmtkZXZAdGVzdC5jb20iLCJqdGkiOiI0MzA5ZmVkMi1lYjAzLTRmMTItYmJlMS05MjZlNDdkYWE5MWMiLCJUdWl0aW9uQ2VudHJlSWQiOiIxMDAwIiwiRWR1Y2F0aW9uQ2VudHJlSWQiOiIxMDAwIiwiVXNlcklkIjoiMTIwNCIsIkF2YXRhciI6Imh0dHBzOi8vZDExc3R1ZGVudHBvcnRhbHByb2QuYmxvYi5jb3JlLndpbmRvd3MubmV0L2F2YXRhcnNwcm9kL3VzZXIucG5nIiwiRW1haWwiOiJ1cHdvcmtkZXZAdGVzdC5jb20iLCJTdGF0dXMiOiJvbmxpbmUiLCJOYW1lIjoiVXB3b3JrIENvZGVyIiwiRXhwaXJlcyI6IjA4LzAyLzIwMjUgMTE6NDg6MDMiLCJuYmYiOjE3NTQxMzE2ODMsImV4cCI6MTc1NDEzNTI4MywiaWF0IjoxNzU0MTMxNjgzLCJpc3MiOiJodHRwczovL3d3dy50dWl0aW9uc29mdC5jby51ayIsImF1ZCI6Imh0dHBzOi8vd3d3LnR1aXRpb25zb2Z0LmNvLnVrIn0.I1xlUPcASbRZaju-nFfGe6ytJ4nwBeYppdqgheWYHrXKwrcWekpEPfuyGtZFd2vDpp9NDkyNQkhiV1Sasx38qQ';  // Assuming token1 is the static token you're using
+
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
     };
+
     final body = jsonEncode({
       "ClassId": classId,
       "AttendanceTakenDate": attendanceTakenDate,
       "CalendarModelId": calendarModelId,
       "SortBy": sortBy,
     });
-
-    // Log the request details
-    print('--- fetchAttendance Request ---');
-    print('POST $url');
-    print('Headers: $headers');
-    print('Body: $body');
 
     final response = await http.post(url, headers: headers, body: body);
 
@@ -51,9 +48,13 @@ class ApiService {
       if (json is List) {
         return json;
       }
+    } else if (response.statusCode == 401) {
+      // Token expired or invalid, return null to trigger the navigation
+      return null;
     }
     return null;
   }
+
 
   Future<Map<String, dynamic>?> fetchStudentAttendanceSummary({
     required String token,
@@ -65,6 +66,7 @@ class ApiService {
       return null;
     }
     final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDetailsInfo');
+      // final token1='eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImY5ODFlOGIwLTM3MzYtNDFlNi1iNjJiLTE0NzZiYjYzMzljNCIsIk9yZ2FuaXphdGlvbklkIjoiMTAwMyIsIlRva2VuIjoiIiwic3ViIjoidXB3b3JrZGV2QHRlc3QuY29tIiwiZW1haWwiOiJ1cHdvcmtkZXZAdGVzdC5jb20iLCJqdGkiOiI0MzA5ZmVkMi1lYjAzLTRmMTItYmJlMS05MjZlNDdkYWE5MWMiLCJUdWl0aW9uQ2VudHJlSWQiOiIxMDAwIiwiRWR1Y2F0aW9uQ2VudHJlSWQiOiIxMDAwIiwiVXNlcklkIjoiMTIwNCIsIkF2YXRhciI6Imh0dHBzOi8vZDExc3R1ZGVudHBvcnRhbHByb2QuYmxvYi5jb3JlLndpbmRvd3MubmV0L2F2YXRhcnNwcm9kL3VzZXIucG5nIiwiRW1haWwiOiJ1cHdvcmtkZXZAdGVzdC5jb20iLCJTdGF0dXMiOiJvbmxpbmUiLCJOYW1lIjoiVXB3b3JrIENvZGVyIiwiRXhwaXJlcyI6IjA4LzAyLzIwMjUgMTE6NDg6MDMiLCJuYmYiOjE3NTQxMzE2ODMsImV4cCI6MTc1NDEzNTI4MywiaWF0IjoxNzU0MTMxNjgzLCJpc3MiOiJodHRwczovL3d3dy50dWl0aW9uc29mdC5jby51ayIsImF1ZCI6Imh0dHBzOi8vd3d3LnR1aXRpb25zb2Z0LmNvLnVrIn0.I1xlUPcASbRZaju-nFfGe6ytJ4nwBeYppdqgheWYHrXKwrcWekpEPfuyGtZFd2vDpp9NDkyNQkhiV1Sasx38qQ';
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',
@@ -268,6 +270,8 @@ Future<List<dynamic>?> fetchMarkSubCodes({required String token}) async {
       return null;
     }
     final url = Uri.parse('$_attendanceBaseUrl/api/GetMarkCodes');
+        // final token1 = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImY5ODFlOGIwLTM3MzYtNDFlNi1iNjJiLTE0NzZiYjYzMzljNCIsIk9yZ2FuaXphdGlvbklkIjoiMTAwMyIsIlRva2VuIjoiIiwic3ViIjoidXB3b3JrZGV2QHRlc3QuY29tIiwiZW1haWwiOiJ1cHdvcmtkZXZAdGVzdC5jb20iLCJqdGkiOiI0MzA5ZmVkMi1lYjAzLTRmMTItYmJlMS05MjZlNDdkYWE5MWMiLCJUdWl0aW9uQ2VudHJlSWQiOiIxMDAwIiwiRWR1Y2F0aW9uQ2VudHJlSWQiOiIxMDAwIiwiVXNlcklkIjoiMTIwNCIsIkF2YXRhciI6Imh0dHBzOi8vZDExc3R1ZGVudHBvcnRhbHByb2QuYmxvYi5jb3JlLndpbmRvd3MubmV0L2F2YXRhcnNwcm9kL3VzZXIucG5nIiwiRW1haWwiOiJ1cHdvcmtkZXZAdGVzdC5jb20iLCJTdGF0dXMiOiJvbmxpbmUiLCJOYW1lIjoiVXB3b3JrIENvZGVyIiwiRXhwaXJlcyI6IjA4LzAyLzIwMjUgMTE6NDg6MDMiLCJuYmYiOjE3NTQxMzE2ODMsImV4cCI6MTc1NDEzNTI4MywiaWF0IjoxNzU0MTMxNjgzLCJpc3MiOiJodHRwczovL3d3dy50dWl0aW9uc29mdC5jby51ayIsImF1ZCI6Imh0dHBzOi8vd3d3LnR1aXRpb25zb2Z0LmNvLnVrIn0.I1xlUPcASbRZaju-nFfGe6ytJ4nwBeYppdqgheWYHrXKwrcWekpEPfuyGtZFd2vDpp9NDkyNQkhiV1Sasx38qQ';  // Assuming token1 is the static token you're using
+
     final headers = {
       'Content-Type': 'application/json',
       'Authorization': 'Bearer $token',

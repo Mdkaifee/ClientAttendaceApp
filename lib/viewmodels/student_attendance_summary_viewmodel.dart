@@ -28,18 +28,21 @@ class StudentAttendanceSummaryViewModel extends ChangeNotifier {
         studentId: studentId,
         attendanceTakenDate: attendanceTakenDate,
       );
+
       if (json != null && json['studentAttendanceDetailsInfoDetail'] != null) {
         summary = StudentAttendanceSummaryModel.fromJson(json['studentAttendanceDetailsInfoDetail']);
         _calendarMonthAttendanceDetail = json['calendarMonthAttendanceDetail'] ?? [];
         _student1MonthSummary = json['student1MonthSummary'] ?? [];
         _student3MonthSummary = json['student3MonthSummary'] ?? [];
       } else {
-        error = "No data found";
+        error = "Token expired or no data found.";
       }
     } catch (e) {
       error = e.toString();
     }
+
     isLoading = false;
     notifyListeners();
   }
 }
+

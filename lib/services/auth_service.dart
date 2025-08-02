@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../models/user_model.dart';
 import 'network_service.dart';
+
 class AuthService {
   static const String baseUrl  = 'https://adminapiuat.massivedanamik.com';
 
@@ -40,33 +41,62 @@ class AuthService {
     }
     return null;
   }
+Future<List<dynamic>?> fetchYearGroups(String token) async {
+  // final token1='eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJJZCI6ImY5ODFlOGIwLTM3MzYtNDFlNi1iNjJiLTE0NzZiYjYzMzljNCIsIk9yZ2FuaXphdGlvbklkIjoiMTAwMyIsIlRva2VuIjoiIiwic3ViIjoidXB3b3JrZGV2QHRlc3QuY29tIiwiZW1haWwiOiJ1cHdvcmtkZXZAdGVzdC5jb20iLCJqdGkiOiI0MzA5ZmVkMi1lYjAzLTRmMTItYmJlMS05MjZlNDdkYWE5MWMiLCJUdWl0aW9uQ2VudHJlSWQiOiIxMDAwIiwiRWR1Y2F0aW9uQ2VudHJlSWQiOiIxMDAwIiwiVXNlcklkIjoiMTIwNCIsIkF2YXRhciI6Imh0dHBzOi8vZDExc3R1ZGVudHBvcnRhbHByb2QuYmxvYi5jb3JlLndpbmRvd3MubmV0L2F2YXRhcnNwcm9kL3VzZXIucG5nIiwiRW1haWwiOiJ1cHdvcmtkZXZAdGVzdC5jb20iLCJTdGF0dXMiOiJvbmxpbmUiLCJOYW1lIjoiVXB3b3JrIENvZGVyIiwiRXhwaXJlcyI6IjA4LzAyLzIwMjUgMTE6NDg6MDMiLCJuYmYiOjE3NTQxMzE2ODMsImV4cCI6MTc1NDEzNTI4MywiaWF0IjoxNzU0MTMxNjgzLCJpc3MiOiJodHRwczovL3d3dy50dWl0aW9uc29mdC5jby51ayIsImF1ZCI6Imh0dHBzOi8vd3d3LnR1aXRpb25zb2Z0LmNvLnVrIn0.I1xlUPcASbRZaju-nFfGe6ytJ4nwBeYppdqgheWYHrXKwrcWekpEPfuyGtZFd2vDpp9NDkyNQkhiV1Sasx38qQ';
+  final url = Uri.parse('${AuthService.baseUrl}/adminapi/getclassyeargroups');
+  final response = await http.post(
+    url,
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode({
+      "SearchTerm": "",
+      "startIndex": "0",
+      "endIndex": "100",
+    }),
+  );
 
-  Future<List<dynamic>?> fetchYearGroups({required String token}) async {
-     if (!await NetworkService().isConnected()) {
-      print('❌ No Internet Connection');
+  print('YearGroups Status: ${response.statusCode}');
+  print('YearGroups Body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    final json = jsonDecode(response.body);
+    if (json is Map && json.containsKey('classYearGroupList')) {
+      return json['classYearGroupList'] as List<dynamic>;
+    }
+  }else if (response.statusCode == 401) {
+      // Token expired, return null
       return null;
     }
+    return null;
+}
+
+Future<List<dynamic>?> fetchCalendarModels({
+    required int educationCentreClassId,
+    required String token,
+  }) async {
+    final payload = {
+      "EducationCentreClassId": educationCentreClassId.toString(),
+    };
+
+    final url = Uri.parse('https://attendanceapiuat.massivedanamik.com/api/GetCalendarModels');
     final response = await http.post(
-      Uri.parse('$baseUrl/api/GetClassYearGroupList'),
+      url,
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',
       },
-      body: jsonEncode({
-        "SearchTerm": "",
-        "startIndex": "0",
-        "endIndex": "5",
-      }),
+      body: jsonEncode(payload),
     );
 
-    print('YearGroups Status: ${response.statusCode}');
-    print('YearGroups Body: ${response.body}');
+    print('CalendarModels Status: ${response.statusCode}');
+    print('CalendarModels Body: ${response.body}');
 
     if (response.statusCode == 200) {
       final json = jsonDecode(response.body);
-
-      if (json is Map && json.containsKey('classYearGroupList')) {
-        return json['classYearGroupList'] as List<dynamic>;
+      if (json['result'] == true && json['calendarModelsList'] != null) {
+        return json['calendarModelsList'] as List<dynamic>;
       }
     }
     return null;

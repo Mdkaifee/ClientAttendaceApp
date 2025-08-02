@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../viewmodels/student_attendance_summary_viewmodel.dart';
-
+import 'login_screen.dart';
 class StudentAttendanceSummaryScreen extends StatelessWidget {
   final String token;
   final int studentId;
@@ -51,18 +51,28 @@ class StudentAttendanceSummaryScreen extends StatelessWidget {
               body: Center(child: CircularProgressIndicator()),
             );
           }
-          if (vm.error != null) {
-            return Scaffold(
-              backgroundColor: Color(0xFF0B1E3A),
-              body: Center(child: Text(vm.error!, style: TextStyle(color: Colors.white))),
-            );
+         if (vm.error != null) {
+          // If token expired, navigate to LoginScreen
+          if (vm.error == "Token expired or no data found,Please Login again.") {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => LoginScreen()), // Navigate to LoginScreen
+              );
+            });
           }
-          if (vm.summary == null) {
-            return Scaffold(
-              backgroundColor: Color(0xFF0B1E3A),
-              body: Center(child: Text("No data found.", style: TextStyle(color: Colors.white))),
-            );
-          }
+          return Scaffold(
+            backgroundColor: Color(0xFF0B1E3A),
+            body: Center(child: Text(vm.error!, style: TextStyle(color: Colors.white))),
+          );
+        }
+        if (vm.summary == null) {
+          return Scaffold(
+            backgroundColor: Color(0xFF0B1E3A),
+            body: Center(child: Text("No data found.", style: TextStyle(color: Colors.white))),
+          );
+        }
+
 
           final student = vm.summary!;
           final month = getMonthYear(attendanceTakenDate);
@@ -137,8 +147,8 @@ class StudentAttendanceSummaryScreen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             _pill(tuitionCentreName),
-                            SizedBox(width: 10),
-                            _pill(selectedYearGroupName),
+                            // SizedBox(width: 10),
+                            // _pill(selectedYearGroupName),
                             SizedBox(width: 10),
                             _pill(selectedPeriod),
                           ],
@@ -158,6 +168,22 @@ class StudentAttendanceSummaryScreen extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
+                           Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: "Year Group: ",
+                                style: TextStyle(color: Colors.white, fontSize: 16),
+                              ),
+                              TextSpan(
+                                text: selectedYearGroupName,
+                                style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                          overflow: TextOverflow.ellipsis, // Optional: to handle long text gracefully
+                        ),
+
                             Text(
                               "Student Address:  ${student.addressLine1 ?? '-'}",
                               style: TextStyle(color: Colors.white, fontSize: 16),

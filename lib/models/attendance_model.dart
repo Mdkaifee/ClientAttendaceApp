@@ -34,7 +34,7 @@ class AttendanceModel {
     return AttendanceModel(
       studentName: "${json['firstName'] ?? ''} ${json['lastName'] ?? ''}".trim(),
       studentId: json['studentId'],
-      avatarUrl: json['photothumbnailURL'] ?? "",
+      avatarUrl: json['photoURL'] ?? "",
       lateMinutes: "0",  // Default value
       markCodeId: null,  // Default value
       markSubCodeId: null,  // Default value
@@ -46,3 +46,4 @@ class AttendanceModel {
     );
   }
 }
+
