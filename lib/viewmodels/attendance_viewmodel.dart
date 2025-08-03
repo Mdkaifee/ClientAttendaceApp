@@ -47,7 +47,14 @@ class AttendanceViewModel extends ChangeNotifier {
     isLoading = true;
     error = null;
     notifyListeners();
-
+ // ✅ Check internet
+  if (!await NetworkService().isConnected()) {
+    error = "No Internet Connection";
+    isLoading = false;
+    notifyListeners();
+    return;
+  }
+  
     try {
         final data = await _apiService.fetchAttendance(
             token: token,

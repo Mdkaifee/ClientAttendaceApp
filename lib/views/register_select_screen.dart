@@ -181,25 +181,31 @@ class _RegisterSelectScreenState extends State<RegisterSelectScreen> {
                   ),
 
                   Spacer(),
+if (_connectionError != null)
+  Padding(
+    padding: const EdgeInsets.only(bottom: 0),
+    child: Text(
+      _connectionError!,
+      style: TextStyle(color: Colors.redAccent, fontSize: 16),
+    ),
+  ),
 
-                  // Confirm button
-                  SizedBox(
-                    width: double.infinity,
-                    height: 52,
-                    child: ElevatedButton(
-                      onPressed: (vm.selectedYearGroupId != null && vm.selectedPeriodId != null)
-                          ? () async {
-                              bool isConnected = await NetworkService().isConnected();
-                              if (!isConnected) {
-                                setState(() {
-                                  _connectionError = "No Internet Connection. Please try again.";
-                                });
-                                return;
-                              }
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton(
+    onPressed: (vm.selectedYearGroupId != null && vm.selectedPeriodId != null)
+        ? () async {
+            bool isConnected = await NetworkService().isConnected();
+            if (!isConnected) {
+              setState(() {
+                _connectionError = "No Internet Connection. Please try again.";
+              });
+              return;
+            }
 
-                              setState(() {
-                                _connectionError = null;
-                              });
+            setState(() {
+              _connectionError = null;
+            });
 
                               Navigator.pushReplacement(
                                 context,
