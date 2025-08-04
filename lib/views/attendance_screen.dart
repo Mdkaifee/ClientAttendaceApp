@@ -45,8 +45,13 @@ Uint8List decodeBase64Image(String base64String) {
   return base64Decode(base64String.split(',').last);
 }
 Future<Uint8List?> fetchStudentPhoto(String token, int studentId, String fileName) async {
-  final url = Uri.parse('https://adminapiuat.massivedanamik.com/api/GetStudentPhotoAsByteArrayAsync?studentId=$studentId&fileName=$fileName');
+  String cacheKey = "$studentId|$fileName";
+  if (_photoCache.containsKey(cacheKey)) {
+    // ✅ Even if null, return (to avoid re-fetch)
+    return _photoCache[cacheKey];
+  }
 
+  final url = Uri.parse('https://adminapiuat.massivedanamik.com/api/GetStudentPhotoAsByteArrayAsync?studentId=$studentId&fileName=$fileName');
   final response = await http.post(url, headers: {
     'Authorization': 'Bearer $token',
     'Content-Type': 'application/json',
@@ -54,11 +59,21 @@ Future<Uint8List?> fetchStudentPhoto(String token, int studentId, String fileNam
 
   if (response.statusCode == 200) {
     final data = jsonDecode(response.body);
-    return decodeBase64Image(data); // You may need to add 'data['photo']' if it's wrapped
+    Uint8List imgBytes;
+    if (data is Map && data.containsKey('photo')) {
+      imgBytes = decodeBase64Image(data['photo']);
+    } else {
+      imgBytes = decodeBase64Image(data);
+    }
+    _photoCache[cacheKey] = imgBytes;
+    return imgBytes;
   } else {
+    // ⬇️ Cache "null" so next time it doesn't refetch
+    _photoCache[cacheKey] = null;
     return null;
   }
 }
+
 
 Future<void> _showConfirmationDialog(BuildContext context, AttendanceViewModel vm) async {
   // Show the confirmation dialog and wait for response
@@ -290,7 +305,7 @@ Widget _buildSubMarkButton(student, AttendanceViewModel vm) {
 width: 80, // ✅ Fixed width
  child: Center( 
 child: Text(
-  student.markSubCodeDescription ?? 'Mark',
+  student.markSubCodeDescription ?? 'Sub-Mark',
   style: TextStyle(color: Colors.white, fontSize: 12),
   maxLines: 1,
   overflow: TextOverflow.ellipsis, // ✅ Ellipsis for long text
@@ -641,7 +656,8 @@ Widget build(BuildContext context) {
                                       );
                                     },
                      child:FutureBuilder<Uint8List?>(
-  future: fetchStudentPhoto(widget.token, student.studentId, student.avatarUrl),
+																						future: fetchStudentPhoto(widget.token, student.studentId, student.avatarUrl),
+  // future: fetchStudentPhoto(widget.token, student.studentId, student.avatarUrl),
   builder: (context, snapshot) {
     if (snapshot.connectionState == ConnectionState.waiting) {
       return CircleAvatar(
@@ -666,7 +682,7 @@ Widget build(BuildContext context) {
 ),
 
                                         ),
-                                        SizedBox(width: 12),
+                                        SizedBox(width: 32),
                                         Flexible(
                                           child: Column(
                                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -683,11 +699,11 @@ Widget build(BuildContext context) {
                     children: [
                       // 🔷 MARK
                       _buildMarkButton(student, vm),
-                      SizedBox(width: 8),
+                      SizedBox(width:15),
 
                       // 🔷 SUB-MARK
                       _buildSubMarkButton(student, vm),
-                      SizedBox(width: 8),
+                      SizedBox(width:20),
 
                       // 🔷 LATE INPUT
                       _buildLateInputField(student, vm),
