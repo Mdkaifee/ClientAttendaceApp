@@ -27,10 +27,12 @@ class StudentAttendanceSummaryScreen extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<StudentAttendanceSummaryScreen> createState() => _StudentAttendanceSummaryScreenState();
+  State<StudentAttendanceSummaryScreen> createState() =>
+      _StudentAttendanceSummaryScreenState();
 }
 
-class _StudentAttendanceSummaryScreenState extends State<StudentAttendanceSummaryScreen> {
+class _StudentAttendanceSummaryScreenState
+    extends State<StudentAttendanceSummaryScreen> {
   ImageProvider? _studentImage;
 
   @override
@@ -49,39 +51,44 @@ class _StudentAttendanceSummaryScreenState extends State<StudentAttendanceSummar
       if (image != null) {
         setState(() {
           _studentImage = image;
-           print("✅ Image set in state");
+          print("✅ Image set in state");
         });
       }
     }
   }
-Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) async {
-  final url = Uri.parse(
-    'https://adminapiuat.massivedanamik.com/api/GetStudentPhotoAsBase64StringAsync?studentId=$studentId&fileName=$fileName',
-  );
 
-  final response = await http.post(
-    url,
-    headers: {
-      'Authorization': 'Bearer ${widget.token}', // <-- Pass token here
-      'Content-Type': 'application/json',         // Optional, but safe to include
-    },
-  );
+  Future<ImageProvider?> fetchStudentImage(
+    String studentId,
+    String fileName,
+  ) async {
+    final url = Uri.parse(
+      'https://adminapiuat.massivedanamik.com/api/GetStudentPhotoAsBase64StringAsync?studentId=$studentId&fileName=$fileName',
+    );
 
-  print("📡 statusCode: ${response.statusCode}");
-  print("📡 body: ${response.body}");
+    final response = await http.post(
+      url,
+      headers: {
+        'Authorization': 'Bearer ${widget.token}', // <-- Pass token here
+        'Content-Type': 'application/json', // Optional, but safe to include
+      },
+    );
 
-  if (response.statusCode == 200 && response.body.isNotEmpty) {
-    try {
-      final base64Str = response.body.replaceAll('"', '');
-      final Uint8List imageBytes = base64Decode(base64Str);
-      return MemoryImage(imageBytes);
-    } catch (e) {
-      print("❌ Failed to decode image: $e");
+    print("📡 statusCode: ${response.statusCode}");
+    print("📡 body: ${response.body}");
+
+    if (response.statusCode == 200 && response.body.isNotEmpty) {
+      try {
+        final base64Str = response.body.replaceAll('"', '');
+        final Uint8List imageBytes = base64Decode(base64Str);
+        return MemoryImage(imageBytes);
+      } catch (e) {
+        print("❌ Failed to decode image: $e");
+      }
     }
+
+    return null;
   }
 
-  return null;
-}
   String getMonthYear(String attendanceTakenDate) {
     try {
       final date = DateTime.parse(attendanceTakenDate);
@@ -93,8 +100,19 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
 
   static String _monthName(int month) {
     const months = [
-      '', 'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
+      '',
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
     ];
     return months[month];
   }
@@ -103,7 +121,11 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => StudentAttendanceSummaryViewModel()
-        ..fetchSummary(widget.token, widget.studentId, widget.attendanceTakenDate),
+        ..fetchSummary(
+          widget.token,
+          widget.studentId,
+          widget.attendanceTakenDate,
+        ),
       child: Consumer<StudentAttendanceSummaryViewModel>(
         builder: (context, vm, _) {
           if (vm.isLoading) {
@@ -113,7 +135,8 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
             );
           }
           if (vm.error != null) {
-            if (vm.error == "Token expired or no data found,Please Login again.") {
+            if (vm.error ==
+                "Token expired or no data found,Please Login again.") {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 Navigator.pushReplacement(
                   context,
@@ -123,13 +146,20 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
             }
             return Scaffold(
               backgroundColor: Color(0xFF0B1E3A),
-              body: Center(child: Text(vm.error!, style: TextStyle(color: Colors.white))),
+              body: Center(
+                child: Text(vm.error!, style: TextStyle(color: Colors.white)),
+              ),
             );
           }
           if (vm.summary == null) {
             return Scaffold(
               backgroundColor: Color(0xFF0B1E3A),
-              body: Center(child: Text("No data found.", style: TextStyle(color: Colors.white))),
+              body: Center(
+                child: Text(
+                  "No data found.",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             );
           }
 
@@ -141,7 +171,10 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
             body: SafeArea(
               child: SingleChildScrollView(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 22.0, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 22.0,
+                    vertical: 8,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -153,10 +186,19 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
                             onPressed: () => Navigator.pop(context),
                             style: TextButton.styleFrom(
                               backgroundColor: Colors.transparent,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(22)),
-                              padding: EdgeInsets.symmetric(horizontal: 6, vertical: 7),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(22),
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 7,
+                              ),
                             ),
-                            icon: Icon(Icons.arrow_back, color: Colors.blueAccent, size: 22),
+                            icon: Icon(
+                              Icons.arrow_back,
+                              color: Colors.blueAccent,
+                              size: 22,
+                            ),
                             label: Text(
                               "Back",
                               style: TextStyle(
@@ -169,13 +211,15 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
                         ],
                       ),
                       SizedBox(height: 10),
-                     Center(
-  child: CircleAvatar(
-    radius: 42,
-    backgroundColor: Colors.blueGrey[600],
-    backgroundImage: _studentImage ?? AssetImage('assets/default_avatar.png'),
-  ),
-),
+                      Center(
+                        child: CircleAvatar(
+                          radius: 42,
+                          backgroundColor: Colors.blueGrey[600],
+                          backgroundImage:
+                              _studentImage ??
+                              AssetImage('assets/default_avatar.png'),
+                        ),
+                      ),
                       SizedBox(height: 14),
                       Center(
                         child: Text(
@@ -202,7 +246,10 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
                       SizedBox(height: 18),
                       Container(
                         width: double.infinity,
-                        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 14,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white.withOpacity(0.08),
                           borderRadius: BorderRadius.circular(18),
@@ -215,11 +262,18 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
                                 children: [
                                   TextSpan(
                                     text: "Year Group: ",
-                                    style: TextStyle(color: Colors.white, fontSize: 16),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                    ),
                                   ),
                                   TextSpan(
                                     text: widget.selectedYearGroupName,
-                                    style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -227,17 +281,26 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
                             ),
                             Text(
                               "Student Address:  ${student.addressLine1 ?? '-'}",
-                              style: TextStyle(color: Colors.white, fontSize: 16),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
                             ),
                             SizedBox(height: 8),
                             Text(
                               "Parents number: ${student.phone ?? '-'}",
-                              style: TextStyle(color: Colors.white, fontSize: 16),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
                             ),
                             SizedBox(height: 8),
                             Text(
                               "Additional notes: N/A",
-                              style: TextStyle(color: Colors.white, fontSize: 16),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                              ),
                             ),
                           ],
                         ),
@@ -252,21 +315,23 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
                         ),
                       ),
                       SizedBox(height: 4),
-                      _CustomCalendar(calendarData: vm.calendarMonthAttendanceDetail),
+                      _CustomCalendar(
+                        calendarData: vm.calendarMonthAttendanceDetail,
+                      ),
                       SizedBox(height: 20),
                       _SummaryTable(
                         title: "1 month summary",
-                        summaryData: (vm.student1MonthSummary != null && vm.student1MonthSummary.isNotEmpty)
+                        summaryData:
+                            (vm.student1MonthSummary != null &&
+                                vm.student1MonthSummary.isNotEmpty)
                             ? vm.student1MonthSummary
                             : [
-                                {
-                                  'attendanceCode': '\\',
-                                  'count': 0,
-                                }
+                                {'attendanceCode': '\\', 'count': 0},
                               ],
                       ),
                       SizedBox(height: 18),
-                      if (vm.student3MonthSummary != null && vm.student3MonthSummary.isNotEmpty)
+                      if (vm.student3MonthSummary != null &&
+                          vm.student3MonthSummary.isNotEmpty)
                         _SummaryTable(
                           title: "3 month summary",
                           summaryData: vm.student3MonthSummary,
@@ -283,21 +348,28 @@ Future<ImageProvider?> fetchStudentImage(String studentId, String fileName) asyn
   }
 
   Widget _pill(String text) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        decoration: BoxDecoration(
-          color: Color(0xFF5D99F6),
-          borderRadius: BorderRadius.circular(22),
-        ),
-        child: Text(
-          text,
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 13),
-        ),
-      );
+    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+    decoration: BoxDecoration(
+      color: Color(0xFF5D99F6),
+      borderRadius: BorderRadius.circular(22),
+    ),
+    child: Text(
+      text,
+      style: TextStyle(
+        color: Colors.black,
+        fontWeight: FontWeight.w600,
+        fontSize: 13,
+      ),
+    ),
+  );
 }
+
 // --- Calendar Widget ---
 class _CustomCalendar extends StatefulWidget {
   final List<dynamic>? calendarData;
-  const _CustomCalendar({Key? key, required this.calendarData}) : super(key: key);
+
+  const _CustomCalendar({Key? key, required this.calendarData})
+    : super(key: key);
 
   @override
   State<_CustomCalendar> createState() => _CustomCalendarState();
@@ -306,13 +378,20 @@ class _CustomCalendar extends StatefulWidget {
 class _CustomCalendarState extends State<_CustomCalendar> {
   int weekdayToColIndex(int weekday) {
     switch (weekday) {
-      case DateTime.sunday: return 0;
-      case DateTime.monday: return 1;
-      case DateTime.tuesday: return 2;
-      case DateTime.wednesday: return 3;
-      case DateTime.friday: return 4;
-      case DateTime.saturday: return 5;
-      default: return -1; // Thursday (excluded)
+      case DateTime.sunday:
+        return 0;
+      case DateTime.monday:
+        return 1;
+      case DateTime.tuesday:
+        return 2;
+      case DateTime.wednesday:
+        return 3;
+      case DateTime.friday:
+        return 4;
+      case DateTime.saturday:
+        return 5;
+      default:
+        return -1; // Thursday (excluded)
     }
   }
 
@@ -335,7 +414,10 @@ class _CustomCalendarState extends State<_CustomCalendar> {
     final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Fri', 'Sat'];
     List<TableRow> rows = [
       TableRow(
-        children: List.generate(6, (i) => _calendarBox(null, label: days[i], isHeader: true, height: 32)),
+        children: List.generate(
+          6,
+          (i) => _calendarBox(null, label: days[i], isHeader: true, height: 32),
+        ),
       ),
     ];
 
@@ -348,7 +430,10 @@ class _CustomCalendarState extends State<_CustomCalendar> {
 
     while (day <= daysInMonth) {
       int col = weekdayToColIndex(DateTime(year, month, day).weekday);
-      if (col == -1) { day++; continue; }
+      if (col == -1) {
+        day++;
+        continue;
+      }
       week[col] = _calendarBox(
         day,
         isMarked: attendance[day] != null && attendance[day]!.isNotEmpty,
@@ -367,7 +452,13 @@ class _CustomCalendarState extends State<_CustomCalendar> {
     );
   }
 
-  Widget _calendarBox(int? day, {bool isMarked = false, String? label, bool isHeader = false, double height = 60}) {
+  Widget _calendarBox(
+    int? day, {
+    bool isMarked = false,
+    String? label,
+    bool isHeader = false,
+    double height = 60,
+  }) {
     return Container(
       margin: EdgeInsets.all(2),
       height: height,
@@ -376,8 +467,8 @@ class _CustomCalendarState extends State<_CustomCalendar> {
         color: isHeader
             ? Colors.white.withOpacity(0.13)
             : day == null
-                ? Colors.transparent
-                : (isMarked ? Color(0xFF5D99F6) : Colors.white.withOpacity(0.07)),
+            ? Colors.transparent
+            : (isMarked ? Color(0xFF5D99F6) : Colors.white.withOpacity(0.07)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(
@@ -392,14 +483,14 @@ class _CustomCalendarState extends State<_CustomCalendar> {
                 ),
               )
             : day == null
-                ? SizedBox.shrink()
-                : Text(
-                    '$day',
-                    style: TextStyle(
-                      color: isMarked ? Colors.black : Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+            ? SizedBox.shrink()
+            : Text(
+                '$day',
+                style: TextStyle(
+                  color: isMarked ? Colors.black : Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
       ),
     );
   }
@@ -439,11 +530,14 @@ class _SummaryTable extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title,
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15)),
+          Text(
+            title,
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+            ),
+          ),
           SizedBox(height: 7),
           Table(
             border: TableBorder.all(color: Colors.white30, width: 1),
@@ -452,35 +546,61 @@ class _SummaryTable extends StatelessWidget {
                 children: [
                   Padding(
                     padding: EdgeInsets.all(6),
-                    child: Text("Attendance Code", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      "Attendance Code",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(6),
-                    child: Text("Count", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                    child: Text(
+                      "Count",
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ],
               ),
-              ...codeCounts.entries.map((entry) => TableRow(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.all(6),
-                        child: Text(entry.key, style: TextStyle(color: Colors.white)),
+              ...codeCounts.entries.map(
+                (entry) => TableRow(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.all(6),
+                      child: Text(
+                        entry.key,
+                        style: TextStyle(color: Colors.white),
                       ),
-                      Padding(
-                        padding: EdgeInsets.all(6),
-                        child: Text(entry.value.toString(), style: TextStyle(color: Colors.white)),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(6),
+                      child: Text(
+                        entry.value.toString(),
+                        style: TextStyle(color: Colors.white),
                       ),
-                    ],
-                  )),
+                    ),
+                  ],
+                ),
+              ),
               TableRow(
                 children: [
                   Padding(
                     padding: EdgeInsets.all(6),
-                    child: Text("Total possible", style: TextStyle(color: Colors.white)),
+                    child: Text(
+                      "Total possible",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(6),
-                    child: Text("$total", style: TextStyle(color: Colors.white)),
+                    child: Text(
+                      "$total",
+                      style: TextStyle(color: Colors.white),
+                    ),
                   ),
                 ],
               ),

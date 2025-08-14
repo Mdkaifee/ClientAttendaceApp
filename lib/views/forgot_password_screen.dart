@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import '../viewmodels/forgot_password_viewmodel.dart';
 import 'otp_verification_screen.dart';
 
-class ForgotPasswordScreen extends StatefulWidget  {
+class ForgotPasswordScreen extends StatefulWidget {
   final int organizationId;
-  const ForgotPasswordScreen({Key? key, required this.organizationId}) : super(key: key);
+
+  const ForgotPasswordScreen({Key? key, required this.organizationId})
+    : super(key: key);
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -25,7 +27,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             backgroundColor: Color(0xFF162244),
             body: SafeArea(
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(left: 32, right: 32, top: 12, bottom: 34),
+                padding: EdgeInsets.only(
+                  left: 32,
+                  right: 32,
+                  top: 12,
+                  bottom: 34,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -49,7 +56,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           SizedBox(height: 4),
                           Text(
                             "Enter your email address and we'll\nsend you a verification code to your\nregistered email address.",
-                            style: TextStyle(color: Colors.white70, fontSize: 18),
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 18,
+                            ),
                             textAlign: TextAlign.left,
                           ),
                         ],
@@ -62,10 +72,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        StepIndicator(label: 'Submit email address', isActive: true, isLast: false),
-                        StepIndicator(label: 'Enter verification code', isActive: false, isLast: false),
-                        StepIndicator(label: 'Change password', isActive: false, isLast: false),
-                        StepIndicator(label: 'Login again', isActive: false, isLast: true),
+                        StepIndicator(
+                          label: 'Submit email address',
+                          isActive: true,
+                          isLast: false,
+                        ),
+                        StepIndicator(
+                          label: 'Enter verification code',
+                          isActive: false,
+                          isLast: false,
+                        ),
+                        StepIndicator(
+                          label: 'Change password',
+                          isActive: false,
+                          isLast: false,
+                        ),
+                        StepIndicator(
+                          label: 'Login again',
+                          isActive: false,
+                          isLast: true,
+                        ),
                       ],
                     ),
 
@@ -85,14 +111,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                       style: TextStyle(color: Colors.white),
                       onChanged: (_) {
-                        if (localError != null) setState(() => localError = null);
+                        if (localError != null)
+                          setState(() => localError = null);
                       },
                     ),
 
                     if (localError != null)
                       Padding(
                         padding: const EdgeInsets.only(top: 6.0),
-                        child: Text(localError!, style: TextStyle(color: Colors.redAccent)),
+                        child: Text(
+                          localError!,
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
                       ),
 
                     SizedBox(height: 24),
@@ -114,11 +144,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 setState(() {
                                   localError = null;
                                 });
-                                vm.sendResetCode(widget.organizationId, emailController.text);
+                                vm.sendResetCode(
+                                  // widget.organizationId,
+                                  email: emailController.text,
+                                );
                               },
                         child: vm.isLoading
                             ? CircularProgressIndicator(color: Colors.white)
-                            : Text('Send email', style: TextStyle(fontSize: 18)),
+                            : Text(
+                                'Send email',
+                                style: TextStyle(fontSize: 18),
+                              ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blueAccent,
                           shape: RoundedRectangleBorder(
@@ -131,7 +167,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     SizedBox(height: 12),
 
                     if (vm.errorMessage != null)
-                      Text(vm.errorMessage!, style: TextStyle(color: Colors.redAccent)),
+                      Text(
+                        vm.errorMessage!,
+                        style: TextStyle(color: Colors.redAccent),
+                      ),
 
                     if (vm.success)
                       Builder(
@@ -169,7 +208,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               setState(() {
                                 localError = null;
                               });
-                              vm.sendResetCode(widget.organizationId, emailController.text, isResend: true);
+                              vm.sendResetCode(
+                                // widget.organizationId,
+                                email: emailController.text,
+                                isResend: true,
+                              );
                             },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -188,7 +231,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               SizedBox(width: 4),
                               Text(
                                 'Resend',
-                                style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: Colors.blue,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ],
                           ),
@@ -202,7 +248,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text('Back to sign in', style: TextStyle(color: Colors.blue)),
+                      child: Text(
+                        'Back to sign in',
+                        style: TextStyle(color: Colors.blue),
+                      ),
                     ),
                   ],
                 ),
@@ -221,7 +270,11 @@ class StepIndicator extends StatelessWidget {
   final bool isActive;
   final bool isLast;
 
-  StepIndicator({required this.label, this.isActive = false, this.isLast = false});
+  StepIndicator({
+    required this.label,
+    this.isActive = false,
+    this.isLast = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -239,13 +292,15 @@ class StepIndicator extends StatelessWidget {
             if (!isLast)
               Container(
                 width: 2,
-                height: 28,            // Reduced height from 40 to 28
+                height: 28, // Reduced height from 40 to 28
                 color: Colors.white38,
-                margin: EdgeInsets.only(top: 1),  // Reduced top margin from 2 to 1
+                margin: EdgeInsets.only(
+                  top: 1,
+                ), // Reduced top margin from 2 to 1
               ),
           ],
         ),
-        SizedBox(width: 4),           // Reduced width from 8 to 4
+        SizedBox(width: 4), // Reduced width from 8 to 4
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 2),

@@ -75,13 +75,20 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                           SizedBox(height: 16),
                           Text(
                             'Verification code',
-                            style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              fontSize: 32,
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                             textAlign: TextAlign.left,
                           ),
                           SizedBox(height: 8),
                           Text(
                             "Enter the 6 digit code we sent to your\nregistered email address before the\ncode expires.",
-                            style: TextStyle(color: Colors.white70, fontSize: 18),
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 18,
+                            ),
                             textAlign: TextAlign.left,
                           ),
                         ],
@@ -93,10 +100,26 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        StepIndicator(label: 'Submit email address', isActive: false, isLast: false),
-                        StepIndicator(label: 'Enter verification code', isActive: true, isLast: false),
-                        StepIndicator(label: 'Change password', isActive: false, isLast: false),
-                        StepIndicator(label: 'Login again', isActive: false, isLast: true),
+                        StepIndicator(
+                          label: 'Submit email address',
+                          isActive: false,
+                          isLast: false,
+                        ),
+                        StepIndicator(
+                          label: 'Enter verification code',
+                          isActive: true,
+                          isLast: false,
+                        ),
+                        StepIndicator(
+                          label: 'Change password',
+                          isActive: false,
+                          isLast: false,
+                        ),
+                        StepIndicator(
+                          label: 'Login again',
+                          isActive: false,
+                          isLast: true,
+                        ),
                       ],
                     ),
 
@@ -145,7 +168,11 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                         onPressed: (vm.isLoading || !isOtpComplete)
                             ? null
                             : () async {
-                                await vm.validateOtp(widget.organizationId, otpCode, widget.email);
+                                await vm.validateOtp(
+                                  widget.organizationId,
+                                  otpCode,
+                                  widget.email,
+                                );
                                 if (vm.success) {
                                   Navigator.pushReplacement(
                                     context,
@@ -163,7 +190,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                             : Text('Verify', style: TextStyle(fontSize: 18)),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blueAccent,
-                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
                         ),
                       ),
                     ),
@@ -172,13 +201,19 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
 
                     // Error Message for verification
                     if (vm.errorMessage != null)
-                      Text(vm.errorMessage!, style: TextStyle(color: Colors.redAccent)),
+                      Text(
+                        vm.errorMessage!,
+                        style: TextStyle(color: Colors.redAccent),
+                      ),
 
                     SizedBox(height: 20),
 
                     // Resend OTP message
                     if (vm.resendMessage != null)
-                      Text(vm.resendMessage!, style: TextStyle(color: Colors.greenAccent)),
+                      Text(
+                        vm.resendMessage!,
+                        style: TextStyle(color: Colors.greenAccent),
+                      ),
 
                     SizedBox(height: 8),
 
@@ -191,19 +226,34 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                 remainingSeconds = 120;
                                 startTimer();
                               });
-                              await vm.resendCode(widget.organizationId, widget.email);
+                              await vm.resendCode(
+                                // widget.organizationId,
+                                email: widget.email,
+                              );
                             }
                           : null,
-                      icon: Icon(Icons.refresh, color: (resendAvailable && !vm.isResending) ? Colors.blueAccent : Colors.grey),
+                      icon: Icon(
+                        Icons.refresh,
+                        color: (resendAvailable && !vm.isResending)
+                            ? Colors.blueAccent
+                            : Colors.grey,
+                      ),
                       label: vm.isResending
                           ? SizedBox(
                               width: 16,
                               height: 16,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.blueAccent),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.blueAccent,
+                              ),
                             )
                           : Text(
                               'Resend code',
-                              style: TextStyle(color: (resendAvailable && !vm.isResending) ? Colors.blueAccent : Colors.grey),
+                              style: TextStyle(
+                                color: (resendAvailable && !vm.isResending)
+                                    ? Colors.blueAccent
+                                    : Colors.grey,
+                              ),
                             ),
                     ),
                   ],
@@ -235,7 +285,11 @@ class StepIndicator extends StatelessWidget {
   final bool isActive;
   final bool isLast;
 
-  StepIndicator({required this.label, this.isActive = false, this.isLast = false});
+  StepIndicator({
+    required this.label,
+    this.isActive = false,
+    this.isLast = false,
+  });
 
   @override
   Widget build(BuildContext context) {

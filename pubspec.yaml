@@ -1,7 +1,7 @@
 name: attendance_client
 description: "A new Flutter project."
-publish_to: 'none' 
-version: 1.0.0+7
+publish_to: 'none'
+version: 1.0.0+13
 
 environment:
   sdk: ^3.8.1
@@ -14,7 +14,7 @@ dependencies:
   provider: ^6.1.2
   http: ^1.2.1
   shared_preferences: ^2.2.2
-  fluttertoast: ^8.0.8 
+  fluttertoast: ^8.0.8
   connectivity_plus: ^5.0.2
 
 dev_dependencies:

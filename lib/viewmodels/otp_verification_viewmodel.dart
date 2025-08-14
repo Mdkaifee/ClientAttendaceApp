@@ -5,33 +5,37 @@ import '../services/network_service.dart';
 class OtpVerificationViewModel extends ChangeNotifier {
   final AuthService _authService = AuthService();
 
-  bool isLoading = false;     // For verifying OTP
-  bool isResending = false;   // For resending OTP
+  bool isLoading = false; // For verifying OTP
+  bool isResending = false; // For resending OTP
   bool success = false;
   String? errorMessage;
   String? resendMessage;
 
-// For direct navigation to ChangePasswordScreen
-//  Future<void> validateOtp(int organizationId, String otp,String email) async {
-//   isLoading = true;
-//   errorMessage = null;
-//   success = false;
-//   notifyListeners();
+  // For direct navigation to ChangePasswordScreen
+  //  Future<void> validateOtp(int organizationId, String otp,String email) async {
+  //   isLoading = true;
+  //   errorMessage = null;
+  //   success = false;
+  //   notifyListeners();
 
-//   // TEMPORARY MOCK for UI testing
-//   await Future.delayed(Duration(seconds: 1));
-//   if (otp == '123456') {
-//     success = true;
-//   } else {
-//     errorMessage = 'Invalid OTP';
-//   }
+  //   // TEMPORARY MOCK for UI testing
+  //   await Future.delayed(Duration(seconds: 1));
+  //   if (otp == '123456') {
+  //     success = true;
+  //   } else {
+  //     errorMessage = 'Invalid OTP';
+  //   }
 
-//   isLoading = false;
-//   notifyListeners();
-// }
+  //   isLoading = false;
+  //   notifyListeners();
+  // }
 
-/// ✅ Validates the OTP entered by user
-  Future<void> validateOtp(int organizationId, String code, String email) async {
+  /// ✅ Validates the OTP entered by user
+  Future<void> validateOtp(
+    int organizationId,
+    String code,
+    String email,
+  ) async {
     isLoading = true;
     errorMessage = null;
     success = false;
@@ -64,7 +68,10 @@ class OtpVerificationViewModel extends ChangeNotifier {
   }
 
   /// ✅ Resends OTP code via email
-  Future<void> resendCode(int organizationId, String email) async {
+  Future<void> resendCode({
+    int organizationId = 1003,
+    required String email,
+  }) async {
     isResending = true;
     resendMessage = null;
     notifyListeners();

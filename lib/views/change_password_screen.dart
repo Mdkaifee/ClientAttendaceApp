@@ -14,7 +14,8 @@ class ChangePasswordScreen extends StatefulWidget {
 
 class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   final TextEditingController passwordController = TextEditingController();
-  final TextEditingController confirmPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
 
@@ -105,7 +106,10 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                 children: [
                   if (_successMessage != null)
                     Container(
-                      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 12,
+                        horizontal: 16,
+                      ),
                       margin: EdgeInsets.only(bottom: 16),
                       decoration: BoxDecoration(
                         color: Colors.green[600],
@@ -113,7 +117,11 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       ),
                       child: Text(
                         _successMessage!,
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
                       ),
                     ),
                   Image.asset("assets/logo.png", width: 80),
@@ -141,10 +149,26 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      StepIndicator(label: 'Submit email address', isActive: false, isLast: false),
-                      StepIndicator(label: 'Enter verification code', isActive: false, isLast: false),
-                      StepIndicator(label: 'Change password', isActive: true, isLast: false),
-                      StepIndicator(label: 'Login again', isActive: false, isLast: true),
+                      StepIndicator(
+                        label: 'Submit email address',
+                        isActive: false,
+                        isLast: false,
+                      ),
+                      StepIndicator(
+                        label: 'Enter verification code',
+                        isActive: false,
+                        isLast: false,
+                      ),
+                      StepIndicator(
+                        label: 'Change password',
+                        isActive: true,
+                        isLast: false,
+                      ),
+                      StepIndicator(
+                        label: 'Login again',
+                        isActive: false,
+                        isLast: true,
+                      ),
                     ],
                   ),
 
@@ -159,13 +183,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       fillColor: Colors.white10,
                       hintText: 'Password',
                       hintStyle: TextStyle(color: Colors.white70),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                          _obscurePassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: Colors.white54,
                         ),
-                        onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                        onPressed: () => setState(
+                          () => _obscurePassword = !_obscurePassword,
+                        ),
                       ),
                     ),
                     style: TextStyle(color: Colors.white),
@@ -181,13 +211,20 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       fillColor: Colors.white10,
                       hintText: 'Confirm Password',
                       hintStyle: TextStyle(color: Colors.white70),
-                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                       suffixIcon: IconButton(
                         icon: Icon(
-                          _obscureConfirmPassword ? Icons.visibility_off : Icons.visibility,
+                          _obscureConfirmPassword
+                              ? Icons.visibility_off
+                              : Icons.visibility,
                           color: Colors.white54,
                         ),
-                        onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                        onPressed: () => setState(
+                          () => _obscureConfirmPassword =
+                              !_obscureConfirmPassword,
+                        ),
                       ),
                     ),
                     style: TextStyle(color: Colors.white),
@@ -202,7 +239,9 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       child: LinearProgressIndicator(
                         value: _strengthPercent,
                         backgroundColor: Colors.white10,
-                        valueColor: AlwaysStoppedAnimation<Color>(_strengthColor),
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          _strengthColor,
+                        ),
                       ),
                     ),
                   ),
@@ -226,24 +265,26 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                       padding: const EdgeInsets.only(top: 4),
                       child: Text(
                         'The password is strong and meets all the requirements',
-                        style: TextStyle(color: Colors.greenAccent, fontSize: 13),
+                        style: TextStyle(
+                          color: Colors.greenAccent,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
-
 
                   SizedBox(height: 24),
                   if (vm.errorMessage != null)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Text(
-                      vm.errorMessage!,
-                      style: TextStyle(
-                        color: Colors.redAccent,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14,
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 12),
+                      child: Text(
+                        vm.errorMessage!,
+                        style: TextStyle(
+                          color: Colors.redAccent,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
                       ),
                     ),
-                  ),
 
                   SizedBox(
                     width: double.infinity,
@@ -253,9 +294,12 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                           ? null
                           : () async {
                               // Passwords must match first
-                              if (passwordController.text != confirmPasswordController.text) {
+                              if (passwordController.text !=
+                                  confirmPasswordController.text) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(content: Text("Passwords don't match")),
+                                  SnackBar(
+                                    content: Text("Passwords don't match"),
+                                  ),
                                 );
                                 return;
                               }
@@ -271,23 +315,36 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                               if (vm.success) {
                                 if (mounted) {
                                   setState(() {
-                                    _successMessage = "Password changed successfully!";
+                                    _successMessage =
+                                        "Password changed successfully!";
                                   });
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text("Password changed successfully")),
+                                    SnackBar(
+                                      content: Text(
+                                        "Password changed successfully",
+                                      ),
+                                    ),
                                   );
                                   // Optional delay before navigating away to show success message
                                   await Future.delayed(Duration(seconds: 1));
-                                  Navigator.popUntil(context, (route) => route.isFirst);
+                                  Navigator.popUntil(
+                                    context,
+                                    (route) => route.isFirst,
+                                  );
                                 }
                               }
                             },
                       child: vm.isLoading
                           ? CircularProgressIndicator(color: Colors.white)
-                          : Text('Confirm changes', style: TextStyle(fontSize: 18)),
+                          : Text(
+                              'Confirm changes',
+                              style: TextStyle(fontSize: 18),
+                            ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blueAccent,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(24),
+                        ),
                       ),
                     ),
                   ),
@@ -307,7 +364,11 @@ class StepIndicator extends StatelessWidget {
   final bool isActive;
   final bool isLast;
 
-  StepIndicator({required this.label, this.isActive = false, this.isLast = false});
+  StepIndicator({
+    required this.label,
+    this.isActive = false,
+    this.isLast = false,
+  });
 
   @override
   Widget build(BuildContext context) {

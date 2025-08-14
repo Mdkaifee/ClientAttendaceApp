@@ -31,18 +31,19 @@ class RegisterSelectViewModel extends ChangeNotifier {
     final yearGroupResponse = await AuthService().fetchYearGroups(token);
 
     if (yearGroupResponse != null) {
-      yearGroups = yearGroupResponse.map((item) => YearGroup.fromJson(item)).toList();
+      yearGroups = yearGroupResponse
+          .map((item) => YearGroup.fromJson(item))
+          .toList();
       error = null;
     } else {
-      error = "Failed to fetch year groups or token expired,Please Login Again."; // Specific error message
+      error =
+          "Failed to fetch year groups or token expired,Please Login Again."; // Specific error message
       yearGroups = [];
     }
 
     isLoading = false;
     notifyListeners();
   }
-
-
 
   Future<void> fetchCalendarModels({
     required int educationCentreClassId,
@@ -66,7 +67,9 @@ class RegisterSelectViewModel extends ChangeNotifier {
     );
 
     if (calendarModelResponse != null) {
-      calendarModels = calendarModelResponse.map((item) => CalendarModel.fromJson(item)).toList();
+      calendarModels = calendarModelResponse
+          .map((item) => CalendarModel.fromJson(item))
+          .toList();
       error = null;
     } else {
       error = "No calendar models found";
@@ -82,10 +85,7 @@ class RegisterSelectViewModel extends ChangeNotifier {
     selectedYearGroupId = id;
 
     if (id != null) {
-      fetchCalendarModels(
-        educationCentreClassId: id,
-        token: token,
-      );
+      fetchCalendarModels(educationCentreClassId: id, token: token);
     } else {
       calendarModels = [];
       selectedPeriodId = null;
