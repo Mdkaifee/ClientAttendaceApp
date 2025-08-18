@@ -69,7 +69,7 @@ class OtpVerificationViewModel extends ChangeNotifier {
 
   /// ✅ Resends OTP code via email
   Future<void> resendCode({
-    int organizationId = 1003,
+    required int organizationId, 
     required String email,
   }) async {
     isResending = true;

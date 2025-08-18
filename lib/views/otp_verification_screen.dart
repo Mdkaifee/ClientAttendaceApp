@@ -227,7 +227,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                 startTimer();
                               });
                               await vm.resendCode(
-                                // widget.organizationId,
+                                  organizationId: widget.organizationId,
                                 email: widget.email,
                               );
                             }

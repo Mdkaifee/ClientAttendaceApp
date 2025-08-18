@@ -10,7 +10,7 @@ class ForgotPasswordViewModel extends ChangeNotifier {
   bool success = false;
 
   Future<void> sendResetCode({
-    int organizationId = 1003,
+     required int organizationId, 
     required String email,
     bool isResend = false,
   }) async {

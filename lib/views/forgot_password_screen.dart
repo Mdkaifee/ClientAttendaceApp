@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter/services.dart'; // ✅ for FilteringTextInputFormatter
 import '../viewmodels/forgot_password_viewmodel.dart';
 import 'otp_verification_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  final int organizationId;
+  final int organizationId; // kept for compatibility, not used
 
   const ForgotPasswordScreen({Key? key, required this.organizationId})
-    : super(key: key);
+      : super(key: key);
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -15,6 +16,7 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   final TextEditingController emailController = TextEditingController();
+  final TextEditingController orgIdController = TextEditingController();
   String? localError;
 
   @override
@@ -24,10 +26,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       child: Consumer<ForgotPasswordViewModel>(
         builder: (context, vm, _) {
           return Scaffold(
-            backgroundColor: Color(0xFF162244),
+            backgroundColor: const Color(0xFF162244),
             body: SafeArea(
               child: SingleChildScrollView(
-                padding: EdgeInsets.only(
+                padding: const EdgeInsets.only(
                   left: 32,
                   right: 32,
                   top: 12,
@@ -36,13 +38,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Logo + Titles Left Aligned
+                    // Header
                     Container(
                       width: double.infinity,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Image.asset("assets/logo.png", width: 80),
+                        children: const [
+                          // Replace with your actual logo widget if needed
+                          // Image.asset("assets/logo.png", width: 80),
                           SizedBox(height: 8),
                           Text(
                             'Forgot password',
@@ -66,12 +69,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
-                    // Step Indicators with connecting lines
+                    // Steps
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: const [
                         StepIndicator(
                           label: 'Submit email address',
                           isActive: true,
@@ -95,7 +98,29 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ],
                     ),
 
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
+
+                    // 🔹 Organization ID Input
+                    TextField(
+                      controller: orgIdController,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [FilteringTextInputFormatter.digitsOnly], // ✅ fixed
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white10,
+                        hintText: 'Organization ID',
+                        hintStyle: const TextStyle(color: Colors.white70),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      style: const TextStyle(color: Colors.white),
+                      onChanged: (_) {
+                        if (localError != null) setState(() => localError = null);
+                      },
+                    ),
+
+                    const SizedBox(height: 12),
 
                     // Email Input Field
                     TextField(
@@ -104,15 +129,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         filled: true,
                         fillColor: Colors.white10,
                         hintText: 'Email Address',
-                        hintStyle: TextStyle(color: Colors.white70),
+                        hintStyle: const TextStyle(color: Colors.white70),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      style: TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white),
                       onChanged: (_) {
-                        if (localError != null)
-                          setState(() => localError = null);
+                        if (localError != null) setState(() => localError = null);
                       },
                     ),
 
@@ -121,11 +145,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         padding: const EdgeInsets.only(top: 6.0),
                         child: Text(
                           localError!,
-                          style: TextStyle(color: Colors.redAccent),
+                          style: const TextStyle(color: Colors.redAccent),
                         ),
                       ),
 
-                    SizedBox(height: 24),
+                    const SizedBox(height: 24),
 
                     // Send Email Button
                     SizedBox(
@@ -135,41 +159,47 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         onPressed: vm.isLoading
                             ? null
                             : () {
-                                if (emailController.text.trim().isEmpty) {
-                                  setState(() {
-                                    localError = "Please enter your email";
-                                  });
+                                final email = emailController.text.trim();
+                                final orgText = orgIdController.text.trim();
+                                final orgId = int.tryParse(orgText);
+
+                                if (orgId == null) {
+                                  setState(() => localError =
+                                      "Please enter a valid Organization ID");
                                   return;
                                 }
-                                setState(() {
-                                  localError = null;
-                                });
+                                if (email.isEmpty) {
+                                  setState(() => localError =
+                                      "Please enter your email");
+                                  return;
+                                }
+
                                 vm.sendResetCode(
-                                  // widget.organizationId,
-                                  email: emailController.text,
+                                  organizationId: orgId, // ✅ pass orgId
+                                  email: email,
                                 );
                               },
-                        child: vm.isLoading
-                            ? CircularProgressIndicator(color: Colors.white)
-                            : Text(
-                                'Send email',
-                                style: TextStyle(fontSize: 18),
-                              ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.blueAccent,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(24),
                           ),
                         ),
+                        child: vm.isLoading
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : const Text(
+                                'Send email',
+                                style: TextStyle(fontSize: 18),
+                              ),
                       ),
                     ),
 
-                    SizedBox(height: 12),
+                    const SizedBox(height: 12),
 
                     if (vm.errorMessage != null)
                       Text(
                         vm.errorMessage!,
-                        style: TextStyle(color: Colors.redAccent),
+                        style: const TextStyle(color: Colors.redAccent),
                       ),
 
                     if (vm.success)
@@ -177,49 +207,59 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         builder: (context) {
                           Future.microtask(() {
                             if (ModalRoute.of(context)?.isCurrent ?? false) {
+                              final orgId =
+                                  int.parse(orgIdController.text.trim()); // ✅ define orgId
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => OtpVerificationScreen(
-                                    organizationId: widget.organizationId,
-                                    email: emailController.text,
+                                    organizationId: orgId, // ✅ use parsed value
+                                    email: emailController.text.trim(),
                                   ),
                                 ),
                               );
                               vm.clearSuccess();
                             }
                           });
-                          return Container();
+                          return const SizedBox.shrink();
                         },
                       ),
 
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
+                    // Resend
                     TextButton(
                       onPressed: vm.isLoading
                           ? null
                           : () {
-                              if (emailController.text.trim().isEmpty) {
-                                setState(() {
-                                  localError = "Please enter your email";
-                                });
+                              final email = emailController.text.trim();
+                              final orgText = orgIdController.text.trim();
+                              final orgId = int.tryParse(orgText);
+
+                              if (orgId == null) {
+                                setState(() => localError =
+                                    "Please enter a valid Organization ID");
                                 return;
                               }
-                              setState(() {
-                                localError = null;
-                              });
+                              if (email.isEmpty) {
+                                setState(() => localError =
+                                    "Please enter your email");
+                                return;
+                              }
+                              setState(() => localError = null);
+
                               vm.sendResetCode(
-                                // widget.organizationId,
-                                email: emailController.text,
+                                organizationId: orgId, // ✅ pass orgId for resend
+                                email: email,
                                 isResend: true,
                               );
                             },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
+                        children: const [
                           Text(
-                            'Didn\'t get the email?',
+                            "Didn't get the email?",
                             style: TextStyle(color: Colors.white70),
                             textAlign: TextAlign.center,
                           ),
@@ -242,13 +282,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
                     TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text(
+                      child: const Text(
                         'Back to sign in',
                         style: TextStyle(color: Colors.blue),
                       ),
@@ -270,7 +310,7 @@ class StepIndicator extends StatelessWidget {
   final bool isActive;
   final bool isLast;
 
-  StepIndicator({
+  const StepIndicator({
     required this.label,
     this.isActive = false,
     this.isLast = false,
@@ -292,15 +332,13 @@ class StepIndicator extends StatelessWidget {
             if (!isLast)
               Container(
                 width: 2,
-                height: 28, // Reduced height from 40 to 28
+                height: 28,
                 color: Colors.white38,
-                margin: EdgeInsets.only(
-                  top: 1,
-                ), // Reduced top margin from 2 to 1
+                margin: const EdgeInsets.only(top: 1),
               ),
           ],
         ),
-        SizedBox(width: 4), // Reduced width from 8 to 4
+        const SizedBox(width: 4),
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 2),
