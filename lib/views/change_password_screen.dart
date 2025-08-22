@@ -26,11 +26,13 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
   String? _passwordError;
 
   String? _successMessage;
+   String _passwordMatchMessage = '';
 
   @override
   void initState() {
     super.initState();
     passwordController.addListener(_checkPasswordStrength);
+     confirmPasswordController.addListener(_checkPasswordMatch);
     _checkPasswordStrength();
   }
 
@@ -44,14 +46,14 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
     bool hasAlpha = password.contains(RegExp(r'[a-zA-Z]'));
     bool hasNumber = password.contains(RegExp(r'[0-9]'));
-    bool hasSpecial = password.contains(RegExp(r'[%@_]'));
+    bool hasSpecial = password.contains(RegExp(r'[!@#$%^&*()_+\-=\[\]{};:"\\|,.<>?/`~]')); // Updated to include all special chars
     bool isLongEnough = password.length >= 8;
 
     // Check unmet rules for error text
     List<String> unmetRules = [];
     if (!hasAlpha) unmetRules.add("at least one letter");
     if (!hasNumber) unmetRules.add("at least one number");
-    if (!hasSpecial) unmetRules.add("at least one special character (%@_)");
+    if (!hasSpecial) unmetRules.add("at least one special character (!@#\$%^&*()_+\-=\[\]{};:\"\\|,.<>?/`~)");
     if (!isLongEnough) unmetRules.add("minimum 8 characters");
 
     if (unmetRules.isNotEmpty) {
@@ -83,6 +85,28 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
 
     setState(() {});
   }
+void _checkPasswordMatch() {
+  final password = passwordController.text;
+  final confirmPassword = confirmPasswordController.text;
+
+  // Only check when both fields have a value
+  if (password.isNotEmpty && confirmPassword.isNotEmpty) {
+    if (password == confirmPassword) {
+      setState(() {
+        _passwordMatchMessage = 'Passwords match';
+      });
+    } else {
+      setState(() {
+        _passwordMatchMessage = 'Password and Confirm password must match';
+      });
+    }
+  } else {
+    // Reset the message if either field is empty
+    setState(() {
+      _passwordMatchMessage = '';
+    });
+  }
+}
 
   @override
   void dispose() {
@@ -229,6 +253,19 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                     ),
                     style: TextStyle(color: Colors.white),
                   ),
+if (_passwordMatchMessage.isNotEmpty)
+  Padding(
+    padding: const EdgeInsets.only(top: 8),
+    child: Text(
+      _passwordMatchMessage,
+      style: TextStyle(
+        color: _passwordMatchMessage == 'Passwords match'
+            ? Colors.green
+            : Colors.redAccent,
+        fontSize: 14,
+      ),
+    ),
+  ),
 
                   SizedBox(height: 16),
                   // Password strength meter bar
@@ -285,21 +322,16 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                         ),
                       ),
                     ),
-
-                  SizedBox(
+                   SizedBox(
                     width: double.infinity,
                     height: 48,
                     child: ElevatedButton(
-                      onPressed: vm.isLoading || !_isPasswordStrongEnough
-                          ? null
+                      onPressed: vm.isLoading || !_isPasswordStrongEnough || _passwordMatchMessage != 'Passwords match'
+                          ? null // Disable button if not valid
                           : () async {
-                              // Passwords must match first
-                              if (passwordController.text !=
-                                  confirmPasswordController.text) {
+                              if (passwordController.text != confirmPasswordController.text) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text("Passwords don't match"),
-                                  ),
+                                  SnackBar(content: Text("Passwords don't match")),
                                 );
                                 return;
                               }
@@ -311,40 +343,30 @@ class _ChangePasswordScreenState extends State<ChangePasswordScreen> {
                                 newPassword: passwordController.text,
                               );
 
-                              // On success navigate back to login or wherever needed
-                              if (vm.success) {
-                                if (mounted) {
-                                  setState(() {
-                                    _successMessage =
-                                        "Password changed successfully!";
-                                  });
+                              if (mounted) {
+                                if (vm.success) {
+                                  // Show the success message from API in the SnackBar
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        "Password changed successfully",
-                                      ),
-                                    ),
+                                    SnackBar(content: Text(vm.message ?? "Password changed successfully")),
                                   );
-                                  // Optional delay before navigating away to show success message
+                                  // Optional delay before navigating away
                                   await Future.delayed(Duration(seconds: 1));
-                                  Navigator.popUntil(
-                                    context,
-                                    (route) => route.isFirst,
+                                  Navigator.popUntil(context, (route) => route.isFirst); // Go back to the first screen
+                                } else {
+                                  // Show error message if the password change failed
+                                  String errorMessage = vm.errorMessage ?? "Failed to change password!";
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text(errorMessage)),
                                   );
                                 }
                               }
                             },
                       child: vm.isLoading
                           ? CircularProgressIndicator(color: Colors.white)
-                          : Text(
-                              'Confirm changes',
-                              style: TextStyle(fontSize: 18),
-                            ),
+                          : Text('Confirm changes', style: TextStyle(fontSize: 18)),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.blueAccent,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(24),
-                        ),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
                       ),
                     ),
                   ),

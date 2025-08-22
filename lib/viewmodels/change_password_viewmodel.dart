@@ -8,6 +8,7 @@ class ChangePasswordViewModel extends ChangeNotifier {
   bool isLoading = false;
   String? errorMessage;
   bool success = false;
+  String? message; // Added this to store the success message
 
   Future<void> resetPassword({
     required int organizationId,
@@ -16,6 +17,7 @@ class ChangePasswordViewModel extends ChangeNotifier {
   }) async {
     isLoading = true;
     errorMessage = null;
+    message = null; // Reset message before the request
     success = false;
     notifyListeners();
 
@@ -34,7 +36,9 @@ class ChangePasswordViewModel extends ChangeNotifier {
         newPassword: newPassword,
       );
 
-      if (!success) {
+      if (success) {
+        message = "Password changed successfully"; // Set the success message here
+      } else {
         errorMessage = "Failed to reset password. Please try again.";
       }
     } catch (e) {

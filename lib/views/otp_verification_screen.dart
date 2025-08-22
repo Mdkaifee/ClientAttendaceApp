@@ -180,6 +180,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                       builder: (_) => ChangePasswordScreen(
                                         organizationId: widget.organizationId,
                                         code: otpCode,
+                                        // code: '123456',
                                       ),
                                     ),
                                   );
