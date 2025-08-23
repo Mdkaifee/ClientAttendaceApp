@@ -72,26 +72,30 @@ class AttendanceViewModel extends ChangeNotifier {
       );
 
       if (data != null) {
-        students = data
-            .map<AttendanceModel>(
-              (item) => AttendanceModel(
-                studentName:
-                    '${item['firstName'] ?? ''} ${item['lastName'] ?? ''}'
-                        .trim(),
-                avatarUrl: item['photoURL'] ?? '',
-                studentId: item['studentId'],
-                markCodeId: item['markCodeId']?.toString() ?? "",
-                markSubCodeId: item['markSubCodeId']?.toString() ?? "",
-                lateMinutes: item['lateMinutes']?.toString() ?? "",
-                token: token,
-                classId: classId,
-                calendarModelId: calendarModelId,
-                educationCentreClassIdDesc:
-                    item['educationCentreClassIdDesc'] ??
-                    'Dynamics 11 Plus Tuition Centre',
-              ),
-            )
-            .toList();
+       students = data.map<AttendanceModel>((item) {
+  print('Student data: ${item}');
+  print('Student ID: ${item['studentId']}');
+  print('First Name: ${item['firstName']}');
+  print('Last Name: ${item['lastName']}');
+  print('Late Minutes: ${item['lateInMinutes']}');
+  print('Mark Code ID: ${item['markCodeId']}');
+  print('Mark Sub Code ID: ${item['markSubCodeId']}');
+
+  return AttendanceModel(
+    studentName: '${item['firstName'] ?? ''} ${item['lastName'] ?? ''}'.trim(),
+    avatarUrl: item['photoURL'] ?? '',
+    studentId: item['studentId'],
+    markCodeId: item['markCodeId']?.toString() ?? "",
+    markSubCodeId: item['markSubCodeId']?.toString() ?? "",
+    lateMinutes: item['lateInMinutes']?.toString() ?? "",
+    token: token,
+    classId: classId,
+    calendarModelId: calendarModelId,
+    educationCentreClassIdDesc: item['educationCentreClassIdDesc'] ?? 'Dynamics 11 Plus Tuition Centre',
+  );
+}).toList();
+
+
       } else {
         error =
             "Token expired or no data found,Please login again."; // If no data is found, keep this error message

@@ -171,444 +171,6 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
-  // Widget _buildMarkButton(student, AttendanceViewModel vm) {
-  //   return Container(
-  //     decoration: BoxDecoration(
-  //       borderRadius: BorderRadius.circular(20),
-  //       //   color: student.markCodeId == '1042' || student.isMarked
-  //       //       ? Colors.grey
-  //       //       : Color(0xFF1F4F91),
-  //       // ),
-  //       color: const Color(0xFF1F4F91),
-  //     ),
-  //     child: PopupMenuButton<String>(
-  //       enabled: !student.isMarked,
-  //       onSelected: (value) {
-  //         if (!student.isMarked) {
-  //           setState(() {
-  //             student.markCodeId = value;
-
-  //             final selectedMarkCode = vm.markCodes.firstWhere(
-  //               (code) => code['id'].toString() == value,
-  //               orElse: () => null,
-  //             );
-
-  //             student.markCodeName = selectedMarkCode?['name'];
-
-  //             print('Selected mark code name: ${student.markCodeName}');
-
-  //             if (student.markCodeId == '1040') {
-  //               // Present – call API immediately
-  //               student.lateMinutes = "0";
-  //               vm.markStudent(student, student.markSubCodeId).then((success) {
-  //                 ScaffoldMessenger.of(context).showSnackBar(
-  //                   SnackBar(
-  //                     content: Text(
-  //                       success
-  //                           ? 'Attendance for ${student.studentName} updated successfully.'
-  //                           : 'Failed to update attendance for ${student.studentName}.',
-  //                     ),
-  //                   ),
-  //                 );
-  //               });
-  //             } else if (student.markCodeId == '1043') {
-  //               // Present but Late – wait for user to enter minutes
-  //               student.lateMinutes = ''; // Clear field to force input
-  //               // No API call here
-  //             } else if (student.markCodeId != '1042') {
-  //               // Other types (if any) can call API here
-  //               vm.markStudent(student, student.markSubCodeId).then((success) {
-  //                 ScaffoldMessenger.of(context).showSnackBar(
-  //                   SnackBar(
-  //                     content: Text(
-  //                       success
-  //                           ? 'Attendance for ${student.studentName} updated successfully.'
-  //                           : 'Failed to update attendance for ${student.studentName}.',
-  //                     ),
-  //                   ),
-  //                 );
-  //               });
-  //             }
-  //           });
-  //         }
-  //       },
-  //       itemBuilder: (context) {
-  //         return vm.markCodes.map((code) {
-  //           return PopupMenuItem<String>(
-  //             value: code['id'].toString(),
-  //             child: Text(code['description']),
-  //           );
-  //         }).toList();
-  //       },
-  //       child: Padding(
-  //         padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-  //         child: SizedBox(
-  //           width: 80,
-  //           child: Center(
-  //             child: Text(
-  //               student.markCodeId == '1043'
-  //                   ? 'Present but Late'
-  //                   : student.markCodeId == '1042'
-  //                   ? 'Absent'
-  //                   : student.markCodeId == '1040'
-  //                   ? 'Present'
-  //                   : 'Mark',
-  //               style: TextStyle(color: Colors.white, fontSize: 12),
-  //               maxLines: 1,
-  //               overflow: TextOverflow.ellipsis,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildSubMarkButton(student, AttendanceViewModel vm) {
-  //   return ElevatedButton(
-  //     onPressed: () {}, // Always visible now
-  //     style: ElevatedButton.styleFrom(
-  //       // backgroundColor: (student.markCodeId == '1042' && !student.isMarked)
-  //       //   ? Color(0xFF1F4F91)
-  //       //   : Colors.grey,
-  //       backgroundColor: const Color(0xFF1F4F91),
-  //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-  //       padding: EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-  //       elevation: 0,
-  //     ),
-  //     child: PopupMenuButton<String>(
-  //       onSelected: (value) {
-  //         if (student.isMarked) return;
-
-  //         // ✅ Check if Absent is selected first
-  //         if (student.markCodeId != '1042') {
-  //           ScaffoldMessenger.of(context).showSnackBar(
-  //             SnackBar(
-  //               content: Text(
-  //                 'Please select Absent from Mark before choosing a reason.',
-  //               ),
-  //             ),
-  //           );
-  //           return;
-  //         }
-
-  //         setState(() {
-  //           final selectedSubCode = vm.markSubCodes.firstWhere(
-  //             (subCode) => subCode['description'] == value,
-  //             orElse: () => null,
-  //           );
-
-  //           student.markSubCodeId =
-  //               selectedSubCode?['id']?.toString() ?? 'Unknown';
-  //           student.markSubCodeDescription =
-  //               selectedSubCode?['description'] ?? 'Unknown';
-
-  //           // ✅ Call API ONLY if Absent mark is already selected
-  //           vm.markStudent(student, student.markSubCodeId).then((success) {
-  //             ScaffoldMessenger.of(context).showSnackBar(
-  //               SnackBar(
-  //                 content: Text(
-  //                   success
-  //                       ? 'Attendance for ${student.studentName} updated successfully.'
-  //                       : 'Failed to update attendance for ${student.studentName}.',
-  //                 ),
-  //               ),
-  //             );
-  //           });
-  //         });
-  //       },
-  //       itemBuilder: (context) {
-  //         // Always show the submark list, even if disabled
-  //         return vm.markSubCodes.map((subCode) {
-  //           return PopupMenuItem<String>(
-  //             value: subCode['description'].toString(),
-  //             child: Text(subCode['description']),
-  //           );
-  //         }).toList();
-  //       },
-  //       child: SizedBox(
-  //         width: 80,
-  //         child: Center(
-  //           child: Text(
-  //             student.markSubCodeDescription ?? 'Sub-Mark',
-  //             style: TextStyle(color: Colors.white, fontSize: 12),
-  //             maxLines: 1,
-  //             overflow: TextOverflow.ellipsis,
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildLateInputField(student, AttendanceViewModel vm) {
-  //   final controller = TextEditingController(text: student.lateMinutes ?? '');
-  //   controller.selection = TextSelection.fromPosition(
-  //     TextPosition(offset: controller.text.length),
-  //   );
-
-  //   return Container(
-  //     width: 60,
-  //     height: 36,
-  //     padding: EdgeInsets.symmetric(horizontal: 5),
-  //     decoration: BoxDecoration(
-  //       color: Color(0xFF16345E),
-  //       borderRadius: BorderRadius.circular(8),
-  //     ),
-  //     child: TextField(
-  //       // ✅ Always enabled now
-  //       enabled: !student.isMarked,
-  //       style: TextStyle(color: Colors.white),
-  //       textAlign: TextAlign.center,
-  //       decoration: InputDecoration(
-  //         hintText: 'Late',
-  //         hintStyle: TextStyle(color: Colors.white38),
-  //         border: InputBorder.none,
-  //         isDense: true,
-  //         contentPadding: EdgeInsets.zero,
-  //       ),
-  //       keyboardType: TextInputType.number,
-  //       controller: controller,
-  //       onChanged: (val) {
-  //         student.lateMinutes = val;
-  //       },
-  //       onSubmitted: (val) {
-  //         if (student.isMarked) return;
-  //         if (val.isEmpty || int.tryParse(val) == null) return;
-
-  //         student.lateMinutes = val;
-
-  //         // ✅ API call only if Present but Late is selected
-  //         if (student.markCodeId == '1043') {
-  //           vm.markStudent(student, student.markSubCodeId).then((success) {
-  //             ScaffoldMessenger.of(context).showSnackBar(
-  //               SnackBar(
-  //                 content: Text(
-  //                   success
-  //                       ? 'Attendance for ${student.studentName} updated successfully.'
-  //                       : 'Failed to update attendance for ${student.studentName}.',
-  //                 ),
-  //               ),
-  //             );
-  //           });
-  //         } else {
-  //           ScaffoldMessenger.of(context).showSnackBar(
-  //             SnackBar(
-  //               content: Text(
-  //                 'Please select Present but Late from Mark before entering minutes.',
-  //               ),
-  //             ),
-  //           );
-  //         }
-  //       },
-  //     ),
-  //   );
-//   // }
-// Widget _buildMarkButton(student, AttendanceViewModel vm) {
-//   return Container(
-//     decoration: BoxDecoration(
-//       borderRadius: BorderRadius.circular(20),
-//       color: const Color(0xFF1F4F91),
-//     ),
-//     child: PopupMenuButton<String>(
-//       enabled: !student.isMarked,
-//       onSelected: (value) {
-//         if (!student.isMarked) {
-//           setState(() {
-//             student.markCodeId = value;
-
-//             final selectedMarkCode = vm.markCodes.firstWhere(
-//               (code) => code['id'].toString() == value,
-//               orElse: () => null,
-//             );
-//             student.markCodeName = selectedMarkCode?['name'];
-
-//             // Present – call API immediately with lateMinutes = 0
-//             if (student.markCodeId == '1040') {
-//               student.lateMinutes = "0";
-//               vm.markStudent(student, student.markSubCodeId).then((success) {
-//                 if (!mounted) return;
-//                 if (success) {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     SnackBar(content: Text('Attendance for ${student.studentName} updated successfully.')),
-//                   );
-//                 } else if ((vm.error?.isNotEmpty ?? false)) {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     SnackBar(content: Text(vm.error!)),
-//                   );
-//                 }
-//               });
-//             }
-//             // Present but Late – wait for user to enter minutes (no API yet)
-//             else if (student.markCodeId == '1043') {
-//               student.lateMinutes = '';
-//             }
-//             // Other types (excluding Absent) – call API immediately
-//             else if (student.markCodeId != '1042') {
-//               vm.markStudent(student, student.markSubCodeId).then((success) {
-//                 if (!mounted) return;
-//                 if (success) {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     SnackBar(content: Text('Attendance for ${student.studentName} updated successfully.')),
-//                   );
-//                 } else if ((vm.error?.isNotEmpty ?? false)) {
-//                   ScaffoldMessenger.of(context).showSnackBar(
-//                     SnackBar(content: Text(vm.error!)),
-//                   );
-//                 }
-//               });
-//             }
-//           });
-//         }
-//       },
-//       itemBuilder: (context) {
-//         return vm.markCodes.map((code) {
-//           return PopupMenuItem<String>(
-//             value: code['id'].toString(),
-//             child: Text(code['description']),
-//           );
-//         }).toList();
-//       },
-//       child: Padding(
-//         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-//         child: SizedBox(
-//           width: 80,
-//           child: Center(
-//             child: Text(
-//               student.markCodeId == '1043'
-//                   ? 'Present but Late'
-//                   : student.markCodeId == '1042'
-//                       ? 'Absent'
-//                       : student.markCodeId == '1040'
-//                           ? 'Present'
-//                           : 'Mark',
-//               style: const TextStyle(color: Colors.white, fontSize: 12),
-//               maxLines: 1,
-//               overflow: TextOverflow.ellipsis,
-//             ),
-//           ),
-//         ),
-//       ),
-//     ),
-//   );
-// }
-// Widget _buildSubMarkButton(student, AttendanceViewModel vm) {
-//   return ElevatedButton(
-//     onPressed: () {}, // always visible
-//     style: ElevatedButton.styleFrom(
-//       backgroundColor: const Color(0xFF1F4F91),
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-//       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
-//       elevation: 0,
-//     ),
-//     child: PopupMenuButton<String>(
-//       onSelected: (value) {
-//         if (student.isMarked) return;
-
-//         // Only allow picking sub-mark when Absent is already selected; no client toast
-//         if (student.markCodeId != '1042') return;
-
-//         setState(() {
-//           final selectedSubCode = vm.markSubCodes.firstWhere(
-//             (subCode) => subCode['description'] == value,
-//             orElse: () => null,
-//           );
-
-//           student.markSubCodeId = selectedSubCode?['id']?.toString() ?? 'Unknown';
-//           student.markSubCodeDescription = selectedSubCode?['description'] ?? 'Unknown';
-
-//           vm.markStudent(student, student.markSubCodeId).then((success) {
-//             if (!mounted) return;
-//             if (success) {
-//               ScaffoldMessenger.of(context).showSnackBar(
-//                 SnackBar(content: Text('Attendance for ${student.studentName} updated successfully.')),
-//               );
-//             } else if ((vm.error?.isNotEmpty ?? false)) {
-//               ScaffoldMessenger.of(context).showSnackBar(
-//                 SnackBar(content: Text(vm.error!)),
-//               );
-//             }
-//           });
-//         });
-//       },
-//       itemBuilder: (context) {
-//         return vm.markSubCodes.map((subCode) {
-//           return PopupMenuItem<String>(
-//             value: subCode['description'].toString(),
-//             child: Text(subCode['description']),
-//           );
-//         }).toList();
-//       },
-//       child: SizedBox(
-//         width: 80,
-//         child: Center(
-//           child: Text(
-//             student.markSubCodeDescription ?? 'Sub-Mark',
-//             style: const TextStyle(color: Colors.white, fontSize: 12),
-//             maxLines: 1,
-//             overflow: TextOverflow.ellipsis,
-//           ),
-//         ),
-//       ),
-//     ),
-//   );
-// }
-// Widget _buildLateInputField(student, AttendanceViewModel vm) {
-//   final controller = TextEditingController(text: student.lateMinutes ?? '');
-//   controller.selection = TextSelection.fromPosition(
-//     TextPosition(offset: controller.text.length),
-//   );
-
-//   return Container(
-//     width: 60,
-//     height: 36,
-//     padding: const EdgeInsets.symmetric(horizontal: 5),
-//     decoration: BoxDecoration(
-//       color: const Color(0xFF16345E),
-//       borderRadius: BorderRadius.circular(8),
-//     ),
-//     child: TextField(
-//       enabled: !student.isMarked,
-//       style: const TextStyle(color: Colors.white),
-//       textAlign: TextAlign.center,
-//       decoration: const InputDecoration(
-//         hintText: 'Late',
-//         hintStyle: TextStyle(color: Colors.white38),
-//         border: InputBorder.none,
-//         isDense: true,
-//         contentPadding: EdgeInsets.zero,
-//       ),
-//       keyboardType: TextInputType.number,
-//       controller: controller,
-//       onChanged: (val) {
-//         student.lateMinutes = val;
-//       },
-//       onSubmitted: (val) {
-//         if (student.isMarked) return;
-//         if (val.isEmpty || int.tryParse(val) == null) return;
-
-//         student.lateMinutes = val;
-
-//         // Only call API when "Present but Late" is selected; no client toast otherwise
-//         if (student.markCodeId == '1043') {
-//           vm.markStudent(student, student.markSubCodeId).then((success) {
-//             if (!mounted) return;
-//             if (success) {
-//               ScaffoldMessenger.of(context).showSnackBar(
-//                 SnackBar(content: Text('Attendance for ${student.studentName} updated successfully.')),
-//               );
-//             } else if ((vm.error?.isNotEmpty ?? false)) {
-//               ScaffoldMessenger.of(context).showSnackBar(
-//                 SnackBar(content: Text(vm.error!)),
-//               );
-//             }
-//           });
-//         }
-//       },
-//     ),
-//   );
-// }
-
 Widget _buildMarkButton(student, AttendanceViewModel vm) {
   return Container(
     decoration: BoxDecoration(
@@ -729,7 +291,109 @@ Widget _buildMarkButton(student, AttendanceViewModel vm) {
   );
 }
 
+// Widget _buildSubMarkButton(student, AttendanceViewModel vm) {
+//   return ElevatedButton(
+//     onPressed: () {},
+//     style: ElevatedButton.styleFrom(
+//       backgroundColor: const Color(0xFF1F4F91),
+//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+//       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+//       elevation: 0,
+//     ),
+//     child: PopupMenuButton<String>(
+//       onSelected: (value) {
+//         if (student.isMarked) return;
+//         if (student.markCodeId != '1042') return;
+
+//         setState(() {
+//           final selectedSubCode = vm.markSubCodes.firstWhere(
+//             (subCode) => subCode['description'] == value,
+//             orElse: () => null,
+//           );
+
+//           student.markSubCodeId = selectedSubCode?['id']?.toString() ?? 'Unknown';
+//           student.markSubCodeDescription =
+//               selectedSubCode?['description'] ?? 'Unknown';
+
+//           void showColorfulSnackBar(String message, List<Color> colors, IconData icon) {
+//             final snackBar = SnackBar(
+//               behavior: SnackBarBehavior.floating,
+//               margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+//               backgroundColor: Colors.transparent,
+//               elevation: 0,
+//               padding: EdgeInsets.zero,
+//               content: Container(
+//                 padding: const EdgeInsets.all(14),
+//                 decoration: BoxDecoration(
+//                   gradient: LinearGradient(colors: colors),
+//                   borderRadius: BorderRadius.circular(14),
+//                 ),
+//                 child: Row(
+//                   children: [
+//                     Icon(icon, color: Colors.white),
+//                     const SizedBox(width: 10),
+//                     Expanded(
+//                       child: Text(message,
+//                           style: const TextStyle(
+//                               color: Colors.white,
+//                               fontWeight: FontWeight.bold,
+//                               fontSize: 15)),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             );
+//             ScaffoldMessenger.of(context).showSnackBar(snackBar);
+//           }
+
+//           vm.markStudent(student, student.markSubCodeId).then((success) {
+//             if (!mounted) return;
+//             if (success) {
+//               showColorfulSnackBar(
+//                   '${student.studentName} marked Absent (${student.markSubCodeDescription})',
+//                   [Colors.red, Colors.pinkAccent],
+//                   Icons.cancel);
+//             } else if ((vm.error?.isNotEmpty ?? false)) {
+//               showColorfulSnackBar(vm.error!,
+//                   [Colors.redAccent, Colors.deepOrange], Icons.error);
+//             }
+//           });
+//         });
+//       },
+//       itemBuilder: (context) {
+//         return vm.markSubCodes.map((subCode) {
+//           return PopupMenuItem<String>(
+//             value: subCode['description'].toString(),
+//             child: Text(subCode['description']),
+//           );
+//         }).toList();
+//       },
+//       child: SizedBox(
+//         width: 80,
+//         child: Center(
+//           child: Text(
+//             student.markSubCodeDescription ?? 'Sub-Mark',
+//             style: const TextStyle(color: Colors.white, fontSize: 12),
+//             maxLines: 1,
+//             overflow: TextOverflow.ellipsis,
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+// }
+
 Widget _buildSubMarkButton(student, AttendanceViewModel vm) {
+  // Check if the student is absent
+  if (student.markCodeId == '1042') {
+    final selectedSubCode = vm.markSubCodes.firstWhere(
+      (subCode) => subCode['id'].toString() == student.markSubCodeId,
+      orElse: () => null,
+    );
+
+    student.markSubCodeDescription = selectedSubCode?['description'] ?? 'Sub-Mark';
+  }
+
   return ElevatedButton(
     onPressed: () {},
     style: ElevatedButton.styleFrom(
@@ -750,8 +414,7 @@ Widget _buildSubMarkButton(student, AttendanceViewModel vm) {
           );
 
           student.markSubCodeId = selectedSubCode?['id']?.toString() ?? 'Unknown';
-          student.markSubCodeDescription =
-              selectedSubCode?['description'] ?? 'Unknown';
+          student.markSubCodeDescription = selectedSubCode?['description'] ?? 'Unknown';
 
           void showColorfulSnackBar(String message, List<Color> colors, IconData icon) {
             final snackBar = SnackBar(
@@ -906,7 +569,6 @@ Widget _buildLateInputField(student, AttendanceViewModel vm) {
     ),
   );
 }
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
