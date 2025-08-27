@@ -83,8 +83,27 @@ class _RegisterSelectScreenState extends State<RegisterSelectScreen> {
                   );
                 });
               }
+
               return Center(
-                child: Text(vm.error!, style: TextStyle(color: Colors.white)),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(vm.error!, style: TextStyle(color: Colors.white)),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (context) => LoginScreen()),
+                        );
+                      },
+                      child: Text('Login'),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                      ),
+                    ),
+                  ],
+                ),
               );
             }
 
@@ -175,7 +194,7 @@ class _RegisterSelectScreenState extends State<RegisterSelectScreen> {
                             isExpanded: true,
                             // Ensures the dropdown takes up available width
                             items: [
-                              DropdownMenuItem<int>(
+                              DropdownMenuItem<int>( 
                                 value: null,
                                 child: Text(
                                   'Select Year Group',
@@ -189,7 +208,6 @@ class _RegisterSelectScreenState extends State<RegisterSelectScreen> {
                                     e.name, // Display year group name
                                     style: TextStyle(color: Colors.white),
                                     overflow: TextOverflow.ellipsis,
-                                    // Truncate long text with ellipsis
                                     maxLines:
                                         1, // Ensure the text doesn't wrap to the next line
                                   ),

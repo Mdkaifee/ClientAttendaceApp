@@ -5,8 +5,7 @@ class AttendanceModel {
   String lateMinutes; // to hold user input
   String? markCodeId; // optional: to track selected mark code
   String? markSubCodeId; // optional: to track sub-mark code
-  String?
-  markSubCodeDescription; // New field for description of selected subcode
+  String? markSubCodeDescription; // New field for description of selected subcode
   final String token; // Add this to hold token for API requests
   final int classId; // Add this for class ID
   final int calendarModelId; // Add this for calendar model ID

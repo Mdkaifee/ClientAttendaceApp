@@ -140,61 +140,182 @@ print('--- fetchAttendance Request Payload ---');
     return null;
   }
 
-  Future<Map<String, dynamic>?> saveStudentAttendance({
-    required String token,
-    required int classId,
-    required String lateInMinutes,
-    required String markCodeId,
-    String? markSubCodeId,
-    required int studentId,
-    String? calendarId,
-    required int calendarModelId,
-    required String studentFirstName,
-    required String studentLastName,
-    required String educationCentreClassIdDesc,
-  }) async {
-    if (!await NetworkService().isConnected()) {
-      print('❌ No Internet Connection');
-      return null;
-    }
-    final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDataSave');
+  // Future<Map<String, dynamic>?> saveStudentAttendance({
+  //   required String token,
+  //   required int classId,
+  //   required String lateInMinutes,
+  //   required String markCodeId,
+  //   String? markSubCodeId,
+  //   required int studentId,
+  //   String? calendarId,
+  //   required int calendarModelId,
+  //   required String studentFirstName,
+  //   required String studentLastName,
+  //   required String educationCentreClassIdDesc,
+  // }) async {
+  //   if (!await NetworkService().isConnected()) {
+  //     print('❌ No Internet Connection');
+  //     return null;
+  //   }
+  //   final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDataSave');
 
-    final headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer $token',
-    };
+  //   final headers = {
+  //     'Content-Type': 'application/json',
+  //     'Authorization': 'Bearer $token',
+  //   };
 
-    final body = jsonEncode({
-      "ClassId": classId,
-      "LateInMinutes": lateInMinutes,
-      "MarkCodeId": markCodeId,
-      "MarkSubCodeId": markSubCodeId,
-      "StudentId": studentId,
-      "CalendarId": calendarId,
-      "CalendarModelId": calendarModelId,
-      "StudentFirstName": studentFirstName,
-      "StudentLastName": studentLastName,
-      "EducationCentreClassIdDesc": educationCentreClassIdDesc,
-    });
+  //   final body = jsonEncode({
+  //     "ClassId": classId,
+  //     "LateInMinutes": lateInMinutes,
+  //     "MarkCodeId": markCodeId,
+  //     "MarkSubCodeId": markSubCodeId,
+  //     "StudentId": studentId,
+  //     "CalendarId": calendarId,
+  //     "CalendarModelId": calendarModelId,
+  //     "StudentFirstName": studentFirstName,
+  //     "StudentLastName": studentLastName,
+  //     "EducationCentreClassIdDesc": educationCentreClassIdDesc,
+  //   });
 
-    print('--- saveStudentAttendance Request ---');
-    print('POST $url');
-    print('Headers: $headers');
-    print('Body: $body');
+  //   print('--- saveStudentAttendance Request ---');
+  //   print('POST $url');
+  //   print('Headers: $headers');
+  //   print('Body: $body');
 
-    final response = await http.post(url, headers: headers, body: body);
+  //   final response = await http.post(url, headers: headers, body: body);
 
-    print('--- saveStudentAttendance Response ---');
-    print('Status: ${response.statusCode}');
-    print('Body: ${response.body}');
+  //   print('--- saveStudentAttendance Response ---');
+  //   print('Status: ${response.statusCode}');
+  //   print('Body: ${response.body}');
 
-    if (response.statusCode == 200) {
-      final json = jsonDecode(response.body);
-      return json;
-    }
+  //   if (response.statusCode == 200) {
+  //     final json = jsonDecode(response.body);
+  //     return json;
+  //   }
 
+  //   return null;
+  // }
+// Future<Map<String, dynamic>?> saveStudentAttendance({
+//   required String token,
+//   required int classId,
+//   required String lateInMinutes,
+//   required String markCodeId,
+//   String? markSubCodeId,
+//   required int studentId,
+//   String? calendarId,
+//   required int calendarModelId,
+//   required String studentFirstName,
+//   required String studentLastName,
+//   required String educationCentreClassIdDesc,
+// }) async {
+//   if (!await NetworkService().isConnected()) {
+//     print('❌ No Internet Connection');
+//     return null;
+//   }
+//   final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDataSave');
+
+//   final headers = {
+//     'Content-Type': 'application/json',
+//     'Authorization': 'Bearer $token',
+//   };
+
+//   // Check if MarkSubCodeId should be null
+//   if (markSubCodeId?.isEmpty ?? true) {
+//     markSubCodeId = null;
+//   }
+
+//   final body = jsonEncode({
+//     "ClassId": classId,
+//     "LateInMinutes": lateInMinutes,
+//     "MarkCodeId": markCodeId,
+//     "MarkSubCodeId": markSubCodeId, // This will be null if not provided
+//     "StudentId": studentId,
+//     "CalendarId": calendarId,
+//     "CalendarModelId": calendarModelId,
+//     "StudentFirstName": studentFirstName,
+//     "StudentLastName": studentLastName,
+//     "EducationCentreClassIdDesc": educationCentreClassIdDesc,
+//   });
+
+//   print('--- saveStudentAttendance Request ---');
+//   print('POST $url');
+//   print('Headers: $headers');
+//   print('Body: $body');
+
+//   final response = await http.post(url, headers: headers, body: body);
+
+//   print('--- saveStudentAttendance Response ---');
+//   print('Status: ${response.statusCode}');
+//   print('Body: ${response.body}');
+
+//   if (response.statusCode == 200) {
+//     final json = jsonDecode(response.body);
+//     return json;
+//   }
+
+//   return null;
+// }
+// Assuming `student.markSubCodeId` contains the correct ID
+Future<Map<String, dynamic>?> saveStudentAttendance({
+  required String token,
+  required int classId,
+  required String lateInMinutes,
+  required String markCodeId,
+  String? markSubCodeId, // This should be an ID, not a description
+  required int studentId,
+  String? calendarId,
+  required int calendarModelId,
+  required String studentFirstName,
+  required String studentLastName,
+  required String educationCentreClassIdDesc,
+}) async {
+  if (!await NetworkService().isConnected()) {
+    print('❌ No Internet Connection');
     return null;
   }
+  final url = Uri.parse('$_attendanceBaseUrl/api/StudentAttendanceDataSave');
+
+  final headers = {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer $token',
+  };
+
+  // Check if MarkSubCodeId should be null
+  if (markSubCodeId?.isEmpty ?? true) {
+    markSubCodeId = null; // If empty, set it to null
+  }
+
+  final body = jsonEncode({
+    "ClassId": classId,
+    "LateInMinutes": lateInMinutes,
+    "MarkCodeId": markCodeId,
+    "MarkSubCodeId": markSubCodeId, // Send the ID, not the description
+    "StudentId": studentId,
+    "CalendarId": calendarId,
+    "CalendarModelId": calendarModelId,
+    "StudentFirstName": studentFirstName,
+    "StudentLastName": studentLastName,
+    "EducationCentreClassIdDesc": educationCentreClassIdDesc,
+  });
+
+  print('--- saveStudentAttendance Request ---');
+  print('POST $url');
+  print('Headers: $headers');
+  print('Body: $body');
+
+  final response = await http.post(url, headers: headers, body: body);
+
+  print('--- saveStudentAttendance Response ---');
+  print('Status: ${response.statusCode}');
+  print('Body: ${response.body}');
+
+  if (response.statusCode == 200) {
+    final json = jsonDecode(response.body);
+    return json;
+  }
+
+  return null;
+}
 
   Future<Map<String, dynamic>?> submitAttendanceRegister({
     required String token,

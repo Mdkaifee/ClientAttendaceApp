@@ -13,6 +13,7 @@ class ChangePasswordViewModel extends ChangeNotifier {
   Future<void> resetPassword({
     required int organizationId,
     required String code,
+    required String email,
     required String newPassword,
   }) async {
     isLoading = true;
@@ -34,6 +35,7 @@ class ChangePasswordViewModel extends ChangeNotifier {
         organizationId: organizationId,
         code: code,
         newPassword: newPassword,
+        email: email,
       );
 
       if (success) {

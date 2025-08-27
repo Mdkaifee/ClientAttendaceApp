@@ -4,9 +4,10 @@ import '../viewmodels/change_password_viewmodel.dart';
 
 class ChangePasswordScreen extends StatefulWidget {
   final int organizationId;
+  final String email; 
   final String code;
 
-  ChangePasswordScreen({required this.organizationId, required this.code});
+  ChangePasswordScreen({required this.organizationId,required this.email, required this.code});
 
   @override
   _ChangePasswordScreenState createState() => _ChangePasswordScreenState();
@@ -266,7 +267,6 @@ if (_passwordMatchMessage.isNotEmpty)
       ),
     ),
   ),
-
                   SizedBox(height: 16),
                   // Password strength meter bar
                   ClipRRect(
@@ -340,6 +340,7 @@ if (_passwordMatchMessage.isNotEmpty)
                               await vm.resetPassword(
                                 organizationId: widget.organizationId,
                                 code: widget.code,
+                                email: widget.email,
                                 newPassword: passwordController.text,
                               );
 

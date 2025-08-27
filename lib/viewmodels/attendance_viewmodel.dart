@@ -46,74 +46,130 @@ class AttendanceViewModel extends ChangeNotifier {
         .toList();
   }
 
-  Future<void> loadAttendance({
-    required String token,
-    required int classId,
-    required String attendanceTakenDate,
-    required int calendarModelId,
-  }) async {
-    isLoading = true;
-    error = null;
-    notifyListeners();
-    // ✅ Check internet
-    if (!await NetworkService().isConnected()) {
-      error = "No Internet Connection";
-      isLoading = false;
-      notifyListeners();
-      return;
-    }
+//   Future<void> loadAttendance({
+//     required String token,
+//     required int classId,
+//     required String attendanceTakenDate,
+//     required int calendarModelId,
+//   }) async {
+//     isLoading = true;
+//     error = null;
+//     notifyListeners();
+//     // ✅ Check internet
+//     if (!await NetworkService().isConnected()) {
+//       error = "No Internet Connection";
+//       isLoading = false;
+//       notifyListeners();
+//       return;
+//     }
 
-    try {
-      final data = await _apiService.fetchAttendance(
-        token: token,
-        classId: classId,
-        attendanceTakenDate: attendanceTakenDate,
-        calendarModelId: calendarModelId,
-      );
+//     try {
+//       final data = await _apiService.fetchAttendance(
+//         token: token,
+//         classId: classId,
+//         attendanceTakenDate: attendanceTakenDate,
+//         calendarModelId: calendarModelId,
+//       );
 
-      if (data != null) {
-       students = data.map<AttendanceModel>((item) {
-  print('Student data: ${item}');
-  print('Student ID: ${item['studentId']}');
-  print('First Name: ${item['firstName']}');
-  print('Last Name: ${item['lastName']}');
-  print('Late Minutes: ${item['lateInMinutes']}');
-  print('Mark Code ID: ${item['markCodeId']}');
-  print('Mark Sub Code ID: ${item['markSubCodeId']}');
+//       if (data != null) {
+//        students = data.map<AttendanceModel>((item) {
+//   print('Student data: ${item}');
+//   print('Student ID: ${item['studentId']}');
+//   print('First Name: ${item['firstName']}');
+//   print('Last Name: ${item['lastName']}');
+//   print('Late Minutes: ${item['lateInMinutes']}');
+//   print('Mark Code ID: ${item['markCodeId']}');
+//   print('Mark Sub Code ID: ${item['markSubCodeId']}');
 
-  return AttendanceModel(
-    studentName: '${item['firstName'] ?? ''} ${item['lastName'] ?? ''}'.trim(),
-    avatarUrl: item['photoURL'] ?? '',
-    studentId: item['studentId'],
-    markCodeId: item['markCodeId']?.toString() ?? "",
-    markSubCodeId: item['markSubCodeId']?.toString() ?? "",
-    lateMinutes: item['lateInMinutes']?.toString() ?? "",
-    token: token,
-    classId: classId,
-    calendarModelId: calendarModelId,
-    educationCentreClassIdDesc: item['educationCentreClassIdDesc'] ?? 'Dynamics 11 Plus Tuition Centre',
-  );
-}).toList();
+//   return AttendanceModel(
+//     studentName: '${item['firstName'] ?? ''} ${item['lastName'] ?? ''}'.trim(),
+//     avatarUrl: item['photoURL'] ?? '',
+//     studentId: item['studentId'],
+//     markCodeId: item['markCodeId']?.toString() ?? "",
+//     markSubCodeId: item['markSubCodeId']?.toString() ?? "",
+//     lateMinutes: item['lateInMinutes']?.toString() ?? "",
+//     token: token,
+//     classId: classId,
+//     calendarModelId: calendarModelId,
+//     educationCentreClassIdDesc: item['educationCentreClassIdDesc'] ?? 'Dynamics 11 Plus Tuition Centre',
+//   );
+// }).toList();
 
 
-      } else {
-        error =
-            "Token expired or no data found,Please login again."; // If no data is found, keep this error message
-      }
-    } catch (e) {
-      if (e.toString().contains("401")) {
-        error = "Token expired or no data found."; // Set error for token expiry
-      } else {
-        error = "Error: $e"; // Generic error handling
-      }
-    }
+//       } else {
+//         error =
+//             "Token expired or no data found,Please login again."; // If no data is found, keep this error message
+//       }
+//     } catch (e) {
+//       if (e.toString().contains("401")) {
+//         error = "Token expired or no data found."; // Set error for token expiry
+//       } else {
+//         error = "Error: $e"; // Generic error handling
+//       }
+//     }
 
-    // Fetch the mark codes and sub-mark codes
-    await loadMarkCodes(token);
+//     // Fetch the mark codes and sub-mark codes
+//     await loadMarkCodes(token);
 
+//     isLoading = false;
+//     notifyListeners();
+//   }
+Future<void> loadAttendance({
+  required String token,
+  required int classId,
+  required String attendanceTakenDate,
+  required int calendarModelId,
+}) async {
+  isLoading = true;
+  error = null;
+  notifyListeners();
+
+  // Check internet
+  if (!await NetworkService().isConnected()) {
+    error = "No Internet Connection";
     isLoading = false;
     notifyListeners();
+    return;
   }
+
+  try {
+    final data = await _apiService.fetchAttendance(
+      token: token,
+      classId: classId,
+      attendanceTakenDate: attendanceTakenDate,
+      calendarModelId: calendarModelId,
+    );
+
+    if (data != null) {
+      students = data.map<AttendanceModel>((item) {
+        print('Student data: ${item}');
+        return AttendanceModel(
+          studentName: '${item['firstName']} ${item['lastName']}'.trim(),
+          studentId: item['studentId'],
+          avatarUrl: item['photoURL'] ?? '',
+          lateMinutes: item['lateInMinutes']?.toString() ?? '',
+          markCodeId: item['markCodeId']?.toString(),
+          markSubCodeId: item['markSubCodeId']?.toString(), // Ensure the subcode is included
+          markSubCodeDescription: item['markSubCodeDescription'], // Ensure the description is included
+          token: token,
+          classId: classId,
+          calendarModelId: calendarModelId,
+          educationCentreClassIdDesc: item['educationCentreClassIdDesc'] ?? 'Dynamics 11 Plus Tuition Centre',
+        );
+      }).toList();
+    } else {
+      error = "Token expired or no data found, Please login again.";
+    }
+  } catch (e) {
+    error = "Error: $e";
+  }
+
+  // Fetch the mark codes and sub-mark codes
+  await loadMarkCodes(token);
+
+  isLoading = false;
+  notifyListeners();
+}
 
   Future<void> loadMarkCodes(String token) async {
     try {
@@ -133,57 +189,42 @@ class AttendanceViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> markStudent(
-    AttendanceModel student,
-    String? markSubCodeId,
-  ) async {
-    if (!await NetworkService().isConnected()) {
-      Fluttertoast.showToast(msg: "No Internet Connection");
-      return false;
-    }
-
-    String lateMinutes = student.lateMinutes.isNotEmpty
-        ? student.lateMinutes
-        : "0";
-
-    if (student.markCodeId == "1041") {
-      final int? lateMinutesInt = int.tryParse(lateMinutes);
-      if (lateMinutesInt == null || lateMinutesInt <= 0) {
-        return false;
-      }
-    }
-
-    if (student.markCodeId == "1040" || student.markCodeId == "1041") {
-      markSubCodeId = null;
-    }
-
-    if (student.markCodeId == "1042" && markSubCodeId == null) {
-      return false;
-    }
-
-    final response = await _apiService.saveStudentAttendance(
-      token: student.token,
-      classId: student.classId,
-      lateInMinutes: lateMinutes,
-      markCodeId: student.markCodeId ?? "",
-      markSubCodeId: student.markCodeId == "1042" ? markSubCodeId : null,
-      studentId: student.studentId,
-      calendarModelId: student.calendarModelId,
-      studentFirstName: student.studentName.split(' ').first,
-      studentLastName: student.studentName.split(' ').length > 1
-          ? student.studentName.split(' ').last
-          : '',
-      educationCentreClassIdDesc: student.educationCentreClassIdDesc,
-    );
-
-    if (response != null && response['result'] == true) {
-      return true;
-    } else {
-      error = "Failed to mark attendance";
-      notifyListeners();
-      return false;
-    }
+Future<bool> markStudent(
+  AttendanceModel student,
+  String? markSubCodeId,
+) async {
+  if (!await NetworkService().isConnected()) {
+    Fluttertoast.showToast(msg: "No Internet Connection");
+    return false;
   }
+
+  // Default value for lateMinutes
+  String lateMinutes = student.lateMinutes.isNotEmpty ? student.lateMinutes : "0";
+
+  // Call the API with the selected mark, submark, and late minutes
+  final response = await _apiService.saveStudentAttendance(
+    token: student.token,
+    classId: student.classId,
+    lateInMinutes: lateMinutes,
+    markCodeId: student.markCodeId ?? "",
+    markSubCodeId: student.markSubCodeId, // Can be null for some cases
+    studentId: student.studentId,
+    calendarModelId: student.calendarModelId,
+    studentFirstName: student.studentName.split(' ').first,
+    studentLastName: student.studentName.split(' ').length > 1
+        ? student.studentName.split(' ').last
+        : '',
+    educationCentreClassIdDesc: student.educationCentreClassIdDesc,
+  );
+
+  if (response != null && response['result'] == true) {
+    return true;
+  } else {
+    error = "Failed to mark attendance";
+    notifyListeners();
+    return false;
+  }
+}
 
   Future<bool> submitAttendanceRegister({
     required String token,

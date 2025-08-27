@@ -159,7 +159,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                     ),
 
                     SizedBox(height: 24),
-
                     // Verify Button
                     SizedBox(
                       width: double.infinity,
@@ -180,6 +179,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                                       builder: (_) => ChangePasswordScreen(
                                         organizationId: widget.organizationId,
                                         code: otpCode,
+                                        email: widget.email,
                                         // code: '123456',
                                       ),
                                     ),

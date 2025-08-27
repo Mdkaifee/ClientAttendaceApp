@@ -315,9 +315,12 @@ class _StudentAttendanceSummaryScreenState
                         ),
                       ),
                       SizedBox(height: 4),
-                      _CustomCalendar(
-                        calendarData: vm.calendarMonthAttendanceDetail,
-                      ),
+                     // In StudentAttendanceSummaryScreen build():
+_CustomCalendar(
+  calendarData: vm.calendarMonthAttendanceDetail,
+  referenceDate: DateTime.tryParse(widget.attendanceTakenDate) ?? DateTime.now(),
+),
+
                       SizedBox(height: 20),
                       _SummaryTable(
                         title: "1 month summary",
@@ -367,56 +370,180 @@ class _StudentAttendanceSummaryScreenState
 // --- Calendar Widget ---
 class _CustomCalendar extends StatefulWidget {
   final List<dynamic>? calendarData;
+final DateTime referenceDate;
 
-  const _CustomCalendar({Key? key, required this.calendarData})
+  const _CustomCalendar({Key? key, required this.calendarData, required this.referenceDate,})
     : super(key: key);
 
   @override
   State<_CustomCalendar> createState() => _CustomCalendarState();
 }
 
+// class _CustomCalendarState extends State<_CustomCalendar> {
+//   int weekdayToColIndex(int weekday) {
+//     switch (weekday) {
+//       case DateTime.sunday:
+//         return 0;
+//       case DateTime.monday:
+//         return 1;
+//       case DateTime.tuesday:
+//         return 2;
+//       case DateTime.wednesday:
+//         return 3;
+//       case DateTime.friday:
+//         return 4;
+//       case DateTime.saturday:
+//         return 5;
+//       default:
+//         return -1; // Thursday (excluded)
+//     }
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final now = DateTime.now();
+//     final year = now.year;
+//     final month = now.month;
+//     final daysInMonth = DateUtils.getDaysInMonth(year, month);
+
+//     final Map<int, String?> attendance = {};
+//     if (widget.calendarData != null) {
+//       for (var entry in widget.calendarData!) {
+//         if (entry['calendarDay'] != null) {
+//           attendance[entry['calendarDay']] = entry['attendanceCode'];
+//         }
+//       }
+//     }
+
+//     final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Fri', 'Sat'];
+//     List<TableRow> rows = [
+//       TableRow(
+//         children: List.generate(
+//           6,
+//           (i) => _calendarBox(null, label: days[i], isHeader: true, height: 32),
+//         ),
+//       ),
+//     ];
+
+//     int day = 1;
+//     List<Widget> week = List.filled(6, _calendarBox(null), growable: false);
+//     int startCol = weekdayToColIndex(DateTime(year, month, 1).weekday);
+//     for (int i = 0; i < startCol; i++) {
+//       week[i] = _calendarBox(null);
+//     }
+
+//     while (day <= daysInMonth) {
+//       int col = weekdayToColIndex(DateTime(year, month, day).weekday);
+//       if (col == -1) {
+//         day++;
+//         continue;
+//       }
+//       week[col] = _calendarBox(
+//         day,
+//         isMarked: attendance[day] != null && attendance[day]!.isNotEmpty,
+//         height: 60,
+//       );
+//       if (col == 5 || day == daysInMonth) {
+//         rows.add(TableRow(children: List.from(week)));
+//         week = List.filled(6, _calendarBox(null), growable: false);
+//       }
+//       day++;
+//     }
+
+//     return Table(
+//       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+//       children: rows,
+//     );
+//   }
+
+//   Widget _calendarBox(
+//     int? day, {
+//     bool isMarked = false,
+//     String? label,
+//     bool isHeader = false,
+//     double height = 60,
+//   }) {
+//     return Container(
+//       margin: EdgeInsets.all(2),
+//       height: height,
+//       decoration: BoxDecoration(
+//         border: Border.all(color: Colors.white24),
+//         color: isHeader
+//             ? Colors.white.withOpacity(0.13)
+//             : day == null
+//             ? Colors.transparent
+//             : (isMarked ? Color(0xFF5D99F6) : Colors.white.withOpacity(0.07)),
+//         borderRadius: BorderRadius.circular(8),
+//       ),
+//       child: Center(
+//         child: isHeader
+//             ? Text(
+//                 label ?? "",
+//                 style: TextStyle(
+//                   color: Colors.white,
+//                   fontWeight: FontWeight.bold,
+//                   fontSize: 14,
+//                   letterSpacing: 1,
+//                 ),
+//               )
+//             : day == null
+//             ? SizedBox.shrink()
+//             : Text(
+//                 '$day',
+//                 style: TextStyle(
+//                   color: isMarked ? Colors.black : Colors.white,
+//                   fontWeight: FontWeight.bold,
+//                 ),
+//               ),
+//       ),
+//     );
+//   }
+// }
 class _CustomCalendarState extends State<_CustomCalendar> {
   int weekdayToColIndex(int weekday) {
     switch (weekday) {
-      case DateTime.sunday:
-        return 0;
-      case DateTime.monday:
-        return 1;
-      case DateTime.tuesday:
-        return 2;
-      case DateTime.wednesday:
-        return 3;
-      case DateTime.friday:
-        return 4;
-      case DateTime.saturday:
-        return 5;
-      default:
-        return -1; // Thursday (excluded)
+      case DateTime.sunday: return 0;
+      case DateTime.monday: return 1;
+      case DateTime.tuesday: return 2;
+      case DateTime.wednesday: return 3;
+      case DateTime.friday: return 4;      // Thursday intentionally skipped
+      case DateTime.saturday: return 5;
+      default: return -1;                  // Thursday (excluded)
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final now = DateTime.now();
-    final year = now.year;
-    final month = now.month;
+    final year = widget.referenceDate.year;
+    final month = widget.referenceDate.month;
     final daysInMonth = DateUtils.getDaysInMonth(year, month);
 
-    final Map<int, String?> attendance = {};
+    // Collect codes per day, deduping and skipping blanks
+    final Map<int, List<String>> dayCodes = {};
     if (widget.calendarData != null) {
-      for (var entry in widget.calendarData!) {
-        if (entry['calendarDay'] != null) {
-          attendance[entry['calendarDay']] = entry['attendanceCode'];
+      for (final entry in widget.calendarData!) {
+        final day = entry['calendarDay'];
+        final code = (entry['attendanceCode'] ?? '').toString().trim();
+        if (day is int && day > 0 && code.isNotEmpty) {
+          dayCodes.putIfAbsent(day, () => []);
+          if (!dayCodes[day]!.contains(code)) {
+            dayCodes[day]!.add(code);
+          }
         }
       }
     }
 
     final days = ['Sun', 'Mon', 'Tue', 'Wed', 'Fri', 'Sat'];
-    List<TableRow> rows = [
+    final List<TableRow> rows = [
       TableRow(
         children: List.generate(
           6,
-          (i) => _calendarBox(null, label: days[i], isHeader: true, height: 32),
+          (i) => _calendarBox(
+            null,
+            label: days[i],
+            isHeader: true,
+            height: 32,
+          ),
         ),
       ),
     ];
@@ -429,16 +556,22 @@ class _CustomCalendarState extends State<_CustomCalendar> {
     }
 
     while (day <= daysInMonth) {
-      int col = weekdayToColIndex(DateTime(year, month, day).weekday);
-      if (col == -1) {
+      final col = weekdayToColIndex(DateTime(year, month, day).weekday);
+      if (col == -1) { // skip Thursday
         day++;
         continue;
       }
+
+      final codeStr = (dayCodes[day]?.join(' · ')) ?? '';
+      final hasCode = codeStr.isNotEmpty;
+
       week[col] = _calendarBox(
         day,
-        isMarked: attendance[day] != null && attendance[day]!.isNotEmpty,
-        height: 60,
+        code: codeStr,
+        isMarked: hasCode,
+        height: hasCode ? 66 : 60,
       );
+
       if (col == 5 || day == daysInMonth) {
         rows.add(TableRow(children: List.from(week)));
         week = List.filled(6, _calendarBox(null), growable: false);
@@ -454,28 +587,30 @@ class _CustomCalendarState extends State<_CustomCalendar> {
 
   Widget _calendarBox(
     int? day, {
+    String? code,
     bool isMarked = false,
     String? label,
     bool isHeader = false,
     double height = 60,
   }) {
     return Container(
-      margin: EdgeInsets.all(2),
+      margin: const EdgeInsets.all(2),
       height: height,
       decoration: BoxDecoration(
         border: Border.all(color: Colors.white24),
         color: isHeader
             ? Colors.white.withOpacity(0.13)
             : day == null
-            ? Colors.transparent
-            : (isMarked ? Color(0xFF5D99F6) : Colors.white.withOpacity(0.07)),
+                ? Colors.transparent
+                : (isMarked ? const Color(0xFF5D99F6)
+                            : Colors.white.withOpacity(0.07)),
         borderRadius: BorderRadius.circular(8),
       ),
       child: Center(
         child: isHeader
             ? Text(
                 label ?? "",
-                style: TextStyle(
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 14,
@@ -483,14 +618,35 @@ class _CustomCalendarState extends State<_CustomCalendar> {
                 ),
               )
             : day == null
-            ? SizedBox.shrink()
-            : Text(
-                '$day',
-                style: TextStyle(
-                  color: isMarked ? Colors.black : Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
+                ? const SizedBox.shrink()
+                : Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        '$day',
+                        style: TextStyle(
+                          color: isMarked ? Colors.black : Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      if (code != null && code.isNotEmpty) ...[
+                        const SizedBox(height: 4),
+                        FittedBox(
+                          fit: BoxFit.scaleDown,
+                          child: Text(
+                            code,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              color: isMarked ? Colors.black : Colors.white,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
       ),
     );
   }

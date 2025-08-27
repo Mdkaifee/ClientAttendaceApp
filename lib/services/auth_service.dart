@@ -176,6 +176,7 @@ class AuthService {
   Future<bool> resetPasswordWithCode({
     required int organizationId,
     required String code,
+    required String email,
     required String newPassword,
   }) async {
     if (!await NetworkService().isConnected()) {
@@ -187,6 +188,7 @@ class AuthService {
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         "OrganizationId": organizationId,
+        "Email": email,
         "Code": code,
         "NewPassword": newPassword,
       }),
@@ -195,7 +197,7 @@ class AuthService {
     print('Reset Password Request: POST $baseUrl/api/ResetPasswordWithCode');
     print('Request Body: ${response.body}');
     print(
-      'OrganizationId: $organizationId, Code: $code, NewPassword: $newPassword',
+      'OrganizationId: $organizationId,Email: $email, Code: $code, NewPassword: $newPassword',
     );
     print('Request Headers: ${response.headers}');
     print('Status Code: ${response.statusCode}');
