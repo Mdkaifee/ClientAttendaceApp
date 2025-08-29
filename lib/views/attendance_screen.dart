@@ -362,7 +362,7 @@ Widget _buildSubMarkButton(student, AttendanceViewModel vm) {
 
         // Update student object with the selected sub-mark details
         student.markSubCodeId = selectedSubCode?['id']?.toString();
-        student.markSubCodeDescription = selectedSubCode?['description'] ?? 'Unknown';
+        student.markSubCodeDescription = selectedSubCode?['description'] ?? 'Sub-Mark';
 
         // Call API with submark and markCodeId
         vm.markStudent(student, student.markSubCodeId).then((success) {
@@ -411,7 +411,7 @@ Widget _buildSubMarkButton(student, AttendanceViewModel vm) {
           );
 
           student.markSubCodeId = selectedSubCode?['id']?.toString();
-          student.markSubCodeDescription = selectedSubCode?['description'] ?? 'Unknown';
+          student.markSubCodeDescription = selectedSubCode?['description'] ?? 'Sub-Mark';
 
           // Call API with submark and markCodeId
           vm.markStudent(student, student.markSubCodeId).then((success) {
