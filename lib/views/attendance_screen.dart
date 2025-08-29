@@ -171,6 +171,79 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
   }
 
+// Widget _buildMarkButton(student, AttendanceViewModel vm) {
+//   return Container(
+//     decoration: BoxDecoration(
+//       borderRadius: BorderRadius.circular(20),
+//       color: const Color(0xFF1F4F91),
+//     ),
+//     child: PopupMenuButton<String>(
+//       enabled: !student.isMarked,
+//       onSelected: (value) {
+//         if (!student.isMarked) {
+//           setState(() {
+//             student.markCodeId = value;
+//             final selectedMarkCode = vm.markCodes.firstWhere(
+//               (code) => code['id'].toString() == value,
+//               orElse: () => null,
+//             );
+//             student.markCodeName = selectedMarkCode?['name'];
+
+//             // Call API with selected mark and default values for submark and late minutes
+//             student.lateMinutes = "0"; // Default late minutes
+//             vm.markStudent(student, null).then((success) {
+//               if (success) {
+//                 ScaffoldMessenger.of(context).showSnackBar(
+//                   SnackBar(
+//                     content: Text('Attendance updated for ${student.studentName}'),
+//                     backgroundColor: Colors.green,
+//                   ),
+//                 );
+//               } else {
+//                 ScaffoldMessenger.of(context).showSnackBar(
+//                   SnackBar(
+//                     content: Text('Failed to update attendance'),
+//                     backgroundColor: Colors.red,
+//                   ),
+//                 );
+//               }
+//             });
+//           });
+//         }
+//       },
+//       itemBuilder: (context) {
+//         return vm.markCodes.map((code) {
+//           return PopupMenuItem<String>(
+//             value: code['id'].toString(),
+//             child: Text(code['description']),
+//           );
+//         }).toList();
+//       },
+//       child: Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 8),
+//         child: SizedBox(
+//           width: 80,
+//           child: Center(
+//             child: Text(
+//               student.markCodeId == '1043'
+//                   ? 'Present but Late'
+//                   : student.markCodeId == '1042'
+//                       ? 'Absent'
+//                       : student.markCodeId == '1040'
+//                           ? 'Present'  // For markCodeId '1040'
+//                           : student.markCodeId == '1041'
+//                               ? 'Present'  // For markCodeId '1041'
+//                               : 'Mark',
+//               style: const TextStyle(color: Colors.white, fontSize: 12),
+//               maxLines: 1,
+//               overflow: TextOverflow.ellipsis,
+//             ),
+//           ),
+//         ),
+//       ),
+//     ),
+//   );
+// }
 Widget _buildMarkButton(student, AttendanceViewModel vm) {
   return Container(
     decoration: BoxDecoration(
@@ -225,15 +298,8 @@ Widget _buildMarkButton(student, AttendanceViewModel vm) {
           width: 80,
           child: Center(
             child: Text(
-              student.markCodeId == '1043'
-                  ? 'Present but Late'
-                  : student.markCodeId == '1042'
-                      ? 'Absent'
-                      : student.markCodeId == '1040'
-                          ? 'Present'  // For markCodeId '1040'
-                          : student.markCodeId == '1041'
-                              ? 'Present'  // For markCodeId '1041'
-                              : 'Mark',
+              // Provide a fallback value if markCodeId is null
+              _getMarkStatusFromApi(student.markCodeId, vm),
               style: const TextStyle(color: Colors.white, fontSize: 12),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -243,6 +309,22 @@ Widget _buildMarkButton(student, AttendanceViewModel vm) {
       ),
     ),
   );
+}
+
+// Dynamically get the status based on `markCodeId` from the API response
+String _getMarkStatusFromApi(String? markCodeId, AttendanceViewModel vm) {
+  // Ensure markCodeId is not null and handle it appropriately
+  if (markCodeId == null || markCodeId.isEmpty) {
+    return 'Mark'; // Fallback value
+  }
+
+  final selectedMarkCode = vm.markCodes.firstWhere(
+    (code) => code['id'].toString() == markCodeId,
+    orElse: () => null,
+  );
+  
+  // If markCodeId is not found, return 'Mark'
+  return selectedMarkCode != null ? selectedMarkCode['description'] : 'Mark';
 }
 
 Widget _buildSubMarkButton(student, AttendanceViewModel vm) {
@@ -319,7 +401,7 @@ Widget _buildSubMarkButton(student, AttendanceViewModel vm) {
                 backgroundColor: Colors.red,
               ),
             );
-            return; // Exit early if no mark is selected
+            return; // Exit early if mark is selected
           }
 
           // Select the sub-mark description and ID
