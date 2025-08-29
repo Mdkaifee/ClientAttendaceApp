@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:typed_data';
 import '../services/network_service.dart';
 import 'login_screen.dart';
+import 'package:flutter/services.dart';
 
 class AttendanceScreen extends StatefulWidget {
   final String token;
@@ -481,14 +482,25 @@ Widget _buildLateInputField(student, AttendanceViewModel vm) {
         isDense: true,
         contentPadding: EdgeInsets.zero,
       ),
-      keyboardType: TextInputType.number,
+      // keyboardType: TextInputType.number,
+      // controller: controller,
+      // onChanged: (val) {
+      //   student.lateMinutes = val;
+      // },
+      // onSubmitted: (val) {
+      //   if (student.isMarked) return;
+keyboardType: TextInputType.numberWithOptions(signed: true, decimal: true),
+      textInputAction: TextInputAction.done,
       controller: controller,
+      inputFormatters: <TextInputFormatter>[
+        FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*$')),  // Allows numbers with a single decimal point
+      ],
       onChanged: (val) {
         student.lateMinutes = val;
       },
       onSubmitted: (val) {
         if (student.isMarked) return;
-
+        
         // Check if mark is selected before allowing late input
         if (student.markCodeId == null || student.markCodeId.isEmpty) {
           ScaffoldMessenger.of(context).showSnackBar(
