@@ -110,6 +110,7 @@ class _RegisterSelectScreenState extends State<RegisterSelectScreen> {
             return SafeArea(
               child: Padding(
                 padding: EdgeInsets.all(16),
+                 child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
@@ -269,7 +270,7 @@ class _RegisterSelectScreenState extends State<RegisterSelectScreen> {
                       ),
                     ),
 
-                    Spacer(),
+                    SizedBox(height: 24),
                     if (_connectionError != null)
                       Padding(
                         padding: const EdgeInsets.only(bottom: 0),
@@ -353,6 +354,7 @@ class _RegisterSelectScreenState extends State<RegisterSelectScreen> {
                     SizedBox(height: 16),
                   ],
                 ),
+              ),
               ),
             );
           },
