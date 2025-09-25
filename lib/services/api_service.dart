@@ -5,7 +5,7 @@ import 'network_service.dart';
 
 class ApiService {
   static const String _attendanceBaseUrl =
-      'https://attendanceapiuat.massivedanamik.com';
+      'https://attendanceapi.massivedanamik.com';
 
   Future<List<dynamic>?> fetchAttendance({
     required String token,

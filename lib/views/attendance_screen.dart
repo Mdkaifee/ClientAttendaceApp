@@ -60,7 +60,7 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
     }
 
     final url = Uri.parse(
-      'https://adminapiuat.massivedanamik.com/api/GetStudentPhotoAsByteArrayAsync?studentId=$studentId&fileName=$fileName',
+      'https://adminapi.massivedanamik.com/api/GetStudentPhotoAsByteArrayAsync?studentId=$studentId&fileName=$fileName',
     );
     final response = await http.post(
       url,

@@ -62,7 +62,7 @@ class _StudentAttendanceSummaryScreenState
     String fileName,
   ) async {
     final url = Uri.parse(
-      'https://adminapiuat.massivedanamik.com/api/GetStudentPhotoAsBase64StringAsync?studentId=$studentId&fileName=$fileName',
+      'https://adminapi.massivedanamik.com/api/GetStudentPhotoAsBase64StringAsync?studentId=$studentId&fileName=$fileName',
     );
 
     final response = await http.post(

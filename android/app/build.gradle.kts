@@ -19,8 +19,8 @@ android {
     }
 
     defaultConfig {
-        // applicationId = "com.apnitor.massivedynamic"
-        applicationId = "com.apnitor.massivedynamictest"
+        applicationId = "com.apnitor.massivedynamic"
+        // applicationId = "com.apnitor.massivedynamictest"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode

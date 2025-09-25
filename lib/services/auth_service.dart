@@ -4,7 +4,7 @@ import '../models/user_model.dart';
 import 'network_service.dart';
 
 class AuthService {
-  static const String baseUrl = 'https://adminapiuat.massivedanamik.com';
+  static const String baseUrl = 'https://adminapi.massivedanamik.com';
 
   Future<UserModel?> login({
     required String email,
@@ -79,7 +79,7 @@ class AuthService {
     };
 
     final url = Uri.parse(
-      'https://attendanceapiuat.massivedanamik.com/api/GetCalendarModels',
+      'https://attendanceapi.massivedanamik.com/api/GetCalendarModels',
     );
     final response = await http.post(
       url,
